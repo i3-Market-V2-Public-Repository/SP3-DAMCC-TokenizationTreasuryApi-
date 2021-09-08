@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const treasuryController = require('./../controllers/treasuryController');
+const treasuryController = require('../controllers/treasuryController');
 
 //Add new marketplace
 router.post('/marketplaces',treasuryController.addMarketPlace)

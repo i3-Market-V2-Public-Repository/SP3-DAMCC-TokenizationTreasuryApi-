@@ -29,7 +29,7 @@ class TreasuryContractService {
                 .then((status) => console.log("Connection status ", status));
             this.contractOptions = {gasPrice: 0, gas: 6721975};
             this.contract = new this.web3.eth.Contract(
-                JSON.parse(fs.readFileSync(path.join(__dirname, '../contracts/treasury/I3MarketTreasury.json')).toString()).abi,
+                JSON.parse(fs.readFileSync(path.join(__dirname, '../../contracts/treasury/I3MarketTreasury.json')).toString()).abi,
                 process.env.CONTRACT_ADDRESS,
                 this.contractOptions
             );
