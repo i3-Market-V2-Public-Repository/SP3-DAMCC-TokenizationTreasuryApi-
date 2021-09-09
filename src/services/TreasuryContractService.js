@@ -3,7 +3,8 @@
 const Web3 = require('web3');
 const axios = require('axios')
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
+const { resolve } = require('path');
 
 let instance = null;
 
@@ -73,6 +74,32 @@ class TreasuryContractService {
 
             this.contract.methods.exchangeOut(marketplaceAddress)
                 .send({from: providerAddress})
+                .on('transactionHash', function (hash) {
+                    resolve(hash);
+                })
+                .on('error', function (error) {
+                    reject(error)
+                })
+        })
+    }
+
+    payment(fromAddress, toAddress, ammount){
+        return new Promise((resolve, reject) => {
+            this.contract.methods.payment(toAddress, ammount)
+                .send({from: fromAddress})
+                .on('transactionHash', function (hash) {
+                    resolve(hash);
+                })
+                .on('error', function (error) {
+                    reject(error)
+                })
+        })
+    }
+
+    clearing(fromAddress){
+        return new Promise((resolve, reject) => {
+            this.contract.methods.clearing()
+                .send({from: fromAddress})
                 .on('transactionHash', function (hash) {
                     resolve(hash);
                 })
