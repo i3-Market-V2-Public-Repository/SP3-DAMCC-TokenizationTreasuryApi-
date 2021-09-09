@@ -16,4 +16,10 @@ router.post('/transactions/exchange-out',treasuryController.exchangeOut)
 //Get Receipt for Transaction
 router.get('/transactions/:transactionHash',treasuryController.getTransactionReceipt)
 
+//Payment endpoint
+router.post('/payment',treasuryController.payment)
+
+//Clearing endpoint
+router.post('/clearing', treasuryController.clearing)
+
 module.exports = router;
