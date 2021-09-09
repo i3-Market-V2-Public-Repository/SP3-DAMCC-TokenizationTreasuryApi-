@@ -60,3 +60,31 @@ exports.exchangeOut = catchAsync(async (req, res, next) => {
     return res.json({transactionHash})
 })
 
+exports.payment = catchAsync(async (req, res, next) => {
+    const {fromAddress, toAddress, ammount} = req.body
+
+    if (!fromAddress || !toAddress || !ammount) {
+        return res.status(400).json({
+            message: 'You must provide fromAddress, toAddress and ammount'
+        })
+    }
+
+    const transactionHash = await treasuryContract.payment(fromAddress, toAddress, ammount)
+    return res.json({transactionHash})
+
+})
+
+exports.clearing = catchAsync(async (req, res, next) => {
+    const {fromAddress} = req.body
+
+    if (!fromAddress) {
+        return res.status(400).json({
+            message: 'You must provide fromAddress'
+        })
+    }
+
+    const transactionHash = await treasuryContract.clearing(fromAddress)
+    return res.json({transactionHash})
+
+})
+
