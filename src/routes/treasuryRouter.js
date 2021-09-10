@@ -118,7 +118,7 @@ router.get('/transactions/:transactionHash',treasuryController.getTransactionRec
 *     tags: [Endpoints]
 *     summary: Add marketplaces
 *     description: Call add marketplace i3Treasury API to add a marketplace. 
-*                  In the body you need to pass a "fromAddress" and a "toAddress" in a JSON format. The two addresses need to be the same.
+*                  In the body you need to pass a "senderAddress" and a "marketplaceAddress" in a JSON format. The two addresses need to be the same.
 *     requestBody:
 *       required: true
 *       content:
@@ -154,7 +154,7 @@ router.post('/marketplaces',treasuryController.addMarketPlace)
 *   post:
 *     tags: [Endpoints]
 *     description: Call exchange-in endpoint in order to exchange an amount of fiat money into tokens from a Marketplace.
-*                  Pass a "fromAddress", a "toAddress" and a "tokens" which is the amount of tokens to exchange.
+*                  Pass a "senderAddress", a "userAddress" and a "tokens" which is the amount of tokens to exchange.
 *     summary: Exchange fiat money for  tokens
 *     requestBody:
 *       required: true
@@ -194,7 +194,7 @@ router.post('/transactions/exchange-in',treasuryController.exchangeIn)
 * /api/v1/treasury/payment:
 *   post:
 *     tags: [Endpoints]
-*     description: Call payment API to transfer the right amount of tokens to a Data Provider. Pass a "fromAddress", a "toAddress" and an "amount" of tokens to transfer to the Data Provider.
+*     description: Call payment API to transfer the right amount of tokens to a Data Provider. Pass a "senderAddress", a "providerAddress" and an "amount" of tokens to transfer to the Data Provider.
 *     summary: Pay the Data Provider
 *     requestBody:
 *       required: true
@@ -205,7 +205,7 @@ router.post('/transactions/exchange-in',treasuryController.exchangeIn)
 *             properties:
 *               senderAddress:
 *                 type: string
-*                 description: The address of Data Consumer.
+*                 description: The address of the sender.
 *                 example: "0xb8E0101259550765a5f1287d0F680Ee9B09b42B3"
 *               providerAddress:
 *                 type: string
