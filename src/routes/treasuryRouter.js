@@ -4,50 +4,13 @@ const treasuryController = require('../controllers/treasuryController');
 
 /**
 * @swagger
-* /api/v1/treasury/marketplaces:
-*   post:
-*     tags: [Endpoints]
-*     summary: Add marketplaces
-*     description: Call add marketplace i3Treasury API to add a marketplace. 
-*                  In the body you need to pass a "fromAddress" and a "toAddress" in a JSON format. The two addresses need to be the same.
-*     requestBody:
-*       required: true
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             properties:
-*               fromAddress:
-*                 type: string
-*                 description: The address of the marketpace.
-*                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
-*               toAddress:
-*                 type: string
-*                 description: The address of the marketpace.
-*                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
-*     responses:
-*       200:
-*        content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 transactionHash:
-*                   type: string
-*                   description: The pending transaction hash.
-*                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
-*/
-router.post('/marketplaces',treasuryController.addMarketPlace)
-
-/**
-* @swagger
 * /api/v1/treasury/marketplaces/{address}:
 *   get:
 *     tags: [Endpoints]
 *     summary: Get the index of marketplace
 *     description: i3Treasury API endpoint to get the marketplace index. Add the address of the marketplace to the address path variable.
 *     parameters:
-*       - in: address
+*       - in: path
 *         name: address
 *         required: true
 *         description: Address of the marketplace.
@@ -61,7 +24,7 @@ router.post('/marketplaces',treasuryController.addMarketPlace)
 *               type: object
 *               properties:
 *                 index:
-*                   type: int
+*                   type: string
 *                   description: Index of marketplace.
 *                   example: 3
 */
@@ -72,10 +35,10 @@ router.get('/marketplaces/:address',treasuryController.getMarketPlaceIndex)
 * /api/v1/treasury/balances/{address}:
 *   get:
 *     tags: [Endpoints]
-*     description: i3Treasury API endpoint to get the marketplace balance. Add the address of the marketplace to the address path variable.
+*     description: i3Treasury API endpoint to get the address balance. Add the address of the marketplace to the address path variable.
 *     summary: Balance of a marketplace
 *     parameters:
-*       - in: address
+*       - in: path
 *         name: address
 *         required: true
 *         description: Address of the marketplace.
@@ -91,7 +54,7 @@ router.get('/marketplaces/:address',treasuryController.getMarketPlaceIndex)
 *                 balance:
 *                   type: object
 *                   description: Balances.
-*                   example: ["0","0","0","0"]
+*                   example: [0]
 */
 router.get('/balances/:address',treasuryController.getAddressBalance)
 
@@ -103,7 +66,7 @@ router.get('/balances/:address',treasuryController.getAddressBalance)
 *    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
 *    summary: Receipt of a transaction
 *    parameters:
-*     - in: transactionHash
+*     - in: path
 *       name: transactionHash
 *       required: true
 *       description: Address of the marketplace.
@@ -135,8 +98,55 @@ router.get('/balances/:address',treasuryController.getAddressBalance)
 *                           00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 *                           0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 *                           }
+*      404:
+*       content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                receipt:
+*                  type: object
+*                  description: The pending transaction hash.
+*                  example: null
 */
 router.get('/transactions/:transactionHash',treasuryController.getTransactionReceipt)
+
+/**
+* @swagger
+* /api/v1/treasury/marketplaces:
+*   post:
+*     tags: [Endpoints]
+*     summary: Add marketplaces
+*     description: Call add marketplace i3Treasury API to add a marketplace. 
+*                  In the body you need to pass a "fromAddress" and a "toAddress" in a JSON format. The two addresses need to be the same.
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               senderAddress:
+*                 type: string
+*                 description: The address of the sender.
+*                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
+*               marketplaceAddress:
+*                 type: string
+*                 description: The address of the marketpace.
+*                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
+*     responses:
+*       200:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 transactionHash:
+*                   type: string
+*                   description: The pending transaction hash.
+*                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
+*/
+router.post('/marketplaces',treasuryController.addMarketPlace)
 
 /**
 * @swagger
@@ -153,11 +163,11 @@ router.get('/transactions/:transactionHash',treasuryController.getTransactionRec
 *           schema:
 *             type: object
 *             properties:
-*               fromAddress:
+*               senderAddress:
 *                 type: string
 *                 description: The address of the marketpace.
 *                 example: "0xD94f3239185C27937367B9A1A17aB70f4F631005"
-*               toAddress:
+*               userAddress:
 *                 type: string
 *                 description: The address of the Data consumer.
 *                 example: "0xb8E0101259550765a5f1287d0F680Ee9B09b42B3"
@@ -181,7 +191,7 @@ router.post('/transactions/exchange-in',treasuryController.exchangeIn)
 
 /**
 * @swagger
-* /payment:
+* /api/v1/treasury/payment:
 *   post:
 *     tags: [Endpoints]
 *     description: Call payment API to transfer the right amount of tokens to a Data Provider. Pass a "fromAddress", a "toAddress" and an "amount" of tokens to transfer to the Data Provider.
@@ -193,15 +203,15 @@ router.post('/transactions/exchange-in',treasuryController.exchangeIn)
 *           schema:
 *             type: object
 *             properties:
-*               fromAddress:
+*               senderAddress:
 *                 type: string
 *                 description: The address of Data Consumer.
 *                 example: "0xb8E0101259550765a5f1287d0F680Ee9B09b42B3"
-*               toAddress:
+*               providerAddress:
 *                 type: string
 *                 description: The address of the Data Provider.
 *                 example: "0xb13894b969ad9A69108684dA8004E53A32c6deC6"
-*               tokens:
+*               amount:
 *                 type: string
 *                 description: The amount of tokens.
 *                 example: 10
@@ -221,7 +231,7 @@ router.post('/payment',treasuryController.payment)
 
 /**
 * @swagger
-* /transactions/exchange-out:
+* /api/v1/treasury/transactions/exchange-out:
 *   post:
 *     tags: [Endpoints]
 *     description: Call exchange-out endpoint in order to exchange the right amount of tokens available with money from a Data Marketplace.
@@ -233,11 +243,11 @@ router.post('/payment',treasuryController.payment)
 *           schema:
 *             type: object
 *             properties:
-*               fromAddress:
+*               senderAddress:
 *                 type: string
-*                 description: The address of Data Provider.
+*                 description: The address of the sender.
 *                 example: "0xD94f3239185C27937367B9A1A17aB70f4F631005"
-*               toAddress:
+*               marketplaceAddress:
 *                 type: string
 *                 description: The address of the the marketplace.
 *                 example: "0xb8E0101259550765a5f1287d0F680Ee9B09b42B3"
@@ -257,7 +267,7 @@ router.post('/transactions/exchange-out',treasuryController.exchangeOut)
 
 /**
 * @swagger
-* /clearing:
+* /api/v1/treasury/clearing:
 *   post:
 *     tags: [Endpoints]
 *     description: Call clearing endpoint in order to clear the balance of a Data Marketplace.
@@ -269,7 +279,7 @@ router.post('/transactions/exchange-out',treasuryController.exchangeOut)
 *           schema:
 *             type: object
 *             properties:
-*               fromAddress:
+*               senderAddress:
 *                 type: string
 *                 description: The address of the marketplace.
 *                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
