@@ -5,13 +5,16 @@ const treasuryContract = require('../services/TreasuryContractService').getInsta
 exports.getTransactionReceipt = catchAsync(async (req, res, next) => {
     const hash = req.params.transactionHash
     const receipt = await treasuryContract.getTransactionReceipt(hash)
-    res.json({receipt})
+    if (receipt){
+        return res.json({receipt})
+    }
+    return res.status(404).json()
 })
 
 exports.getMarketPlaceIndex = catchAsync(async (req, res, next) => {
     const address = req.params.address
     const index = await treasuryContract.getMarketPlaceIndex(address)
-    res.json({index})
+    return res.json({index})
 })
 
 exports.getAddressBalance = catchAsync(async (req, res, next) => {
@@ -22,68 +25,68 @@ exports.getAddressBalance = catchAsync(async (req, res, next) => {
 
 exports.addMarketPlace = catchAsync(async (req, res, next) => {
 
-    const {fromAddress, toAddress} = req.body
+    const {senderAddress, marketplaceAddress} = req.body
 
-    if (!fromAddress || !toAddress) {
+    if (!senderAddress || !marketplaceAddress) {
         return res.status(400).json({
-            message: 'You must provide fromAddress and toAddress'
+            message: 'You must provide senderAddress and marketplaceAddress'
         })
     }
 
-    const transactionHash = await treasuryContract.addMarketPlace(fromAddress, toAddress)
+    const transactionHash = await treasuryContract.addMarketPlace(senderAddress, marketplaceAddress)
     return res.json({transactionHash})
 })
 
 exports.exchangeIn = catchAsync(async (req, res, next) => {
-    const {fromAddress, toAddress, tokens} = req.body
+    const {senderAddress, userAddress, tokens} = req.body
 
-    if (!fromAddress || !toAddress || !tokens) {
+    if (!senderAddress || !userAddress || !tokens) {
         return res.status(400).json({
-            message: 'You must provide fromAddress, toAddress and tokens amount'
+            message: 'You must provide senderAddress, userAddress and tokens amount'
         })
     }
 
-    const transactionHash = await treasuryContract.exchangeIn(fromAddress, toAddress, tokens)
+    const transactionHash = await treasuryContract.exchangeIn(senderAddress, userAddress, tokens)
     return res.json({transactionHash})
 })
 
 exports.exchangeOut = catchAsync(async (req, res, next) => {
-    const {providerAddress, marketplaceAddress} = req.body
+    const {senderAddress, marketplaceAddress} = req.body
 
-    if (!providerAddress || !marketplaceAddress) {
+    if (!senderAddress || !marketplaceAddress) {
         return res.status(400).json({
-            message: 'You must provide providerAddress and marketplaceAddress'
+            message: 'You must provide senderAddress and marketplaceAddress'
         })
     }
 
-    const transactionHash = await treasuryContract.exchangeOut(providerAddress, marketplaceAddress)
+    const transactionHash = await treasuryContract.exchangeOut(senderAddress, marketplaceAddress)
     return res.json({transactionHash})
 })
 
 exports.payment = catchAsync(async (req, res, next) => {
-    const {fromAddress, toAddress, ammount} = req.body
+    const {senderAddress, providerAddress, amount} = req.body
 
-    if (!fromAddress || !toAddress || !ammount) {
+    if (!senderAddress || !providerAddress || !amount) {
         return res.status(400).json({
-            message: 'You must provide fromAddress, toAddress and ammount'
+            message: 'You must provide senderAddress, providerAddress and amount'
         })
     }
 
-    const transactionHash = await treasuryContract.payment(fromAddress, toAddress, ammount)
+    const transactionHash = await treasuryContract.payment(senderAddress, providerAddress, amount)
     return res.json({transactionHash})
 
 })
 
 exports.clearing = catchAsync(async (req, res, next) => {
-    const {fromAddress} = req.body
+    const {senderAddress} = req.body
 
-    if (!fromAddress) {
+    if (!senderAddress) {
         return res.status(400).json({
-            message: 'You must provide fromAddress'
+            message: 'You must provide senderAddress'
         })
     }
 
-    const transactionHash = await treasuryContract.clearing(fromAddress)
+    const transactionHash = await treasuryContract.clearing(senderAddress)
     return res.json({transactionHash})
 
 })
