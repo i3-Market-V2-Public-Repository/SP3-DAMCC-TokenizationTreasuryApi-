@@ -42,10 +42,10 @@ class TreasuryContractService {
         }
     }
 
-    addMarketPlace(fromAddress, marketplaceAddress) {
+    addMarketPlace(senderAddress, marketplaceAddress) {
         return new Promise((resolve, reject) => {
             this.contract.methods.addMarketplace(marketplaceAddress)
-                .send({from: fromAddress})
+                .send({from: senderAddress})
                 .on('transactionHash', function (hash) {
                     resolve(hash)
                 })
@@ -55,11 +55,11 @@ class TreasuryContractService {
         })
     }
 
-    exchangeIn(fromAddress, toAddress, tokens) {
+    exchangeIn(senderAddress, userAddress, tokens) {
         return new Promise((resolve, reject) => {
 
-            this.contract.methods.exchangeIn(toAddress, tokens)
-                .send({from: fromAddress})
+            this.contract.methods.exchangeIn(userAddress, tokens)
+                .send({from: senderAddress})
                 .on('transactionHash', function (hash) {
                     resolve(hash);
                 })
@@ -69,11 +69,11 @@ class TreasuryContractService {
         })
     }
 
-    exchangeOut(providerAddress, marketplaceAddress) {
+    exchangeOut(senderAddress, marketplaceAddress) {
         return new Promise((resolve, reject) => {
 
             this.contract.methods.exchangeOut(marketplaceAddress)
-                .send({from: providerAddress})
+                .send({from: senderAddress})
                 .on('transactionHash', function (hash) {
                     resolve(hash);
                 })
@@ -83,10 +83,10 @@ class TreasuryContractService {
         })
     }
 
-    payment(fromAddress, toAddress, ammount){
+    payment(senderAddress, providerAddress, ammount){
         return new Promise((resolve, reject) => {
-            this.contract.methods.payment(toAddress, ammount)
-                .send({from: fromAddress})
+            this.contract.methods.payment(providerAddress, ammount)
+                .send({from: senderAddress})
                 .on('transactionHash', function (hash) {
                     resolve(hash);
                 })
@@ -96,10 +96,10 @@ class TreasuryContractService {
         })
     }
 
-    clearing(fromAddress){
+    clearing(senderAddress){
         return new Promise((resolve, reject) => {
             this.contract.methods.clearing()
-                .send({from: fromAddress})
+                .send({from: senderAddress})
                 .on('transactionHash', function (hash) {
                     resolve(hash);
                 })
