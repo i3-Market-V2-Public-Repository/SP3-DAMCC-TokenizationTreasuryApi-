@@ -99,7 +99,7 @@ router.get('/balances/:address',treasuryController.getAddressBalance)
 * @swagger
 * /api/v1/treasury/transactions/{transactionHash}:
 *   get:
-*     tags: [Endpoints]
+*    tags: [Endpoints]
 *    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
 *    summary: Receipt of a transaction
 *    parameters:
