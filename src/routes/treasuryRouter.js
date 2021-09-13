@@ -7,7 +7,7 @@ const treasuryController = require('../controllers/treasuryController');
 * /api/v1/treasury/marketplaces/{address}:
 *   get:
 *     tags: [Endpoints]
-*     summary: Get the index of marketplace
+*     summary: Get the index of a registered marketplace
 *     description: i3Treasury API endpoint to get the marketplace index. Add the address of the marketplace to the address path variable.
 *     parameters:
 *       - in: path
@@ -35,8 +35,8 @@ router.get('/marketplaces/:address',treasuryController.getMarketPlaceIndex)
 * /api/v1/treasury/balances/{address}:
 *   get:
 *     tags: [Endpoints]
-*     description: i3Treasury API endpoint to get the address balance. Add the address of the marketplace to the address path variable.
-*     summary: Balance of a marketplace
+*     summary: Get the Balance for a specific account
+*     description: i3Treasury API endpoint to get the balance given an account address. Add the address of the marketplace to the address path variable.
 *     parameters:
 *       - in: path
 *         name: address
@@ -63,8 +63,8 @@ router.get('/balances/:address',treasuryController.getAddressBalance)
 * /api/v1/treasury/transactions/{transactionHash}:
 *   get:
 *    tags: [Endpoints]
+*    summary: Get the Receipt of a transaction given a TransactionHash
 *    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
-*    summary: Receipt of a transaction
 *    parameters:
 *     - in: path
 *       name: transactionHash
@@ -116,7 +116,7 @@ router.get('/transactions/:transactionHash',treasuryController.getTransactionRec
 * /api/v1/treasury/marketplaces:
 *   post:
 *     tags: [Endpoints]
-*     summary: Add marketplaces
+*     summary: Register a marketplace
 *     description: Call add marketplace i3Treasury API to add a marketplace. 
 *                  In the body you need to pass a "senderAddress" and a "marketplaceAddress" in a JSON format. The two addresses need to be the same.
 *     requestBody:
@@ -153,9 +153,10 @@ router.post('/marketplaces',treasuryController.addMarketPlace)
 * /api/v1/treasury/transactions/exchange-in:
 *   post:
 *     tags: [Endpoints]
+*     summary: Exchange fiat money for tokens
 *     description: Call exchange-in endpoint in order to exchange an amount of fiat money into tokens from a Marketplace.
 *                  Pass a "senderAddress", a "userAddress" and a "tokens" which is the amount of tokens to exchange.
-*     summary: Exchange fiat money for  tokens
+
 *     requestBody:
 *       required: true
 *       content:
