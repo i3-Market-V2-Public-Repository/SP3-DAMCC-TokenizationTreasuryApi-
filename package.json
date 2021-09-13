@@ -1,13 +1,15 @@
 {
   "name": "i3-microservice",
-  "contributors": [{
-    "name":"Dimitris Kokolakis",
-    "email": "dkokolakis@telesto.gr"
-  },
-  {
-    "name":"Vaggelis Giannakosian",
-    "email": "vangelis@telesto.gr"
-  }],
+  "contributors": [
+    {
+      "name": "Dimitris Kokolakis",
+      "email": "dkokolakis@telesto.gr"
+    },
+    {
+      "name": "Vaggelis Giannakosian",
+      "email": "vangelis@telesto.gr"
+    }
+  ],
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
