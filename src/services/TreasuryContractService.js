@@ -48,7 +48,6 @@ class TreasuryContractService {
     }
 
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
-
         return this.sendContractMethod(
             'exchangeIn',
             senderAddress,
@@ -59,18 +58,15 @@ class TreasuryContractService {
     }
 
     exchangeOut(transferId, senderAddress, marketplaceAddress) {
-
         return this.sendContractMethod(
             'exchangeOut',
             senderAddress,
             transferId,
             marketplaceAddress,
         )
-
     }
 
     payment(transferId, senderAddress, providerAddress, amount) {
-
         return this.sendContractMethod(
             'payment',
             senderAddress,
@@ -78,17 +74,14 @@ class TreasuryContractService {
             providerAddress,
             amount
         )
-
     }
 
     clearing(transferId, senderAddress) {
-
         return this.sendContractMethod(
             'clearing',
             senderAddress,
             transferId
         )
-
     }
 
     getTransactionReceipt(hash) {
