@@ -4,7 +4,7 @@ const Web3 = require('web3');
 const axios = require('axios')
 const fs = require('fs');
 const path = require('path');
-const { resolve } = require('path');
+
 
 let instance = null;
 
@@ -21,18 +21,15 @@ class TreasuryContractService {
         if (instance) return instance
 
         this.web3 = null;
-        this.contractOptions = null;
         this.contract = null;
         try {
             console.log("connecting to ", process.env.ETH_HOST);
             this.web3 = new Web3(Web3.givenProvider || process.env.ETH_HOST);
             this.web3.eth.net.isListening()
                 .then((status) => console.log("Connection status ", status));
-            this.contractOptions = {gasPrice: 0, gas: 6721975};
             this.contract = new this.web3.eth.Contract(
                 JSON.parse(fs.readFileSync(path.join(__dirname, '../../contracts/treasury/I3MarketTreasury.json')).toString()).abi,
-                process.env.CONTRACT_ADDRESS,
-                this.contractOptions
+                process.env.CONTRACT_ADDRESS
             );
 
             this.registerHandlerOnTokenTransferred();
@@ -43,70 +40,55 @@ class TreasuryContractService {
     }
 
     addMarketPlace(senderAddress, marketplaceAddress) {
-        return new Promise((resolve, reject) => {
-            this.contract.methods.addMarketplace(marketplaceAddress)
-                .send({from: senderAddress})
-                .on('transactionHash', function (hash) {
-                    resolve(hash)
-                })
-                .on('error', function (error) {
-                    reject(error)
-                })
-        })
+        return this.sendContractMethod(
+            'addMarketplace',
+            senderAddress,
+            marketplaceAddress
+        )
     }
 
-    exchangeIn(senderAddress, userAddress, tokens) {
-        return new Promise((resolve, reject) => {
+    exchangeIn(transferId, senderAddress, userAddress, tokens) {
 
-            this.contract.methods.exchangeIn(userAddress, tokens)
-                .send({from: senderAddress})
-                .on('transactionHash', function (hash) {
-                    resolve(hash);
-                })
-                .on('error', function (error) {
-                    reject(error)
-                })
-        })
+        return this.sendContractMethod(
+            'exchangeIn',
+            senderAddress,
+            transferId,
+            userAddress,
+            tokens
+            )
     }
 
-    exchangeOut(senderAddress, marketplaceAddress) {
-        return new Promise((resolve, reject) => {
+    exchangeOut(transferId, senderAddress, marketplaceAddress) {
 
-            this.contract.methods.exchangeOut(marketplaceAddress)
-                .send({from: senderAddress})
-                .on('transactionHash', function (hash) {
-                    resolve(hash);
-                })
-                .on('error', function (error) {
-                    reject(error)
-                })
-        })
+        return this.sendContractMethod(
+            'exchangeOut',
+            senderAddress,
+            transferId,
+            marketplaceAddress,
+        )
+
     }
 
-    payment(senderAddress, providerAddress, ammount){
-        return new Promise((resolve, reject) => {
-            this.contract.methods.payment(providerAddress, ammount)
-                .send({from: senderAddress})
-                .on('transactionHash', function (hash) {
-                    resolve(hash);
-                })
-                .on('error', function (error) {
-                    reject(error)
-                })
-        })
+    payment(transferId, senderAddress, providerAddress, amount) {
+
+        return this.sendContractMethod(
+            'payment',
+            senderAddress,
+            transferId,
+            providerAddress,
+            amount
+        )
+
     }
 
-    clearing(senderAddress){
-        return new Promise((resolve, reject) => {
-            this.contract.methods.clearing()
-                .send({from: senderAddress})
-                .on('transactionHash', function (hash) {
-                    resolve(hash);
-                })
-                .on('error', function (error) {
-                    reject(error)
-                })
-        })
+    clearing(transferId, senderAddress) {
+
+        return this.sendContractMethod(
+            'clearing',
+            senderAddress,
+            transferId
+        )
+
     }
 
     getTransactionReceipt(hash) {
@@ -147,6 +129,33 @@ class TreasuryContractService {
                 });
         })
     }
+
+    sendContractMethod(method,senderAddress,...args){
+        return new Promise((resolve, reject) => {
+
+            this.contract.methods[method](...args)
+                .estimateGas({from: senderAddress})
+                .then((gas) => {
+
+                    this.contract.methods[method](...args)
+                        .send({
+                            from: senderAddress,
+                            gas
+                        })
+                        .on('transactionHash', function (hash) {
+                            resolve(hash);
+                        })
+                        .on('error', function (error) {
+                            reject(error)
+                        })
+
+                }).catch(error => {
+                    reject(error)
+                })
+
+        })
+    }
+
 
 }
 

@@ -183,6 +183,10 @@ router.post('/marketplaces',treasuryController.addMarketPlace)
 *             schema:
 *               type: object
 *               properties:
+*                 transferId:
+*                   type: string
+*                   description: The unique transfer id generated for this transaction.
+*                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
 *                 transactionHash:
 *                   type: string
 *                   description: The pending transaction hash.
@@ -223,6 +227,10 @@ router.post('/transactions/exchange-in',treasuryController.exchangeIn)
 *             schema:
 *               type: object
 *               properties:
+*                 transferId:
+*                   type: string
+*                   description: The unique transfer id generated for this transaction.
+*                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
 *                 transactionHash:
 *                   type: string
 *                   description: The pending transaction hash.
@@ -259,6 +267,10 @@ router.post('/payment',treasuryController.payment)
 *             schema:
 *               type: object
 *               properties:
+*                 transferId:
+*                   type: string
+*                   description: The unique transfer id generated for this transaction.
+*                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
 *                 transactionHash:
 *                   type: string
 *                   description: The transaction hash of the exchange.
@@ -291,6 +303,10 @@ router.post('/transactions/exchange-out',treasuryController.exchangeOut)
 *             schema:
 *               type: object
 *               properties:
+*                 transferId:
+*                   type: string
+*                   description: The unique transfer id generated for this transaction.
+*                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
 *                 transactionHash:
 *                   type: string
 *                   description: The transaction hash of the exchange.

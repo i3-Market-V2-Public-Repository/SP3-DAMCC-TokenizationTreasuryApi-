@@ -53,9 +53,9 @@
         "inputs": [
           {
             "indexed": false,
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "transferId",
-            "type": "bytes32"
+            "type": "string"
           },
           {
             "indexed": false,
@@ -247,7 +247,13 @@
         "type": "function"
       },
       {
-        "inputs": [],
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "transferId",
+            "type": "string"
+          }
+        ],
         "name": "clearing",
         "outputs": [],
         "stateMutability": "payable",
@@ -256,9 +262,9 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "_transferId",
-            "type": "bytes32"
+            "type": "string"
           }
         ],
         "name": "closeConflict",
@@ -268,6 +274,11 @@
       },
       {
         "inputs": [
+          {
+            "internalType": "string",
+            "name": "transferId",
+            "type": "string"
+          },
           {
             "internalType": "address",
             "name": "_userAddress",
@@ -286,6 +297,11 @@
       },
       {
         "inputs": [
+          {
+            "internalType": "string",
+            "name": "transferId",
+            "type": "string"
+          },
           {
             "internalType": "address",
             "name": "_marketplaceAddress",
@@ -319,9 +335,9 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "_transferId",
-            "type": "bytes32"
+            "type": "string"
           }
         ],
         "name": "getTransaction",
@@ -329,9 +345,9 @@
           {
             "components": [
               {
-                "internalType": "bytes32",
+                "internalType": "string",
                 "name": "transferId",
-                "type": "bytes32"
+                "type": "string"
               },
               {
                 "internalType": "address",
@@ -445,9 +461,9 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "_transferId",
-            "type": "bytes32"
+            "type": "string"
           },
           {
             "internalType": "address",
@@ -463,17 +479,17 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "",
-            "type": "bytes32"
+            "type": "string"
           }
         ],
         "name": "openConflicts",
         "outputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "transferId",
-            "type": "bytes32"
+            "type": "string"
           },
           {
             "internalType": "address",
@@ -496,6 +512,11 @@
       },
       {
         "inputs": [
+          {
+            "internalType": "string",
+            "name": "transferId",
+            "type": "string"
+          },
           {
             "internalType": "address",
             "name": "_dataProvider",
@@ -599,9 +620,9 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "_transferId",
-            "type": "bytes32"
+            "type": "string"
           }
         ],
         "name": "setPaid",
@@ -612,9 +633,9 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "_transferId",
-            "type": "bytes32"
+            "type": "string"
           },
           {
             "internalType": "string",
@@ -649,17 +670,17 @@
       {
         "inputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "",
-            "type": "bytes32"
+            "type": "string"
           }
         ],
         "name": "transactions",
         "outputs": [
           {
-            "internalType": "bytes32",
+            "internalType": "string",
             "name": "transferId",
-            "type": "bytes32"
+            "type": "string"
           },
           {
             "internalType": "address",
@@ -748,7 +769,7 @@
   },
   "settings": {
     "compilationTarget": {
-      "contracts/I3MarketTreasury.sol": "I3MarketTreasury"
+      "contracts/TreasuryLatest.sol": "I3MarketTreasury"
     },
     "evmVersion": "london",
     "libraries": {},
@@ -826,12 +847,11 @@
         "dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
       ]
     },
-    "contracts/I3MarketTreasury.sol": {
-      "keccak256": "0x4c3a4cd419d2696ecb6b277ab4519eb5384cde6def6f5741abcb0be06f8a6f53",
-      "license": "MIT",
+    "contracts/TreasuryLatest.sol": {
+      "keccak256": "0xb4214e016fdea863296b280dd8467ec6dbe33ea0d7f77d97f8b6dfeac78de77f",
       "urls": [
-        "bzz-raw://65e40affb9ed688ddc2d519d6683f2248d4afaeeaa2e4d5e340c924d4fc8c50b",
-        "dweb:/ipfs/QmUGMfjb1V55QLvfaMgiKNh7DBQ8rmFo77yz5GuX6eKj1E"
+        "bzz-raw://cfd6a140fa5c8980991e4479b5be8a6ccc0fa505dcb060d97698e5689dc0c80a",
+        "dweb:/ipfs/QmWsEuCNBjzUVVMiECXKweP63Pvs8yxuAUkG9S5qF9Loh5"
       ]
     }
   },
