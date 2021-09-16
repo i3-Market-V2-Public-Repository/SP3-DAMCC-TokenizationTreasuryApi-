@@ -26,13 +26,21 @@ class TreasuryContractService {
             console.log("connecting to ", process.env.ETH_HOST);
             this.web3 = new Web3(Web3.givenProvider || process.env.ETH_HOST);
             this.web3.eth.net.isListening()
-                .then((status) => console.log("Connection status ", status));
-            this.contract = new this.web3.eth.Contract(
-                JSON.parse(fs.readFileSync(path.join(__dirname, '../../contracts/treasury/I3MarketTreasury.json')).toString()).abi,
-                process.env.CONTRACT_ADDRESS
-            );
+                .then((status) => {
+                    console.log("Connection status ", status)
 
-            this.registerHandlerOnTokenTransferred();
+                    this.contract = new this.web3.eth.Contract(
+                        JSON.parse(fs.readFileSync(path.join(__dirname, '../../contracts/treasury/I3MarketTreasury.json')).toString()).abi,
+                        process.env.CONTRACT_ADDRESS
+                    );
+
+                    this.registerHandlerOnTokenTransferred();
+                })
+                .catch(error => {
+                    console.log('Could not connect to the host provided')
+                    process.exit()
+                })
+
 
         } catch (e) {
             console.error("Error while connecting", e);
@@ -102,25 +110,31 @@ class TreasuryContractService {
 
     registerHandlerOnTokenTransferred() {
 
-        this.contract.events.TokenTransferred({}, (error, event) => {
+        try{
+            this.contract.events.TokenTransferred({}, (error, event) => {
 
-            const payload = {
-                transactionHash: event.transactionHash,
-                blockHash: event.blockHash,
-                type: event.type,
-                operation: event.returnValues.operation,
-                transferId: event.returnValues.transferId,
-                sender: event.returnValues._sender,
-            };
+                if(!event || !event.returnValues) return;
 
-            axios.post(process.env.WEBHOOK, {payload})
-                .then(function (response) {
-                    console.log('sent webhook successfully')
-                })
-                .catch(function (error) {
-                    console.error("Webhook got an error. ", error);
-                });
-        })
+                const payload = {
+                    transactionHash: event.transactionHash,
+                    blockHash: event.blockHash,
+                    type: event.type,
+                    operation: event.returnValues.operation,
+                    transferId: event.returnValues.transferId,
+                    sender: event.returnValues._sender,
+                };
+
+                axios.post(process.env.WEBHOOK, {payload})
+                    .then(function (response) {
+                        console.log('sent webhook successfully')
+                    })
+                    .catch(function (error) {
+                        console.error("Webhook got an error. ", error);
+                    });
+            })
+        }catch (e) {
+            console.log('Cannot subscribe to contract TokenTransferred event')
+        }
     }
 
     sendContractMethod(method,senderAddress,...args){
