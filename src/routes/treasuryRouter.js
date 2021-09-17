@@ -28,7 +28,7 @@ const treasuryController = require('../controllers/treasuryController');
 *                   description: Index of marketplace.
 *                   example: 3
 */
-router.get('/marketplaces/:address',treasuryController.getMarketPlaceIndex)
+router.get('/marketplaces/:address', treasuryController.getMarketPlaceIndex)
 
 /**
 * @swagger
@@ -54,9 +54,9 @@ router.get('/marketplaces/:address',treasuryController.getMarketPlaceIndex)
 *                 balance:
 *                   type: object
 *                   description: Balances.
-*                   example: [0]
+*                   example: ["0","0"]
 */
-router.get('/balances/:address',treasuryController.getAddressBalance)
+router.get('/balances/:address', treasuryController.getAddressBalance)
 
 /**
 * @swagger
@@ -93,7 +93,7 @@ router.get('/balances/:address',treasuryController.getAddressBalance)
 *                           "contractAddress": null,
 *                           "logs": [],
 *                           "status": true,
-*                           "logsBloom": 
+*                           "logsBloom":
 *                           "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 *                           00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 *                           0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
@@ -109,7 +109,59 @@ router.get('/balances/:address',treasuryController.getAddressBalance)
 *                  description: The pending transaction hash.
 *                  example: null
 */
-router.get('/transactions/:transactionHash',treasuryController.getTransactionReceipt)
+router.get('/transactions/:transactionHash', treasuryController.getTransactionReceipt)
+
+
+/**
+* @swagger
+* /api/v1/treasury/token-transfers/{transferId}:
+*   get:
+*    tags: [Endpoints]
+*    summary: Get the Token Transfer given a TransferId
+*    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
+*    parameters:
+*     - in: path
+*       name: transferId
+*       required: true
+*       description: Operation unique identifier.
+*       schema:
+*         type: string
+*    responses:
+*      200:
+*       content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                transfer:
+*                  type: object
+*                  description: The pending transaction hash.
+*                  example: {
+*                        "0": "a8e70c41-3c76-5cb6-b0e9-07da49d94621",
+*                        "1": "0x3bC438887726c79498c8a79CA3226e6e84d03458",
+*                        "2": "0x6F0a2430CD784b871b9eB206B20a25b08351E3AE",
+*                        "3": "100",
+*                        "4": true,
+*                        "5": "",
+*                        "transferId": "a8e70c41-3c76-5cb6-b0e9-07da49d94621",
+*                        "fromAddress": "0x3bC438887726c79498c8a79CA3226e6e84d03458",
+*                        "toAddress": "0x6F0a2430CD784b871b9eB206B20a25b08351E3AE",
+*                        "tokenAmount": "100",
+*                       "isPaid": true,
+*                       "transferCode": ""
+*                     }
+*      404:
+*       content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                receipt:
+*                  type: object
+*                  description: The pending transaction hash.
+*                  example: null
+*/
+router.get('/token-transfers/:transferId', treasuryController.getTransactionForTransferId)
 
 /**
 * @swagger
@@ -117,7 +169,7 @@ router.get('/transactions/:transactionHash',treasuryController.getTransactionRec
 *   post:
 *     tags: [Endpoints]
 *     summary: Register a marketplace
-*     description: Call add marketplace i3Treasury API to add a marketplace. 
+*     description: Call add marketplace i3Treasury API to add a marketplace.
 *                  In the body you need to pass a "senderAddress" and a "marketplaceAddress" in a JSON format. The two addresses need to be the same.
 *     requestBody:
 *       required: true
@@ -146,7 +198,7 @@ router.get('/transactions/:transactionHash',treasuryController.getTransactionRec
 *                   description: The pending transaction hash.
 *                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
 */
-router.post('/marketplaces',treasuryController.addMarketPlace)
+router.post('/marketplaces', treasuryController.addMarketPlace)
 
 /**
 * @swagger
@@ -192,11 +244,11 @@ router.post('/marketplaces',treasuryController.addMarketPlace)
 *                   description: The pending transaction hash.
 *                   example: "0x6dd4eeebaa827edd7df3c3298e00eb155c22d1af95800247c1f49ac7dd1e2eae"
 */
-router.post('/transactions/exchange-in',treasuryController.exchangeIn)
+router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 
 /**
 * @swagger
-* /api/v1/treasury/payment:
+* /api/v1/treasury/transactions/payment:
 *   post:
 *     tags: [Endpoints]
 *     description: Call payment API to transfer the right amount of tokens to a Data Provider. Pass a "senderAddress", a "providerAddress" and an "amount" of tokens to transfer to the Data Provider.
@@ -236,7 +288,7 @@ router.post('/transactions/exchange-in',treasuryController.exchangeIn)
 *                   description: The pending transaction hash.
 *                   example: "0x327d02f4341f425fa129fe9085fc4f8e8604dd3aef5281e193e95a7861ab9a96"
 */
-router.post('/payment',treasuryController.payment)
+router.post('/transactions/payment', treasuryController.payment)
 
 /**
 * @swagger
@@ -276,11 +328,11 @@ router.post('/payment',treasuryController.payment)
 *                   description: The transaction hash of the exchange.
 *                   example: "0xe365ffdfbd05b2ec49eda2c61d3a8113c54b2da281a6bae62901670bb22bb58f"
 */
-router.post('/transactions/exchange-out',treasuryController.exchangeOut)
+router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 
 /**
 * @swagger
-* /api/v1/treasury/clearing:
+* /api/v1/treasury/transactions/clearing:
 *   post:
 *     tags: [Endpoints]
 *     description: Call clearing endpoint in order to clear the balance of a Data Marketplace.
@@ -312,6 +364,6 @@ router.post('/transactions/exchange-out',treasuryController.exchangeOut)
 *                   description: The transaction hash of the exchange.
 *                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
 */
-router.post('/clearing', treasuryController.clearing)
+router.post('/transactions/clearing', treasuryController.clearing)
 
 module.exports = router;

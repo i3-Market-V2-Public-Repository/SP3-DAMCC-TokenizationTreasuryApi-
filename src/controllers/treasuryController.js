@@ -23,6 +23,15 @@ exports.getAddressBalance = catchAsync(async (req, res, next) => {
     return res.json({balance})
 })
 
+exports.getTransactionForTransferId = catchAsync(async (req, res, next) => {
+    const transferId = req.params.transferId
+    const transfer = await treasuryContract.getTransactionByTransferId(transferId)
+    if (transfer) {
+        return res.json({transfer})
+    }
+    return res.status(404).json()
+})
+
 exports.addMarketPlace = catchAsync(async (req, res, next) => {
 
     const {senderAddress, marketplaceAddress} = req.body

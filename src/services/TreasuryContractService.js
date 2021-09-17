@@ -96,6 +96,10 @@ class TreasuryContractService {
         return this.web3.eth.getTransactionReceipt(hash);
     }
 
+    getTransactionByTransferId(transferId) {
+        return this.contract.methods.transactions(transferId).call();
+    }
+
     getLatestBlock() {
         return this.web3.eth.getBlock("latest");
     }
