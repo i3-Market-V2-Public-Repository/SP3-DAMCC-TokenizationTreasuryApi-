@@ -103,3 +103,16 @@ exports.clearing = catchAsync(async (req, res, next) => {
 
 })
 
+
+exports.setPaid = catchAsync(async (req, res, next) => {
+    const {senderAddress,transferId} = req.body
+
+    if (!senderAddress || !transferId) {
+        return res.status(400).json({
+            message: 'You must provide senderAddress and transferId'
+        })
+    }
+
+    const transactionHash = await treasuryContract.setPaid(transferId, senderAddress)
+    return res.json({transactionHash})
+})

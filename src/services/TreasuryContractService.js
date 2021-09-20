@@ -92,6 +92,14 @@ class TreasuryContractService {
         )
     }
 
+    setPaid(transferId, senderAddress){
+        return this.sendContractMethod(
+            'setPaid',
+            senderAddress,
+            transferId
+        )
+    }
+
     getTransactionReceipt(hash) {
         return this.web3.eth.getTransactionReceipt(hash);
     }

@@ -36,7 +36,7 @@ router.get('/marketplaces/:address', treasuryController.getMarketPlaceIndex)
 *   get:
 *     tags: [Endpoints]
 *     summary: Get the Balance for a specific account
-*     description: i3Treasury API endpoint to get the balance given an account address. Add the address of the marketplace to the address path variable.
+*     description: i3Treasury API endpoint to get the balance given an account address. Add the address to the path variable.
 *     parameters:
 *       - in: path
 *         name: address
@@ -365,5 +365,42 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 *                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
 */
 router.post('/transactions/clearing', treasuryController.clearing)
+
+
+/**
+* @swagger
+* /api/v1/treasury/transactions/set-paid:
+*   post:
+*     tags: [Endpoints]
+*     description: Call set-paid endpoint in order to mark a token transfer as paid.
+*     summary: Set isPaid as true to a specified Token Transfer
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               transferId:
+*                 type: string
+*                 description: The transfer's unique identifier
+*                 example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
+*               senderAddress:
+*                 type: string
+*                 description: The address of the message sender.
+*                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
+*     responses:
+*       200:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 transactionHash:
+*                   type: string
+*                   description: The transaction hash generated for this block.
+*                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
+*/
+router.post('/transactions/set-paid', treasuryController.setPaid)
 
 module.exports = router;
