@@ -623,6 +623,11 @@
             "internalType": "string",
             "name": "_transferId",
             "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_transferCode",
+            "type": "string"
           }
         ],
         "name": "setPaid",
@@ -769,7 +774,7 @@
   },
   "settings": {
     "compilationTarget": {
-      "contracts/TreasuryLatest.sol": "I3MarketTreasury"
+      "contracts/treasury.sol": "I3MarketTreasury"
     },
     "evmVersion": "london",
     "libraries": {},
@@ -847,11 +852,11 @@
         "dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx"
       ]
     },
-    "contracts/TreasuryLatest.sol": {
-      "keccak256": "0xb4214e016fdea863296b280dd8467ec6dbe33ea0d7f77d97f8b6dfeac78de77f",
+    "contracts/treasury.sol": {
+      "keccak256": "0x59b1325e88217bc3f047fad5b8c44e6277738600ef7439bf3fd80fc8fa5aba29",
       "urls": [
-        "bzz-raw://cfd6a140fa5c8980991e4479b5be8a6ccc0fa505dcb060d97698e5689dc0c80a",
-        "dweb:/ipfs/QmWsEuCNBjzUVVMiECXKweP63Pvs8yxuAUkG9S5qF9Loh5"
+        "bzz-raw://d8bd5246aff37bd4b18f37b44a2e3360a23e5dafb3888d08feb9266d5bee1115",
+        "dweb:/ipfs/QmVYJ6BxRfcfBbhqukYMMuSfFCj4nwN8TQCGC3phpCBkgX"
       ]
     }
   },
