@@ -92,11 +92,12 @@ class TreasuryContractService {
         )
     }
 
-    setPaid(transferId, senderAddress){
+    setPaid(transferId, senderAddress, transferCode){
         return this.sendContractMethod(
             'setPaid',
             senderAddress,
-            transferId
+            transferId,
+            transferCode
         )
     }
 
