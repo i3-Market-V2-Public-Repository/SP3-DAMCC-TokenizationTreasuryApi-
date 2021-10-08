@@ -42,8 +42,8 @@ exports.addMarketPlace = catchAsync(async (req, res, next) => {
         })
     }
 
-    const transactionHash = await treasuryContract.addMarketPlace(senderAddress, marketplaceAddress)
-    return res.json({transactionHash})
+    const transactionObject = await treasuryContract.addMarketPlace(senderAddress, marketplaceAddress)
+    return res.json({transactionObject})
 })
 
 exports.exchangeIn = catchAsync(async (req, res, next) => {
@@ -55,8 +55,8 @@ exports.exchangeIn = catchAsync(async (req, res, next) => {
         })
     }
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.exchangeIn(transferId, senderAddress, userAddress, tokens)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.exchangeIn(transferId, senderAddress, userAddress, tokens)
+    return res.json({transferId, transactionObject})
 })
 
 exports.exchangeOut = catchAsync(async (req, res, next) => {
@@ -69,8 +69,8 @@ exports.exchangeOut = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.exchangeOut(transferId, senderAddress, marketplaceAddress)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.exchangeOut(transferId, senderAddress, marketplaceAddress)
+    return res.json({transferId, transactionObject})
 })
 
 exports.payment = catchAsync(async (req, res, next) => {
@@ -83,8 +83,8 @@ exports.payment = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.payment(transferId, senderAddress, providerAddress, amount)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.exchangeIn(transferId, senderAddress, providerAddress, amount)
+    return res.json({transferId, transactionObject})
 
 })
 
@@ -98,8 +98,8 @@ exports.clearing = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.clearing(transferId, senderAddress)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.clearing(transferId, senderAddress)
+    return res.json({transferId, transactionObject})
 
 })
 
@@ -113,6 +113,6 @@ exports.setPaid = catchAsync(async (req, res, next) => {
         })
     }
 
-    const transactionHash = await treasuryContract.setPaid(transferId, senderAddress)
-    return res.json({transactionHash})
+    const transactionObject = await treasuryContract.setPaid(transferId, senderAddress)
+    return res.json({transactionObject})
 })
