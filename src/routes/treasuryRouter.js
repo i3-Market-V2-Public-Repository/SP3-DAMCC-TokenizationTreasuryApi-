@@ -193,10 +193,18 @@ router.get('/token-transfers/:transferId', treasuryController.getTransactionForT
 *             schema:
 *               type: object
 *               properties:
-*                 transactionHash:
+*                 transactionObject:
 *                   type: string
-*                   description: The pending transaction hash.
-*                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
+*                   description: The pending transaction object.
+*                   example: {
+*                             "chainId": "1",
+*                             "nonce": 1,
+*                             "gasLimit": 6721975,
+*                             "gasPrice": 201966,
+*                             "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+*                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+*                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+*                           }
 */
 router.post('/marketplaces', treasuryController.addMarketPlace)
 
@@ -242,7 +250,15 @@ router.post('/marketplaces', treasuryController.addMarketPlace)
 *                 transactionHash:
 *                   type: string
 *                   description: The pending transaction hash.
-*                   example: "0x6dd4eeebaa827edd7df3c3298e00eb155c22d1af95800247c1f49ac7dd1e2eae"
+*                   example: {
+*                             "chainId": "1",
+*                             "nonce": 1,
+*                             "gasLimit": 6721975,
+*                             "gasPrice": 201966,
+*                             "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+*                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+*                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+*                           }
 */
 router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 
@@ -286,7 +302,15 @@ router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 *                 transactionHash:
 *                   type: string
 *                   description: The pending transaction hash.
-*                   example: "0x327d02f4341f425fa129fe9085fc4f8e8604dd3aef5281e193e95a7861ab9a96"
+*                   example: {
+*                             "chainId": "1",
+*                             "nonce": 1,
+*                             "gasLimit": 6721975,
+*                             "gasPrice": 201966,
+*                             "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+*                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+*                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+*                           }
 */
 router.post('/transactions/payment', treasuryController.payment)
 
@@ -326,7 +350,15 @@ router.post('/transactions/payment', treasuryController.payment)
 *                 transactionHash:
 *                   type: string
 *                   description: The transaction hash of the exchange.
-*                   example: "0xe365ffdfbd05b2ec49eda2c61d3a8113c54b2da281a6bae62901670bb22bb58f"
+*                   example: {
+*                             "chainId": "1",
+*                             "nonce": 1,
+*                             "gasLimit": 6721975,
+*                             "gasPrice": 201966,
+*                             "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+*                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+*                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+*                           }
 */
 router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 
@@ -362,7 +394,15 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 *                 transactionHash:
 *                   type: string
 *                   description: The transaction hash of the exchange.
-*                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
+*                   example: {
+*                             "chainId": "1",
+*                             "nonce": 1,
+*                             "gasLimit": 6721975,
+*                             "gasPrice": 201966,
+*                             "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+*                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+*                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+*                           }
 */
 router.post('/transactions/clearing', treasuryController.clearing)
 
@@ -399,7 +439,15 @@ router.post('/transactions/clearing', treasuryController.clearing)
 *                 transactionHash:
 *                   type: string
 *                   description: The transaction hash generated for this block.
-*                   example: "0xd9415ee9afde5787e11eac859bf4b7cae945daaf6896a28ebddf23270684744f"
+*                   example: {
+*                             "chainId": "1",
+*                             "nonce": 1,
+*                             "gasLimit": 6721975,
+*                             "gasPrice": 201966,
+*                             "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+*                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+*                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+*                           }
 */
 router.post('/transactions/set-paid', treasuryController.setPaid)
 
