@@ -108,6 +108,11 @@ class TreasuryContractService {
         return this.contract.methods.transactions(transferId).call();
     }
 
+    async gasLimit(){
+       const block = await this.getLatestBlock()
+       return block.gasLimit || process.env.GAS_LIMIT
+    }
+
     getLatestBlock() {
         return this.web3.eth.getBlock("latest");
     }
@@ -151,23 +156,25 @@ class TreasuryContractService {
 
     sendContractMethod(method,senderAddress,...args){
         return new Promise((resolve, reject) => {
+            const contractTransaction = this.contract.methods[method](...args)
 
-            this.contract.methods[method](...args)
-                .estimateGas({from: senderAddress})
-                .then((gas) => {
-
-                    this.contract.methods[method](...args)
-                        .send({
+                contractTransaction.estimateGas({from: senderAddress})
+                .then(async (gasPrice) => {
+                    const gasLimit = await this.gasLimit()
+                    this.web3.eth.getTransactionCount(senderAddress).then((transactionNonce) => {
+                      
+                        var data =  contractTransaction.encodeABI();
+                        const tsObject = {
+                            chainId: process.env.CHAIN_ID,
+                            nonce: transactionNonce,
+                            gasLimit: gasLimit,
+                            gasPrice,
+                            to: process.env.CONTRACT_ADDRESS,
                             from: senderAddress,
-                            gas
-                        })
-                        .on('transactionHash', function (hash) {
-                            resolve(hash);
-                        })
-                        .on('error', function (error) {
-                            reject(error)
-                        })
-
+                            data: data
+                        }
+                        resolve(tsObject)
+                    })
                 }).catch(error => {
                     reject(error)
                 })
