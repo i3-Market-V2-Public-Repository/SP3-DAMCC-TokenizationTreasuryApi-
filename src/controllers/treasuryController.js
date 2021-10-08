@@ -105,14 +105,14 @@ exports.clearing = catchAsync(async (req, res, next) => {
 
 
 exports.setPaid = catchAsync(async (req, res, next) => {
-    const {senderAddress,transferId} = req.body
+    const {senderAddress,transferId,transferCode} = req.body
 
-    if (!senderAddress || !transferId) {
+    if (!senderAddress || !transferId || !transferCode) {
         return res.status(400).json({
-            message: 'You must provide senderAddress and transferId'
+            message: 'You must provide senderAddress, transferId and transferCode'
         })
     }
 
-    const transactionObject = await treasuryContract.setPaid(transferId, senderAddress)
+    const transactionObject = await treasuryContract.setPaid(transferId, senderAddress, transferCode)
     return res.json({transactionObject})
 })

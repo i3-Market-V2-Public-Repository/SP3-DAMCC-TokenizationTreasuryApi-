@@ -421,14 +421,18 @@ router.post('/transactions/clearing', treasuryController.clearing)
 *           schema:
 *             type: object
 *             properties:
-*               transferId:
-*                 type: string
-*                 description: The transfer's unique identifier
-*                 example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
 *               senderAddress:
 *                 type: string
 *                 description: The address of the message sender.
 *                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
+*               transferId:
+*                 type: string
+*                 description: The transfer's unique identifier
+*                 example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
+*               transferCode:
+*                 type: string
+*                 description: The fiat money transfer's unique identifier
+*                 example: "GR99203205004989123456"
 *     responses:
 *       200:
 *        content:
