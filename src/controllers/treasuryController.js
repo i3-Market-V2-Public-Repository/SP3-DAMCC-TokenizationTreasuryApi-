@@ -116,3 +116,17 @@ exports.setPaid = catchAsync(async (req, res, next) => {
     const transactionObject = await treasuryContract.setPaid(transferId, senderAddress, transferCode)
     return res.json({transactionObject})
 })
+
+
+exports.deploySignedTransaction = catchAsync(async (req, res, next) => {
+    const {serializedTx} = req.body
+
+    if (!serializedTx){
+        return res.status(400).json({
+            message: 'You must provide the serializedTx'
+        })
+    }
+
+    const transactionObject = await treasuryContract.deploySignedTransaction(serializedTx)
+    return res.json({transactionObject})
+})
