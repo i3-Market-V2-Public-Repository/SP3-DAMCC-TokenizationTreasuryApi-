@@ -101,6 +101,15 @@ class TreasuryContractService {
         )
     }
 
+    deploySignedTransaction(serializedTx){
+        return this.web3.eth.sendSignedTransaction(serializedTx.toString(),  (err, ret) => {
+            if (err) {
+                console.log("An error occurred", err)
+                return
+            }
+        })    
+    }
+
     getTransactionReceipt(hash) {
         return this.web3.eth.getTransactionReceipt(hash);
     }
