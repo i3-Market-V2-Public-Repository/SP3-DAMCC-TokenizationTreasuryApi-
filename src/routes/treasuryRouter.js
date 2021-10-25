@@ -197,7 +197,7 @@ router.get('/token-transfers/:transferId', treasuryController.getTransactionForT
 *                   type: string
 *                   description: The pending transaction object.
 *                   example: {
-*                             "chainId": "1",
+*                             "chainId": 1,
 *                             "nonce": 1,
 *                             "gasLimit": 6721975,
 *                             "gasPrice": 201966,
@@ -247,11 +247,11 @@ router.post('/marketplaces', treasuryController.addMarketPlace)
 *                   type: string
 *                   description: The unique transfer id generated for this transaction.
 *                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
-*                 transactionHash:
+*                 transactionObject:
 *                   type: string
 *                   description: The pending transaction hash.
 *                   example: {
-*                             "chainId": "1",
+*                             "chainId": 1,
 *                             "nonce": 1,
 *                             "gasLimit": 6721975,
 *                             "gasPrice": 201966,
@@ -299,11 +299,11 @@ router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 *                   type: string
 *                   description: The unique transfer id generated for this transaction.
 *                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
-*                 transactionHash:
+*                 transactionObject:
 *                   type: string
 *                   description: The pending transaction hash.
 *                   example: {
-*                             "chainId": "1",
+*                             "chainId": 1,
 *                             "nonce": 1,
 *                             "gasLimit": 6721975,
 *                             "gasPrice": 201966,
@@ -347,11 +347,11 @@ router.post('/transactions/payment', treasuryController.payment)
 *                   type: string
 *                   description: The unique transfer id generated for this transaction.
 *                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
-*                 transactionHash:
+*                 transactionObject:
 *                   type: string
 *                   description: The transaction hash of the exchange.
 *                   example: {
-*                             "chainId": "1",
+*                             "chainId": 1,
 *                             "nonce": 1,
 *                             "gasLimit": 6721975,
 *                             "gasPrice": 201966,
@@ -391,11 +391,11 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 *                   type: string
 *                   description: The unique transfer id generated for this transaction.
 *                   example: "6fa4973b-11ce-56d8-8544-660e1a334b92"
-*                 transactionHash:
+*                 transactionObject:
 *                   type: string
 *                   description: The transaction hash of the exchange.
 *                   example: {
-*                             "chainId": "1",
+*                             "chainId": 1,
 *                             "nonce": 1,
 *                             "gasLimit": 6721975,
 *                             "gasPrice": 201966,
@@ -440,11 +440,11 @@ router.post('/transactions/clearing', treasuryController.clearing)
 *             schema:
 *               type: object
 *               properties:
-*                 transactionHash:
+*                 transactionObject:
 *                   type: string
 *                   description: The transaction hash generated for this block.
 *                   example: {
-*                             "chainId": "1",
+*                             "chainId": 1,
 *                             "nonce": 1,
 *                             "gasLimit": 6721975,
 *                             "gasPrice": 201966,
@@ -454,5 +454,82 @@ router.post('/transactions/clearing', treasuryController.clearing)
 *                           }
 */
 router.post('/transactions/set-paid', treasuryController.setPaid)
+
+/**
+* @swagger
+* /api/v1/treasury/transactions/deploy-signed-transaction:
+*   post:
+*     tags: [Endpoints]
+*     description: Deploy contract to blockchain
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               serializedTx:
+*                 type: string
+*                 description: The address of the message sender.
+*                 example: "0xf90127148302e34683bebc209483a99f8170a0ba72fbcb2bd4eb739de96460385480b8c4909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000ff8eab3673c32559b63ff391772aa300121a94d4000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002433646461623465312d373866612d353935342d616639372d353732323436346431316337000000000000000000000000000000000000000000000000000000001ba0d6cc284f4d4ca9a737ea9ec39805f811a35905b615a02089fb667d181d9ed5899f431803a8ceb119c451da83120df97c977d67c240ccec275fac92aa1f2c0ca2"
+*     responses:
+*       200:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 transactionObject:
+*                   type: string
+*                   description: The transaction hash generated for this block.
+*                   example: {
+*                             "blockHash": "0xe3e80f60a730e5d24d7299c917edeb3fd4d224fcfa802184d498c73c03d18320",
+*                             "blockNumber": 51532,
+*                             "contractAddress": null,
+*                             "cumulativeGasUsed": 186954,
+*                             "from": "0xa067e6b09b77f027b1c8e024469d820ca75dd2bf",
+*                             "gasUsed": 186954,
+*                             "logs": [
+*                               {
+*                                 "address": "0x83a99f8170a0ba72fbCb2bD4eB739de964603854",
+*                                 "topics": [
+*                                   "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62",
+*                                   "0x000000000000000000000000a067e6b09b77f027b1c8e024469d820ca75dd2bf",
+*                                   "0x0000000000000000000000000000000000000000000000000000000000000000",
+*                                   "0x000000000000000000000000ff8eab3673c32559b63ff391772aa300121a94d4"
+*                                 ],
+*                                 "data": "0x0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000a",
+*                                 "blockNumber": 51532,
+*                                 "transactionHash": "0x89a7ec9974fcdd99bd1427c410da48fb9e51f74c57837b38be3b43e9f3d8a32f",
+*                                 "transactionIndex": 0,
+*                                 "blockHash": "0xe3e80f60a730e5d24d7299c917edeb3fd4d224fcfa802184d498c73c03d18320",
+*                                 "logIndex": 0,
+*                                 "removed": false,
+*                                 "id": "log_008b8257"
+*                               },
+*                               {
+*                                 "address": "0x83a99f8170a0ba72fbCb2bD4eB739de964603854",
+*                                 "topics": [
+*                                   "0xdc51063e5ef77d99943e8395b0bb76177d3959e8bf37a0e41937bdd9e99fc8ff"
+*                                 ],
+*                                 "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000ff8eab3673c32559b63ff391772aa300121a94d4000000000000000000000000000000000000000000000000000000000000002433646461623465312d373866612d353935342d616639372d35373232343634643131633700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b65786368616e67655f696e000000000000000000000000000000000000000000",
+*                                 "blockNumber": 51532,
+*                                 "transactionHash": "0x89a7ec9974fcdd99bd1427c410da48fb9e51f74c57837b38be3b43e9f3d8a32f",
+*                                 "transactionIndex": 0,
+*                                 "blockHash": "0xe3e80f60a730e5d24d7299c917edeb3fd4d224fcfa802184d498c73c03d18320",
+*                                 "logIndex": 1,
+*                                 "removed": false,
+*                                 "id": "log_4b6bbe14"
+*                               }
+*                             ],
+*                             "logsBloom": "0x00000000000000000800000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000040000000000000000010000000000000000000000000000000000000000000020000000000000400000800000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000008000002000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000008000000000000000020000000000000000040000040000000000000000010000000000000080000000000",
+*                             "status": true,
+*                             "to": "0x83a99f8170a0ba72fbcb2bd4eb739de964603854",
+*                             "transactionHash": "0x89a7ec9974fcdd99bd1427c410da48fb9e51f74c57837b38be3b43e9f3d8a32f",
+*                             "transactionIndex": 0
+*                              }
+*/
+router.post('/transactions/deploy-signed-transaction', treasuryController.deploySignedTransaction)
+
 
 module.exports = router;
