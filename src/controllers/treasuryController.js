@@ -83,7 +83,7 @@ exports.payment = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionObject = await treasuryContract.exchangeIn(transferId, senderAddress, providerAddress, amount)
+    const transactionObject = await treasuryContract.payment(transferId, senderAddress, providerAddress, amount)
     return res.json({transferId, transactionObject})
 
 })
