@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 
-app.use('/tokenization/api/v1/treasury', treasuryRouter);
+app.use('/api/v1/treasury', treasuryRouter);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 //Express error handler
