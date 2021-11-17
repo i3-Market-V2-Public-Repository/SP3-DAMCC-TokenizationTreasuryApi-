@@ -17,6 +17,10 @@ const swaggerOptions = {
                 url: 'http://localhost:3001',
                 description: 'Development server',
             },
+            {
+                url: 'http://95.211.3.244:3000',
+                description: 'Backplane API'
+            }
         ],
 
     },
