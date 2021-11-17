@@ -4,9 +4,9 @@ const treasuryController = require('../controllers/treasuryController');
 
 /**
 * @swagger
-* /api/v1/treasury/marketplaces/{address}:
+* /tokenization/api/v1/treasury/marketplaces/{address}:
 *   get:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     summary: Get the index of a registered marketplace
 *     description: i3Treasury API endpoint to get the marketplace index. Add the address of the marketplace to the address path variable.
 *     parameters:
@@ -32,9 +32,9 @@ router.get('/marketplaces/:address', treasuryController.getMarketPlaceIndex)
 
 /**
 * @swagger
-* /api/v1/treasury/balances/{address}:
+* /tokenization/api/v1/treasury/balances/{address}:
 *   get:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     summary: Get the Balance for a specific account
 *     description: i3Treasury API endpoint to get the balance given an account address. Add the address to the path variable.
 *     parameters:
@@ -60,9 +60,9 @@ router.get('/balances/:address', treasuryController.getAddressBalance)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/{transactionHash}:
+* /tokenization/api/v1/treasury/transactions/{transactionHash}:
 *   get:
-*    tags: [Endpoints]
+*    tags: [TokenizerController]
 *    summary: Get the Receipt of a transaction given a TransactionHash
 *    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
 *    parameters:
@@ -114,9 +114,9 @@ router.get('/transactions/:transactionHash', treasuryController.getTransactionRe
 
 /**
 * @swagger
-* /api/v1/treasury/token-transfers/{transferId}:
+* /tokenization/api/v1/treasury/token-transfers/{transferId}:
 *   get:
-*    tags: [Endpoints]
+*    tags: [TokenizerController]
 *    summary: Get the Token Transfer given a TransferId
 *    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
 *    parameters:
@@ -165,9 +165,9 @@ router.get('/token-transfers/:transferId', treasuryController.getTransactionForT
 
 /**
 * @swagger
-* /api/v1/treasury/marketplaces:
+* /tokenization/api/v1/treasury/marketplaces:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     summary: Register a marketplace
 *     description: Call add marketplace i3Treasury API to add a marketplace.
 *                  In the body you need to pass a "senderAddress" and a "marketplaceAddress" in a JSON format. The two addresses need to be the same.
@@ -210,9 +210,9 @@ router.post('/marketplaces', treasuryController.addMarketPlace)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/exchange-in:
+* /tokenization/api/v1/treasury/transactions/exchange-in:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     summary: Exchange fiat money for tokens
 *     description: Call exchange-in endpoint in order to exchange an amount of fiat money into tokens from a Marketplace.
 *                  Pass a "senderAddress", a "userAddress" and a "tokens" which is the amount of tokens to exchange.
@@ -264,9 +264,9 @@ router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/payment:
+* /tokenization/api/v1/treasury/transactions/payment:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     description: Call payment API to transfer the right amount of tokens to a Data Provider. Pass a "senderAddress", a "providerAddress" and an "amount" of tokens to transfer to the Data Provider.
 *     summary: Pay the Data Provider
 *     requestBody:
@@ -316,9 +316,9 @@ router.post('/transactions/payment', treasuryController.payment)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/exchange-out:
+* /tokenization/api/v1/treasury/transactions/exchange-out:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     description: Call exchange-out endpoint in order to exchange the right amount of tokens available with money from a Data Marketplace.
 *     summary: Exchange tokens for money
 *     requestBody:
@@ -364,9 +364,9 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/clearing:
+* /tokenization/api/v1/treasury/transactions/clearing:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     description: Call clearing endpoint in order to clear the balance of a Data Marketplace.
 *     summary: Crear the balance
 *     requestBody:
@@ -409,9 +409,9 @@ router.post('/transactions/clearing', treasuryController.clearing)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/set-paid:
+* /tokenization/api/v1/treasury/transactions/set-paid:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     description: Call set-paid endpoint in order to mark a token transfer as paid.
 *     summary: Set isPaid as true to a specified Token Transfer
 *     requestBody:
@@ -457,10 +457,11 @@ router.post('/transactions/set-paid', treasuryController.setPaid)
 
 /**
 * @swagger
-* /api/v1/treasury/transactions/deploy-signed-transaction:
+* /tokenization/api/v1/treasury/transactions/deploy-signed-transaction:
 *   post:
-*     tags: [Endpoints]
+*     tags: [TokenizerController]
 *     description: Deploy contract to blockchain
+*     summary: Deploy a signed transaction
 *     requestBody:
 *       required: true
 *       content:
