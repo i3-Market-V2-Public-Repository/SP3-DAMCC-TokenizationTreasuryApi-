@@ -18,7 +18,7 @@ const swaggerOptions = {
                 description: 'Development server',
             },
             {
-                url: 'http://95.211.3.244:3000',
+                url: 'http://95.211.3.244:3000/tokenization',
                 description: 'Backplane API'
             }
         ],
