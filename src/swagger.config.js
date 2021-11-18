@@ -12,17 +12,6 @@ const swaggerOptions = {
                 url: 'https://spdx.org/licenses/MIT.html',
             },
         },
-        servers: [
-            {
-                url: 'http://localhost:3001',
-                description: 'Development server',
-            },
-            {
-                url: 'http://95.211.3.244:3000/tokenization',
-                description: 'Backplane API'
-            }
-        ],
-
     },
     apis:[path.join(__dirname,'./routes/**.js')],
 }
