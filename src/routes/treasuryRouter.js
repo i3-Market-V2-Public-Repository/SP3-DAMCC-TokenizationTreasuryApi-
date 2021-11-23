@@ -43,6 +43,18 @@ const treasuryController = require('../controllers/treasuryController');
 *                   type: string
 *                   description: Index of marketplace.
 *                   example: 3
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Invalid address
 */
 router.get('/marketplaces/:address', treasuryController.getMarketPlaceIndex)
 
@@ -71,6 +83,18 @@ router.get('/marketplaces/:address', treasuryController.getMarketPlaceIndex)
 *                   type: object
 *                   description: Balances.
 *                   example: ["0","0"]
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Invalid address
 */
 router.get('/balances/:address', treasuryController.getAddressBalance)
 
@@ -221,6 +245,18 @@ router.get('/token-transfers/:transferId', treasuryController.getTransactionForT
 *                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
 *                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
 *                           }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/marketplaces', treasuryController.addMarketPlace)
 
@@ -275,6 +311,18 @@ router.post('/marketplaces', treasuryController.addMarketPlace)
 *                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
 *                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
 *                           }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 
@@ -327,6 +375,18 @@ router.post('/transactions/exchange-in', treasuryController.exchangeIn)
 *                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
 *                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
 *                           }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/transactions/payment', treasuryController.payment)
 
@@ -375,6 +435,18 @@ router.post('/transactions/payment', treasuryController.payment)
 *                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
 *                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
 *                           }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 
@@ -419,6 +491,18 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
 *                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
 *                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
 *                           }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/transactions/clearing', treasuryController.clearing)
 
@@ -468,6 +552,18 @@ router.post('/transactions/clearing', treasuryController.clearing)
 *                             "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
 *                             "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
 *                           }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/transactions/set-paid', treasuryController.setPaid)
 
@@ -545,6 +641,18 @@ router.post('/transactions/set-paid', treasuryController.setPaid)
 *                             "transactionHash": "0x89a7ec9974fcdd99bd1427c410da48fb9e51f74c57837b38be3b43e9f3d8a32f",
 *                             "transactionIndex": 0
 *                              }
+*       500:
+*        content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 status:
+*                   type: string
+*                   example: error
+*                 message:
+*                   type: string
+*                   example: Reverted reason
 */
 router.post('/transactions/deploy-signed-transaction', treasuryController.deploySignedTransaction)
 
