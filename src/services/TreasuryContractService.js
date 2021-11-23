@@ -1,9 +1,26 @@
+/**
+* Copyright (c) 2020-2022 in alphabetical order:
+* GFT, Telesto Technologies
+*
+* This program and the accompanying materials are made
+* available under the terms of the MIT,Apache License 2.0,ISC
+* which is available at https://github.com/panva/jose/blob/main/LICENSE.md
+*
+* License-Identifier: EUPL-2.0
+*
+* Contributors:
+*    Vangelis Giannakosian (Telesto Technologies)
+*    Dimitris Kokolakis (Telesto Technologies)
+*
+*/
+
 'use strict';
 
 const Web3 = require('web3');
 const axios = require('axios')
 const fs = require('fs');
 const path = require('path');
+const AppError = require('../utils/AppError');
 
 
 let instance = null;
@@ -186,13 +203,21 @@ class TreasuryContractService {
                         resolve(tsObject)
                     })
                 }).catch(error => {
-                    reject(error)
+                    reject(new AppError(this.decodeTransactionError(error.data), 500))
                 })
 
         })
     }
 
-
+    decodeTransactionError(data){
+        try{
+            let hex = data.substr(data.length - (data.length - 10) / 3)
+            return this.web3.utils.hexToString("0x"+hex);
+        }
+        catch (e) {
+            return "There was an error. Transaction reverted"
+        }
+    }
 }
 
 module.exports = TreasuryContractService;
