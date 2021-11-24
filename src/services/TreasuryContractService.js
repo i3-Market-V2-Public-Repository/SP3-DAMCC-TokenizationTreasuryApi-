@@ -203,7 +203,7 @@ class TreasuryContractService {
                         resolve(tsObject)
                     })
                 }).catch(error => {
-                    reject(new AppError(this.decodeTransactionError(error.data), 500))
+                    reject(new AppError(this.decodeTransactionError(error.data), 400))
                 })
 
         })
