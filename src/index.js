@@ -3,7 +3,7 @@
 * GFT, Telesto Technologies
 *
 * This program and the accompanying materials are made
-* available under the terms of the MIT,Apache License 2.0,ISC
+* available under the terms of the MIT
 * which is available at https://github.com/panva/jose/blob/main/LICENSE.md
 *
 * License-Identifier: EUPL-2.0
