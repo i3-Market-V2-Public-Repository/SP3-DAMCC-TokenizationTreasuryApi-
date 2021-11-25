@@ -31,8 +31,8 @@ The OAS documentation can be accessed [here](http://localhost:3001/api-docs/)
 
 ## Credits
 
-Luca Marangoni Luca.Marangoni@gft.com
-Vangelis Giannakosian vangalis@telesto.gr
+Luca Marangoni Luca.Marangoni@gft.com\
+Vangelis Giannakosian vangalis@telesto.gr\
 Dimitris Kokolakis dkokolakis@telesto.gr
 
 ## Contributing
