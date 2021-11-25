@@ -19,7 +19,7 @@
     "dev": "nodemon src/index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
