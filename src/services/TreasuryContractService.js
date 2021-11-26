@@ -1,9 +1,26 @@
+/**
+* Copyright (c) 2020-2022 in alphabetical order:
+* GFT, Telesto Technologies
+*
+* This program and the accompanying materials are made
+* available under the terms of the MIT
+* which is available at https://github.com/panva/jose/blob/main/LICENSE.md
+*
+* License-Identifier: EUPL-2.0
+*
+* Contributors:
+*    Vangelis Giannakosian (Telesto Technologies)
+*    Dimitris Kokolakis (Telesto Technologies)
+*
+*/
+
 'use strict';
 
 const Web3 = require('web3');
 const axios = require('axios')
 const fs = require('fs');
 const path = require('path');
+const AppError = require('../utils/AppError');
 
 
 let instance = null;
@@ -101,12 +118,26 @@ class TreasuryContractService {
         )
     }
 
+    deploySignedTransaction(serializedTx){
+        return this.web3.eth.sendSignedTransaction(serializedTx.toString(),  (err, ret) => {
+            if (err) {
+                console.log("An error occurred", err)
+                return
+            }
+        })    
+    }
+
     getTransactionReceipt(hash) {
         return this.web3.eth.getTransactionReceipt(hash);
     }
 
     getTransactionByTransferId(transferId) {
         return this.contract.methods.transactions(transferId).call();
+    }
+
+    async gasLimit(){
+       const block = await this.getLatestBlock()
+       return block.gasLimit || process.env.GAS_LIMIT
     }
 
     getLatestBlock() {
@@ -152,31 +183,41 @@ class TreasuryContractService {
 
     sendContractMethod(method,senderAddress,...args){
         return new Promise((resolve, reject) => {
+            const contractTransaction = this.contract.methods[method](...args)
 
-            this.contract.methods[method](...args)
-                .estimateGas({from: senderAddress})
-                .then((gas) => {
-
-                    this.contract.methods[method](...args)
-                        .send({
+                contractTransaction.estimateGas({from: senderAddress})
+                .then(async (gasPrice) => {
+                    const gasLimit = await this.gasLimit()
+                    this.web3.eth.getTransactionCount(senderAddress).then((transactionNonce) => {
+                      
+                        var data =  contractTransaction.encodeABI();
+                        const tsObject = {
+                            chainId: process.env.CHAIN_ID,
+                            nonce: transactionNonce,
+                            gasLimit: gasLimit,
+                            gasPrice,
+                            to: process.env.CONTRACT_ADDRESS,
                             from: senderAddress,
-                            gas
-                        })
-                        .on('transactionHash', function (hash) {
-                            resolve(hash);
-                        })
-                        .on('error', function (error) {
-                            reject(error)
-                        })
-
+                            data: data
+                        }
+                        resolve(tsObject)
+                    })
                 }).catch(error => {
-                    reject(error)
+                    reject(new AppError(this.decodeTransactionError(error.data), 400))
                 })
 
         })
     }
 
-
+    decodeTransactionError(data){
+        try{
+            let hex = data.substr(data.length - (data.length - 10) / 3)
+            return this.web3.utils.hexToString("0x"+hex);
+        }
+        catch (e) {
+            return "There was an error. Transaction reverted"
+        }
+    }
 }
 
 module.exports = TreasuryContractService;

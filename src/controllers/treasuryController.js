@@ -1,3 +1,19 @@
+/**
+* Copyright (c) 2020-2022 in alphabetical order:
+* GFT, Telesto Technologies
+*
+* This program and the accompanying materials are made
+* available under the terms of the MIT
+* which is available at https://github.com/panva/jose/blob/main/LICENSE.md
+*
+* License-Identifier: EUPL-2.0
+*
+* Contributors:
+*    Vangelis Giannakosian (Telesto Technologies)
+*    Dimitris Kokolakis (Telesto Technologies)
+*
+*/
+
 const catchAsync = require('../utils/catchAsync');
 const treasuryContract = require('../services/TreasuryContractService').getInstance()
 const {nameSpacedUUID} = require('../utils/uuid_generator')
@@ -42,8 +58,8 @@ exports.addMarketPlace = catchAsync(async (req, res, next) => {
         })
     }
 
-    const transactionHash = await treasuryContract.addMarketPlace(senderAddress, marketplaceAddress)
-    return res.json({transactionHash})
+    const transactionObject = await treasuryContract.addMarketPlace(senderAddress, marketplaceAddress)
+    return res.json({transactionObject})
 })
 
 exports.exchangeIn = catchAsync(async (req, res, next) => {
@@ -55,8 +71,8 @@ exports.exchangeIn = catchAsync(async (req, res, next) => {
         })
     }
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.exchangeIn(transferId, senderAddress, userAddress, tokens)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.exchangeIn(transferId, senderAddress, userAddress, tokens)
+    return res.json({transferId, transactionObject})
 })
 
 exports.exchangeOut = catchAsync(async (req, res, next) => {
@@ -69,8 +85,8 @@ exports.exchangeOut = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.exchangeOut(transferId, senderAddress, marketplaceAddress)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.exchangeOut(transferId, senderAddress, marketplaceAddress)
+    return res.json({transferId, transactionObject})
 })
 
 exports.payment = catchAsync(async (req, res, next) => {
@@ -83,8 +99,8 @@ exports.payment = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.payment(transferId, senderAddress, providerAddress, amount)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.payment(transferId, senderAddress, providerAddress, amount)
+    return res.json({transferId, transactionObject})
 
 })
 
@@ -98,8 +114,8 @@ exports.clearing = catchAsync(async (req, res, next) => {
     }
 
     const transferId = nameSpacedUUID();
-    const transactionHash = await treasuryContract.clearing(transferId, senderAddress)
-    return res.json({transferId, transactionHash})
+    const transactionObject = await treasuryContract.clearing(transferId, senderAddress)
+    return res.json({transferId, transactionObject})
 
 })
 
@@ -113,6 +129,20 @@ exports.setPaid = catchAsync(async (req, res, next) => {
         })
     }
 
-    const transactionHash = await treasuryContract.setPaid(transferId, senderAddress, transferCode)
-    return res.json({transactionHash})
+    const transactionObject = await treasuryContract.setPaid(transferId, senderAddress, transferCode)
+    return res.json({transactionObject})
+})
+
+
+exports.deploySignedTransaction = catchAsync(async (req, res, next) => {
+    const {serializedTx} = req.body
+
+    if (!serializedTx){
+        return res.status(400).json({
+            message: 'You must provide the serializedTx'
+        })
+    }
+
+    const transactionObject = await treasuryContract.deploySignedTransaction(serializedTx)
+    return res.json({transactionObject})
 })
