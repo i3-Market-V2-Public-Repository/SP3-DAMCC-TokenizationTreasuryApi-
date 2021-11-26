@@ -13,10 +13,11 @@ To use the tokenization subsystem and deploy a transaction to Besu you need to f
 
 ### Requirements
 NodeJS\
-Git
+Git\
+Docker
 
 ### Run with npm
-Clone the project from [here](https://gitlab.com/i3-market/code/wp3/t3.3/nodejs-tokenization-treasury-api)\
+Clone the project\
 Configure the .env file\
 ```npm install```\
 ```npm start```
