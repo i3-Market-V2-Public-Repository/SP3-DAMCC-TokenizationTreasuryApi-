@@ -19,7 +19,7 @@
     "dev": "nodemon src/index.js"
   },
   "author": "",
-  "license": "MIT",
+  "license": "EUPL",
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
