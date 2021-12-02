@@ -14,6 +14,7 @@ To use the tokenization subsystem and deploy a transaction to Besu you need to f
 
 ### Requirements
 NodeJS\
+nmp\
 Git\
 Docker
 
