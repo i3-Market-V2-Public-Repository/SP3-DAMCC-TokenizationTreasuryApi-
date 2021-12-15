@@ -1,9 +1,29 @@
 # Tokenization Treasury API
 [![License: EUPL-1.2](https://img.shields.io/badge/license-EUPL--1.2-blue.svg)](LICENCE.md)
 
-The tokenization module is responsible for the deployment of a transaction to Besu blockchain using the i3Treasury API and the i3market Wallet. To deploy a transaction to the blockchain there is the [deploy-transaction-endpoint](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_deploy_signed_transaction). This subsytem is part of the Backplane API which comprise all the public endpoints of the i3Market.
+The tokenization microservice allow the interaction with the I3Market Treasury Smart contract and the implementation of the I3market token flow. 
+![image.png](./image.png)
+The flow is divided in four operation:
+EXCHANGE IN:
+The exchange in method must be called by a Data Marketplace, which issues and transfers the right amount of token (of its token type) to the user who pays in fiat money
+PAYMENT: 
+The payment method should transfer the right amount of token from the token types available in the Data Consumer balance, to the Data Provider in exchange of some data
+EXCHANGE OUT:
+The exchange out method should transfer the right amount of token, from the token available in the Data Provider balance to a data Marketplace in the network in exchange of fiat money
+CLEARING:
+A Data Marketplace can clear the tokens distributed by the other Data Marketplace from its balance
 
-## Getting stated / Use
+An I3Market user can interact with these operation calling the tokenizer. However, the tokenizer cannot directly sign the transactions, so it needs the I3Market wallet to let users sign and then send a transactions that change the status of the blockchain.
+![interactionFlow.png](./interactionFlow.png)
+Each call to a treasury smart contract method that writes something on the blockchain (POST endpoint) needs two api:
+1. an API to create the raw transaction for the method that the user want to call  (ex. PAyment, Exchange_IN ..)
+2. an API to send the raw transaction, previously signed by the I3Market wallet, to the blockchain. 
+
+
+
+
+
+## Getting started / Use
 
 To use the tokenization subsystem and deploy a transaction to Besu you need to follow the next step:
 1. Use the [/treasury/marketplaces](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_marketplaces) to register a marketplace. In the "senderAddress" and "marketplaceAddress" provide the same address of the marketplace you want to register.
