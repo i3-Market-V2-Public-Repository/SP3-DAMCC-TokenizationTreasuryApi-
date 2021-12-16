@@ -5,8 +5,7 @@ The tokenization module is responsible for the deployment of a transaction to Be
 
 ## Getting stated / Use
 The main use of the tokenization service is to use it to deploy a transaction to Besu between a provider, a consumer and a marketplace. To do that you need to follow some crusial steps using the endpoints of the service.
-1. The first step is to add a new marketplace using the endpoint below:\
-[/treasury/marketplaces](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_marketplaces). In the "senderAddress" and "marketplaceAddress" provide the same address of the marketplace you want to register. After a successful transaction the payload of the response will be a transaction object like:
+1. The first step is to add a new marketplace using the endpoint [/treasury/marketplaces](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_marketplaces). In the "senderAddress" and "marketplaceAddress" provide the same address of the marketplace you want to register. After a successful transaction the payload of the response will be a transaction object like:
 ```
 {
   "transactionObject": {
