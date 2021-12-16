@@ -4,8 +4,8 @@
 The tokenization module is responsible for the deployment of a transaction to Besu blockchain using the i3Treasury API and the i3market Wallet. To deploy a transaction to the blockchain there is the [deploy-transaction-endpoint](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_deploy_signed_transaction). This subsytem is part of the Backplane API which comprise all the public endpoints of the i3Market.
 
 ## Getting stated / Use
-The main use of the tokenization service is to use it to deploy a transaction to Besu between a provider, a consumer and a marketplace. To do that you need to follow some crusial steps using the endpoints of the service.
-1. The first step is to add a new marketplace using the endpoint [/treasury/marketplaces](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_marketplaces). In the "senderAddress" and "marketplaceAddress" provide the same address of the marketplace you want to register. After a successful transaction the payload of the response will be a transaction object like:
+The main purpose of the tokenization service is to allow i3Market actors (i.e Marketplace, Data Provider, Data Consumer) to call the I3Market trasury contract methods and interact with the token flow. In the use case presented below, we impersonate a Marketplace that wants to register on the I3M platform and wants to send some tokens to a data consumer.
+1. The first step is to add the new marketplace using the endpoint [/treasury/marketplaces](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_marketplaces). In the "senderAddress" and "marketplaceAddress" provide the same address of the marketplace you want to register. After a successful transaction the payload of the response will be a transaction object like:
 ```
 {
   "transactionObject": {
@@ -19,10 +19,10 @@ The main use of the tokenization service is to use it to deploy a transaction to
   }
 }
 ```
-2. The next step is to deploy the transaction of adding the marketplace to Besu. To do that you must use the endpoint for deploying a signed transaction but firstly you need to sing it using the i3-market Wallet. Use the ```indetities/{did}/sing``` endpoint by pasting the transaction object. When you sing it successfully use the signature to the deployment endpoint of the tokenization service [/transactions/deploy-transaction-transaction](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_deploy_signed_transaction). The response of the request should be a long transaction object with information about the transaction. After that you successfully deployed a transaction to the blockchain and a **new marketplace was added**.
-3. When you have an already registered marketplace you can use the other endpoints to exchange tokens with fiat money and the opposite. One way to do that is to use the exchange-in endpoint to exchange money for tokens. 
-For using [/transactions/exchange-in](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_exchange_in) you need to specify in the request body the ```senderAddress``` which should be a registered markeplace, a ```userAddress``` and the ```tokens``` that you want to exchange. The successful response is again a transaction object.
-4. To deploy this transaction now to Besu and complete the exchange you must follow again **step 2**.
+2. The next step is to deploy the obtained transaction. To do that you firstly need to sign the transaction using the i3-market Wallet. Once you get the signed raw transaction you can call the deployment endpoint of the tokenization service [/transactions/deploy-transaction-transaction](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_deploy_signed_transaction). The response of the request should be a long transaction object with information about the transaction. Completed successfully the operation the **new marketplace is added**.
+3. Now the Marketplace can exchange tokens for fiat money with a Data Consumer. More specifically, it has to call the exchange-in method once it get the fiat money from the user. 
+In the [/transactions/exchange-in](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_exchange_in) API request body you need to specify the ```senderAddress``` which should be the registered markeplace, a ```dataConsumer``` and the ```tokens``` that you want to exchange. The successful response is again a transaction object.
+4. To deploy this transaction to Besu and complete the exchange you must follow again **step 2**.
 5. If you want to check if the transaction was completed you can also check the balance of the address you have used. The [/balances/{address}](http://localhost:3001/api-docs/#/TokenizerController/get_api_v1_treasury_balances__address_) endpoint should return the new balance after the exchange.
 
 ## How to build, install, or deploy it
