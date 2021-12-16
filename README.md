@@ -34,7 +34,7 @@ Git\
 Docker
 
 ### Webhook
-Simply put, a webhook is an API endpoint that an outside service calls when an event occurs. The webhook in the tokenization service is used for listening transaction events and return the payload.
+Simply put, a webhook is an API endpoint that an outside service calls when an event occurs. The webhook in the tokenization service is used for listening transaction events and return the payload.\
 In the ```.env.example``` file there is an example of how to configure the WEBHOOK variable in order to use it in your ```.env file```.
 To use a webhook create a nodeJS app and create an endpoint like ```/api/webhook```.\
 **Example code**:
