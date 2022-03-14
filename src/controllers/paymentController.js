@@ -14,13 +14,10 @@
  *
  */
 
-class AppError extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-        this.status = `${statusCode}`.startsWith('4') ? 'rejected' : 'error';
-        Error.captureStackTrace(this, this.constructor);
-    }
-}
+const catchAsync = require('../utils/catchAsync');
+const treasuryContract = require('../services/treasuryContractServiceWithCustomEventHandler').getInstance()
+const {nameSpacedUUID} = require('../utils/uuid_generator')
 
-module.exports = AppError;
+exports.getOperations = catchAsync(async (req, res, next) => {
+    return res.json({'a': 'hola'})
+})

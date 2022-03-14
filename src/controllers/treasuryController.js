@@ -15,7 +15,7 @@
 */
 
 const catchAsync = require('../utils/catchAsync');
-const treasuryContract = require('../services/TreasuryContractService').getInstance()
+const treasuryContract = require('../services/treasuryContractServiceWithCustomEventHandler').getInstance()
 const {nameSpacedUUID} = require('../utils/uuid_generator')
 
 exports.getTransactionReceipt = catchAsync(async (req, res, next) => {
@@ -129,6 +129,7 @@ exports.setPaid = catchAsync(async (req, res, next) => {
         })
     }
 
+    console.log("Hola: " +  senderAddress + " " + transferId + " " + transferCode);
     const transactionObject = await treasuryContract.setPaid(transferId, senderAddress, transferCode)
     return res.json({transactionObject})
 })
