@@ -25,6 +25,17 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         this.operations = {}
     }
 
+    async getOperations() {
+        const response = []
+
+        Object.keys(this.operations).forEach(id => {
+            response.push(this.operations[id]);
+        });
+
+        return response;
+    }
+
+
     async getOperationById(id) {
         if (this.operations[id]) {
             return Operation._clone(this.operations[id])
@@ -73,6 +84,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
+        console.log("[DictionaryPaymentDataStorage][getOperationsByStatus] response: " + JSON.stringify(response))
         return response
     }
 

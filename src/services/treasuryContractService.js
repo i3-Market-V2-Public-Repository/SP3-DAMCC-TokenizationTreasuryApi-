@@ -52,7 +52,7 @@ class TreasuryContractService extends TreasuryContract {
                         resolve(true);
                     }
                 ).catch(error => {
-                    console.log('Could not connect to the host provided')
+                    console.log('Could not connect to the Blockchain host provided')
                     process.exit()
                 });
             } catch (e) {
@@ -107,12 +107,21 @@ class TreasuryContractService extends TreasuryContract {
         )
     }
 
-    clearing(transferId, senderAddress) {
+    clearing(tokenTransfers, senderAddress) {
         return this.sendContractMethod(
             'clearing',
             senderAddress,
             transferId
         )
+    }
+
+    async _getMarketplaceAddressByIndex(index) {
+        try {
+            return await this.contract.methods.marketplaces(index).call();
+        } catch (e) {
+            console.log("Error: Marketplace does NOT exist or wrong index.");
+            return '0x0'
+        }
     }
 
     setPaid(transferId, senderAddress, transferCode) {
@@ -158,29 +167,52 @@ class TreasuryContractService extends TreasuryContract {
         return this.contract.methods.getMarketplaceIndex(address).call()
     }
 
+    registerHandlerOnFiatMoneyPayment() {
+        try {
+            this.contract.events.FiatMoneyPayment({}, (error, event) => {
+                if (!event || !event.returnValues) return;
+
+                const payload = {
+                    transactionHash: event.transactionHash,
+                    blockHash: event.blockHash,
+                    type: event.type,
+                    transferId: event.returnValues.transferId,
+                    operation: event.returnValues.operation,
+                    fromAddress: event.returnValues.fromAddress
+                }
+
+                axios.post(process.env.WEBHOOK, {payload}).then(response => {
+                    console.log('sent webhook successfully');
+                }).catch(error => {
+                    console.error("Webhook got an error. ", error);
+                });
+            });
+        } catch (e) {
+            console.log('Cannot subscribe to contract TokenTransferred event')
+        }
+    }
+
     registerHandlerOnTokenTransferred() {
         try {
             this.contract.events.TokenTransferred({}, (error, event) => {
 
                 if (!event || !event.returnValues) return;
 
-                console.log("Event received: " + event);
                 const payload = {
                     transactionHash: event.transactionHash,
                     blockHash: event.blockHash,
                     type: event.type,
-                    operation: event.returnValues.operation,
                     transferId: event.returnValues.transferId,
-                    sender: event.returnValues._sender,
+                    operation: event.returnValues.operation,
+                    fromAddress: event.returnValues.fromAddress,
+                    toAddress: event.returnValues.toAddress
                 };
 
-                axios.post(process.env.WEBHOOK, {payload})
-                    .then(function (response) {
-                        console.log('sent webhook successfully')
-                    })
-                    .catch(function (error) {
-                        console.error("Webhook got an error. ", error);
-                    });
+                axios.post(process.env.WEBHOOK, {payload}).then(response => {
+                    console.log('sent webhook successfully');
+                }).catch(error => {
+                    console.error("Webhook got an error. ", error);
+                });
             })
         } catch (e) {
             console.log('Cannot subscribe to contract TokenTransferred event')

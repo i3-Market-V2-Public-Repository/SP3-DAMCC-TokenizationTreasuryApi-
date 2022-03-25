@@ -2,7 +2,7 @@ const EventHandler = require("./eventHandler");
 const Operation = require("../../entities/operation");
 
 
-class PaymentServiceEventHandler extends EventHandler {
+class TokenTransferredHandler extends EventHandler {
 
     constructor(paymentDataStore) {
         super();
@@ -12,10 +12,12 @@ class PaymentServiceEventHandler extends EventHandler {
     async execute(event) {
         console.log("[PaymentServiceEventHandler][execute] Event: " + JSON.stringify(event));
 
-        if (event.operation === Operation.Type.EXCHANGE_IN) {
+        if (event.fromAddress === process.env.MARKETPLACE_ADDRESS && event.operation === Operation.Type.EXCHANGE_IN) {
             return await this._closeExchangeInOperation(event);
         } else if (event.operation === Operation.Type.EXCHANGE_OUT) {
             return await this._handleExchangeOutOperation(event);
+        } else if (event.operation === Operation.Type.CLEARING) {
+            return await this._handleClearingOperation(event)
         } else {
             console.log("[PaymentServiceEventHandler][execute] Event" + event.operation + " NOT FOUND")
         }
@@ -45,9 +47,28 @@ class PaymentServiceEventHandler extends EventHandler {
             return await this.paymentStore.createOperation(operation);
         }
 
-        return Operation.NULL
+        return Operation.NULL;
     }
 
+    async _handleClearingOperation(event) {
+        console.log(`[PaymentServiceEventHandler][_handleClearingOperation] event: ${JSON.stringify(event)}`)
+        let operation;
+
+        if (event.fromAddress !== process.env.MARKETPLACE_ADDRESS && event.toAddress !== process.env.MARKETPLACE_ADDRESS) {
+            console.log(`[PaymentServiceEventHandler][_handleClearingOperation] No es}`)
+            return Operation.NULL;
+        }
+
+        if (event.fromAddress === process.env.MARKETPLACE_ADDRESS) {
+            console.log(`[PaymentServiceEventHandler][_handleClearingOperation] Clearing in}`)
+            operation = new Operation(Operation.ClearingSubtypes.CLEARING_IN, Operation.Status.OPEN, event.toAddress);
+        } else if (event.toAddress === process.env.MARKETPLACE_ADDRESS) {
+            operation = new Operation(Operation.ClearingSubtypes.CLEARING_OUT, Operation.Status.OPEN, event.fromAddress);
+        }
+
+        operation.transferId = event.transferId
+        return this.paymentStore.createOperation(operation);
+    }
 }
 
-module.exports = PaymentServiceEventHandler;
+module.exports = TokenTransferredHandler;

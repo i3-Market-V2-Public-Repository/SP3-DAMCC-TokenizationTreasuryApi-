@@ -14,33 +14,53 @@
  *
  */
 
-
 require('dotenv').config()
 const app = require('./app');
 const TreasuryContract = require('./services/treasuryContractServiceWithCustomEventHandler');
-const PaymentEventHandler = require('./services/enventHandlers/paymentServiceEventHandler');
+const TokenTransferredHandler = require('./services/enventHandlers/tokenTransferredHandler');
+const FiatMoneyPaymentHandler = require('./services/enventHandlers/fiatMoneyPaymentHandler');
 const PaymentService = require('./services/paymentService');
+const Network = require('../currentNetworkConfig')
+const WebhookHandler = require("./services/enventHandlers/webhookHandler");
+const DictionaryPaymentDataStorage = require("./dataStores/dictionaryPaymentDataStorage");
 
-async function deployTreasureService() {
+process.env.ETH_HOST = process.env.ETH_HOST || Network.NETWORK
+process.env.CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || Network.CONTRACT_ADDRESS
+process.env.MARKETPLACE_ADDRESS = process.env.MARKETPLACE_ADDRESS || Network.MP_ADDRESS
+process.env.GAS_LIMIT = process.env.GAS_LIMIT || Network.GAS_PRICE
+process.env.CHAIN_ID = process.env.CHAIN_ID || Network.CHAIN_ID
+
+process.env.PORT = process.env.PORT || 3001
+process.env.WEBHOOK = process.env.WEBHOOK || "http://127.0.0.1:3000/api/webhook"
+
+const paymentStore = new DictionaryPaymentDataStorage();
+
+async function deployTreasureService(paymentStore) {
     const treasuryContract = TreasuryContract.getInstance();
-    treasuryContract.addEventHandler(new PaymentEventHandler);
+    treasuryContract.addTokenTransferredEventHandler(new TokenTransferredHandler(paymentStore));
+    treasuryContract.addTokenTransferredEventHandler(new WebhookHandler());
+    treasuryContract.addFiatMoneyPaymentEventHandler(new FiatMoneyPaymentHandler(paymentStore));
+    treasuryContract.addFiatMoneyPaymentEventHandler(new WebhookHandler());
     await treasuryContract.connect();
 }
 
-async function deployPaymentService() {
+async function deployPaymentService(paymentStore) {
     const paymentService = PaymentService.getInstance();
     const treasuryContract = TreasuryContract.getInstance();
-    const DictionaryPaymentDataStorage = require("./dataStores/dictionaryPaymentDataStorage");
 
-    paymentService.setDataStore(new DictionaryPaymentDataStorage());
+    paymentService.setDataStore(paymentStore);
     paymentService.setTreasurySmartContractService(treasuryContract);
 }
 
 
-deployTreasureService();
-deployPaymentService();
+deployTreasureService(paymentStore).then(() => {
+    console.log(`Treasure service deployed`);
+});
+deployPaymentService(paymentStore).then(() => {
+    console.log(`Payment service deployed`);
+});
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 const server = app.listen(port, () => {
     console.log(`App running on port ${port}...`);
 });

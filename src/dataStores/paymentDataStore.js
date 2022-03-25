@@ -1,5 +1,9 @@
 class PaymentDataStore {
 
+    async getOperations() {
+        throw "must implement getOperations, Returns an operation entity list"
+    }
+
     async getOperationById(id) {
         throw "must implement getOperationById, Returns an operation entity"
     }

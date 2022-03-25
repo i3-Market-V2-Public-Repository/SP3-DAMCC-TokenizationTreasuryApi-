@@ -18,6 +18,7 @@
 
 const Operation = require("../entities/operation")
 const {nameSpacedUUID} = require("../utils/uuid_generator");
+const TokenTransfer = require("../entities/tokenTransfer");
 
 let instance = null;
 
@@ -39,6 +40,10 @@ class PaymentService {
 
     setTreasurySmartContractService(treasurySmartContract) {
         this.treasurySmartContract = treasurySmartContract;
+    }
+
+    async getOperations() {
+        return await this.store.getOperations();
     }
 
     async getOperationById(id) {
@@ -63,27 +68,29 @@ class PaymentService {
     }
 
     async exchangeIn(userAddress, tokens) {
-        console.log("[PaymentService][exchangeIn] request: " + "\nUserAddress: " + userAddress + "\nTokens: " + tokens);
+        console.log(`[PaymentService][exchangeIn] Request: \nUserAddress: ${userAddress} \nTokens: ${tokens}`);
+        const response = {}
 
         try {
-            let operation = new Operation("exchange_in", "open", userAddress)
+            let operation = new Operation("exchange_in", "open", userAddress);
             operation.setTransferId(nameSpacedUUID());
             operation = await this.store.createOperation(operation);
 
             const transactionObject = await this.treasurySmartContract.exchangeIn(
                 operation.id, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
             )
-            transactionObject.transferId = operation.transferId;
-            transactionObject.operation = operation;
-            console.log("[PaymentService][exchangeIn] response: " + JSON.stringify(transactionObject));
-            return transactionObject;
+            response.transferId = operation.transferId;
+            response.operation = operation;
+            response.transactionObject = transactionObject;
+            console.log(`[PaymentService][exchangeIn] Response:  ${JSON.stringify(response)}`);
+            return response;
         } catch (err) {
-            console.log("[PaymentService][exchangeOut] Error → " + err);
+            console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
     }
 
     async exchangeOut(userAddress) {
-        console.log("[PaymentService][exchangeOut] request: " + "\nUserAddress: " + userAddress);
+        console.log(`[PaymentService][exchangeOut] Request: \nUserAddress: ${userAddress}`);
 
         try {
             let operation = new Operation("exchange_out", "open", userAddress);
@@ -94,16 +101,50 @@ class PaymentService {
             )
             transactionObject.transferId = operation.id;
             transactionObject.operation = operation;
-            console.log("[PaymentService][exchangeOut] response: " + JSON.stringify(transactionObject));
+            console.log(`[PaymentService][exchangeOut] Response: ${JSON.stringify(transactionObject)}`);
             return transactionObject;
         } catch (err) {
-            console.log("[PaymentService][exchangeOut] Error → " + err);
+            console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
     }
 
     async setPaid(transferId, transferCode) {
-
+        return await this.treasurySmartContract.setPaid(transferId, process.env.MARKETPLACE_ADDRESS, transferCode);
     }
+
+    async clearing() {
+        console.log(`[PaymentService][clearing] Request: ${process.env.MARKETPLACE_ADDRESS}`);
+
+        const balances = this.treasurySmartContract.getBalanceForAddress(process.env.MARKETPLACE_ADDRESS);
+        const transferTokens = await this._generateTransferTokens(balances.balance);
+        console.log(`[PaymentService][clearing] Transfer tokens: ${JSON.stringify(transferTokens)}`)
+
+        return await this.treasurySmartContract.clearing(transferTokens, process.env.MARKETPLACE_ADDRESS);
+    }
+
+    async _generateTransferTokens(balances) {
+        console.log(`[PaymentService][_generateTransferTokens] Balances: ${balances}`);
+        const result = []
+        let balance, address;
+
+        for (let i = 0; i < balances.length; i++) {
+            balance = balances[i];
+            address = await this.treasurySmartContract._getMarketplaceAddressByIndex(i);
+            if (this.isExternalMarketplaceBalance(address, balance)) {
+                console.log(`[PaymentService][_generateTransferTokens] balance: ${balance}`);
+                result.push(new TokenTransfer(process.env.MARKETPLACE_ADDRESS, address, balance));
+            }
+        }
+
+        console.log(`[PaymentService][_generateTransferTokens] result:  ${JSON.stringify(result)}`);
+        return result;
+    }
+
+    isExternalMarketplaceBalance(address, balance) {
+        return address !== process.env.MARKETPLACE_ADDRESS && balance > 0;
+    }
+
+
 }
 
 module.exports = PaymentService;

@@ -20,6 +20,7 @@
 const TreasuryContractService = require("./treasuryContractService");
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
 
 let instance = null;
 
@@ -34,33 +35,66 @@ class TreasuryContractServiceWithCustomEventHandler extends TreasuryContractServ
 
     constructor() {
         super();
-        this.eventHandlers = [];
+        this.tokenTransferedEventHandlers = [];
+        this.fiatMoneyPaymentEventHandlers = [];
     }
 
-
-    addEventHandler(handler) {
-        this.eventHandlers.push(handler);
+    addFiatMoneyPaymentEventHandler(handler) {
+        this.fiatMoneyPaymentEventHandlers.push(handler);
     }
 
+    addTokenTransferredEventHandler(handler) {
+        this.tokenTransferedEventHandlers.push(handler);
+    }
+
+    registerHandlerOnFiatMoneyPayment() {
+        try {
+            this.contract.events.FiatMoneyPayment({}, (error, event) => {
+                if (!event || !event.returnValues) return;
+
+                console.log(
+                    `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Event\n${event}`
+                );
+
+                const payload = {
+                    transactionHash: event.transactionHash,
+                    blockHash: event.blockHash,
+                    type: event.type,
+                    transferId: event.returnValues.transferId,
+                    operation: event.returnValues.operation,
+                    fromAddress: event.returnValues.fromAddress
+                }
+
+                axios.post(process.env.WEBHOOK, {payload}).then(response => {
+                    console.log('sent webhook successfully');
+                }).catch(error => {
+                    console.error("Webhook got an error. ", error);
+                });
+            });
+        } catch (e) {
+            console.log('Cannot subscribe to contract TokenTransferred event')
+        }
+    }
 
     registerHandlerOnTokenTransferred() {
         try {
             this.contract.events.TokenTransferred({}, (error, event) => {
+
                 if (!event || !event.returnValues) return;
 
                 console.log(
-                    "[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Event: \n"
-                    + event
+                    `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Event\n${event}`
                 );
 
-                this.eventHandlers.forEach(handler => {
+                this.tokenTransferedEventHandlers.forEach(handler => {
                     handler.execute({
                         transactionHash: event.transactionHash,
                         blockHash: event.blockHash,
                         type: event.type,
                         operation: event.returnValues.operation,
                         transferId: event.returnValues.transferId,
-                        sender: event.returnValues._sender,
+                        fromAddress: event.returnValues.fromAddress,
+                        toAddress: event.toAddress
                     });
                 });
             });

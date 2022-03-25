@@ -3,7 +3,6 @@ NULL = {};
 
 class Operation {
 
-
     constructor(type, status, user) {
         this.id = "";
         this.transferId = "";
@@ -38,7 +37,13 @@ Operation.Status = {
 
 Operation.Type = {
     EXCHANGE_IN: "exchange_in",
-    EXCHANGE_OUT: "exchange_out"
+    EXCHANGE_OUT: "exchange_out",
+    CLEARING: "clearing"
+}
+
+Operation.ClearingSubtypes = {
+    CLEARING_IN: "clearing_in",
+    CLEARING_OUT: "clearing_out",
 }
 
 module.exports = Operation;

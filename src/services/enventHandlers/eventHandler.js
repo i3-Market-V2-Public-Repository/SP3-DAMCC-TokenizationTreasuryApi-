@@ -1,5 +1,5 @@
 class EventHandler {
-    execute(event) {
+    async execute(event) {
         throw "must implement serialize for MyInterface types"
     }
 }

@@ -15,9 +15,48 @@
  */
 
 const catchAsync = require('../utils/catchAsync');
-const treasuryContract = require('../services/treasuryContractServiceWithCustomEventHandler').getInstance()
-const {nameSpacedUUID} = require('../utils/uuid_generator')
+const paymentService = require('../services/paymentService').getInstance();
 
 exports.getOperations = catchAsync(async (req, res, next) => {
-    return res.json({'a': 'hola'})
-})
+
+    if (req.query.transferId)
+        return res.json((await paymentService.getOperationByTransferId(req.query.transferId)));
+
+    if (req.query.type)
+        return res.json((await paymentService.getOperationsByType(req.query.type)));
+
+    if (req.query.status)
+        return res.json((await paymentService.getOperationsByStatus(req.query.status)));
+
+    if (req.query.user)
+        return res.json((await paymentService.getOperationsByUser(req.query.user)));
+
+    if (req.query.date)
+        console.log(`Not implemented yet :p`)
+
+    return res.json((await paymentService.getOperations()))
+});
+
+exports.exchangeIn = catchAsync(async (req, res, next) => {
+    console.log(`Body: ${JSON.stringify(req.body)}`)
+    const {userAddress, tokens} = req.body
+
+    if (!userAddress || !tokens)
+        return res.status(400).json({message: 'Must provide userAddress and tokens'});
+
+    return res.json((await paymentService.exchangeIn(userAddress, tokens)));
+});
+
+exports.exchangeOut = catchAsync(async (req, res, next) => {
+    const userAddress = req.body
+
+    if (!userAddress)
+        return res.status(400).json({message: 'Must provide the userAddress'});
+
+    return res.json((await paymentService.exchangeOut(userAddress)));
+});
+
+
+exports.clearing = catchAsync(async (req, res, next) => {
+    return res.json((await paymentService.clearing()));
+});

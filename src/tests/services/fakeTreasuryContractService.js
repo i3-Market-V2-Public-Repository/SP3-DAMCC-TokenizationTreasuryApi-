@@ -53,17 +53,17 @@ class FakeTreasuryContractService extends TreasuryContract {
         super();
         if (instance) return instance
         this.eventHandlers = [];
+        this.dummyBlances = [];
+        this.MPIndex = [];
     }
 
     connect() {
         console.log("Fake Treasury Contract connected!")
     }
 
-
     addEventHandler(handler) {
         this.eventHandlers.push(handler);
     }
-
 
     addMarketPlace(senderAddress, marketplaceAddress) {
         return new Promise(resolve => {
@@ -75,7 +75,6 @@ class FakeTreasuryContractService extends TreasuryContract {
         });
     }
 
-
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         return new Promise(resolve => {
             NONCE += 1;
@@ -85,7 +84,6 @@ class FakeTreasuryContractService extends TreasuryContract {
             )
         });
     }
-
 
     async exchangeOut(transferId, senderAddress, marketplaceAddress) {
         return new Promise(resolve => {
@@ -108,13 +106,14 @@ class FakeTreasuryContractService extends TreasuryContract {
     //     )
     // }
     //
-    // clearing(transferId, senderAddress) {
-    //     return this.sendContractMethod(
-    //         'clearing',
-    //         senderAddress,
-    //         transferId
-    //     )
-    // }
+    clearing(tokenTransfers, senderAddress) {
+        console.log(`[FakeTreasuryContract][clearing] ${JSON.stringify(tokenTransfers)} ${senderAddress}`)
+        this.clearingArgs = {
+            tokenTransfers: tokenTransfers,
+            senderAddress: senderAddress
+        }
+    }
+
     //
     // setPaid(transferId, senderAddress, transferCode) {
     //     return this.sendContractMethod(
@@ -150,11 +149,16 @@ class FakeTreasuryContractService extends TreasuryContract {
     // getLatestBlock() {
     //     return this.web3.eth.getBlock("latest");
     // }
-    //
-    // getBalanceForAddress(address) {
-    //     return this.contract.methods.balanceOfAddress(address).call()
-    // }
-    //
+
+    setDummyBalances(address, balances) {
+        this.dummyBlances[address] = balances;
+    }
+
+    getBalanceForAddress(address) {
+        return this.dummyBlances[address];
+    }
+
+
     // getMarketPlaceIndex(address) {
     //     return this.contract.methods.getMarketplaceIndex(address).call()
     // }
@@ -231,6 +235,13 @@ class FakeTreasuryContractService extends TreasuryContract {
     //         return "There was an error. Transaction reverted"
     //     }
     // }
+    setDummyMPIndex(address, index) {
+        this.MPIndex[index] = address;
+    }
+
+    _getMarketplaceAddressByIndex(index) {
+        return this.MPIndex[index];
+    }
 }
 
 module.exports = FakeTreasuryContractService;

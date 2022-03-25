@@ -23,75 +23,83 @@ class TreasuryContractService {
     }
 
     connect() {
-        throw "connect must implement connect for TreasuryContractService types"
+        throw "TreasuryContractService must implement connect for TreasuryContractService types"
     }
 
     initSmartContract() {
-        throw "initSmartContract must implement initSmartContract for TreasuryContractService types"
+        throw "TreasuryContractService must implement initSmartContract for TreasuryContractService types"
     }
 
     addMarketPlace(senderAddress, marketplaceAddress) {
-        throw "addMarketPlace must implement addMarketPlace for TreasuryContractService types"
+        throw "TreasuryContractService must implement addMarketPlace for TreasuryContractService types"
     }
 
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
-        throw "exchangeIn must implement exchangeIn for TreasuryContractService types"
+        throw "TreasuryContractService must implement exchangeIn for TreasuryContractService types"
     }
 
     exchangeOut(transferId, senderAddress, marketplaceAddress) {
-        throw "exchangeOut must implement exchangeOut for TreasuryContractService types"
+        throw "TreasuryContractService must implement exchangeOut for TreasuryContractService types"
     }
 
     payment(transferId, senderAddress, providerAddress, amount) {
-        throw "payment must implement payment for TreasuryContractService types"
+        throw "TreasuryContractService must implement payment for TreasuryContractService types"
     }
 
-    clearing(transferId, senderAddress) {
-        throw "clearing must implement clearing for TreasuryContractService types"
+    async _getMarketplaceAddressByIndex(index) {
+        throw "TreasuryContractService must implement _getMarketplaceAddressByIndex for TreasuryContractService types, returns the marketplace address"
+    }
+
+    async clearing(tokenTransfers, senderAddress) {
+        throw "TreasuryContractService must implement clearing for TreasuryContractService types, returns a tsObject"
     }
 
     setPaid(transferId, senderAddress, transferCode) {
-        throw "setPaid must implement setPaid for TreasuryContractService types"
+        throw "TreasuryContractService must implement setPaid for TreasuryContractService types"
     }
 
     deploySignedTransaction(serializedTx) {
-        throw "deploySignedTransaction must deploySignedTransaction serialize for TreasuryContractService types"
+        throw "TreasuryContractService must implement deploySignedTransaction serialize for TreasuryContractService types"
     }
 
     getTransactionReceipt(hash) {
-        throw "getTransactionReceipt must implement getTransactionReceipt for TreasuryContractService types"
+        throw "TreasuryContractService must implement getTransactionReceipt for TreasuryContractService types"
     }
 
     getTransactionByTransferId(transferId) {
-        throw "getTransactionByTransferId must implement getTransactionByTransferId for TreasuryContractService types"
+        throw "TreasuryContractService must implement getTransactionByTransferId for TreasuryContractService types"
     }
 
     async gasLimit() {
-        throw "gasLimit must implement gasLimit for TreasuryContractService types"
+        throw "TreasuryContractService must implement gasLimit for TreasuryContractService types"
     }
 
     getLatestBlock() {
-        throw "getLatestBlock must implement getLatestBlock for TreasuryContractService types"
+        throw "TreasuryContractService must implement getLatestBlock for TreasuryContractService types"
     }
 
     getBalanceForAddress(address) {
-        throw "getBalanceForAddress must implement getBalanceForAddress for TreasuryContractService types"
+        throw "TreasuryContractService must implement getBalanceForAddress for TreasuryContractService types"
     }
 
     getMarketPlaceIndex(address) {
-        throw "getMarketPlaceIndex must implement getMarketPlaceIndex for TreasuryContractService types"
+        throw "TreasuryContractService must implement getMarketPlaceIndex for TreasuryContractService types"
+    }
+
+    registerHandlerOnFiatMoneyPayment() {
+        throw "TreasuryContractService must implement registerHandlerOnFiatMoneyPayment in TreasuryContractService types"
     }
 
     registerHandlerOnTokenTransferred() {
-        throw "registerHandlerOnTokenTransferred must registerHandlerOnTokenTransferred serialize for TreasuryContractService types"
+        throw "TreasuryContractService must implement registerHandlerOnTokenTransferred serialize for TreasuryContractService types"
     }
 
     sendContractMethod(method, senderAddress, ...args) {
-        throw "sendContractMethod must implement sendContractMethod for TreasuryContractService types"
+        throw "TreasuryContractService must implement sendContractMethod for TreasuryContractService types"
     }
 
     decodeTransactionError(data) {
-        throw "decodeTransactionError must implement decodeTransactionError for TreasuryContractService types"
+        throw "TreasuryContractService must implement decodeTransactionError for TreasuryContractService types"
     }
 }
 

@@ -14,14 +14,14 @@
  *
  */
 
-const express = require('express')
+const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const treasuryRouter = require('./routes/treasuryRouter');
 const paymentRouter = require('./routes/paymentRouter');
 const globalErrorHandler = require('./controllers/errorController');
-const swaggerDocs = require('./swagger.config')
+const swaggerDocs = require('./swagger.config');
 
-const app = express()
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
