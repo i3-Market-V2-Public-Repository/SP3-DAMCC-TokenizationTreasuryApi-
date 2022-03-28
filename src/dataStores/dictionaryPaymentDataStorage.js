@@ -100,6 +100,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
+        console.log("[DictionaryPaymentDataStorage][getOperationsByDate] response: " + JSON.stringify(response))
         return response
     }
 
