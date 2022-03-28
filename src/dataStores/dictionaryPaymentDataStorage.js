@@ -89,7 +89,18 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
     }
 
     async getOperationsByDate(date) {
-        throw "must implement serialize for MyInterface types"
+        const response = [];
+        let operation;
+
+        Object.keys(this.operations).forEach(
+            id => {
+                operation = this.operations[id];
+                if (operation.date.getTime() === date.getTime())    //DateTime comparison down to millisecond
+                    response.push(Operation._clone(operation));
+            }
+        );
+
+        return response
     }
 
     async getOperationsByUser(user) {
