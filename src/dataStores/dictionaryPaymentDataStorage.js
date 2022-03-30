@@ -90,17 +90,24 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         return response
     }
 
-    async getOperationsByDate(date) {
+    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now())) {
         const response = [];
         let operation;
 
-        Object.keys(this.operations).forEach(
-            id => {
-                operation = this.operations[id];
-                if (operation.date.getTime() === date.getTime())    //DateTime comparison down to millisecond
-                    response.push(Operation._clone(operation));
-            }
-        );
+        try {
+            if (fromDate.getTime()>toDate.getTime())
+            throw Error("Date mismatch: fromDate is later than toDate")
+        
+            Object.keys(this.operations).forEach(
+                id => {
+                    operation = this.operations[id];
+                    if (operation.date.getTime() >= fromDate.getTime() && operation.date.getTime() < toDate.getTime())    //DateTime comparison down to millisecond
+                        response.push(Operation._clone(operation));
+                }
+            );
+        }catch (error) {
+            console.log(error);
+        }
 
         console.log("[DictionaryPaymentDataStorage][getOperationsByDate] response: " + JSON.stringify(response))
         return response

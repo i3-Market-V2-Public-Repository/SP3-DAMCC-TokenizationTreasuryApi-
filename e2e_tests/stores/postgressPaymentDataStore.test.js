@@ -23,7 +23,7 @@ const OperationEntity = require("../../src/entities/operation");
 const assert = require('assert').strict
 require('debug').enable('*')
 
-describe("Operation DataStore test suit", async () => {
+describe("Operation DataStore test suit", () => {
 
     const OPERATION_ENTITY = new OperationEntity(
         'dummy transfer id',
@@ -118,6 +118,22 @@ describe("Operation DataStore test suit", async () => {
             assert.strictEqual(operation.type, OPERATION_ENTITY.type);
         }
     );
+
+    it("Given an Operation frromDate and toDate When there are multiple operations Should return the operations",
+    async () => {
+        await dataStore.createOperation(OPERATION_ENTITY);
+        await dataStore.createOperation(OPERATION_ENTITY2);
+
+        const operations = await dataStore.getOperationsByDate("2020-02-01 00:00:01.200+ZZ", "2030-02-01 00:00:01.200+ZZ");
+
+        const operation = operations[0];
+        assert.equal(operations.length, 2);
+        assert.strictEqual(operation.user, OPERATION_ENTITY.user);
+        assert.strictEqual(operation.transferId, OPERATION_ENTITY.transferId);
+        assert.strictEqual(operation.status, OPERATION_ENTITY.status);
+        assert.strictEqual(operation.type, OPERATION_ENTITY.type);
+    }
+);
 
 
     it("Given an Operation id When call destroy Should be able to delete an existing operation",

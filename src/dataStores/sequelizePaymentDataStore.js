@@ -17,7 +17,7 @@
  */
 
 const {sequelize} = require('../app');
-const {Sequelize, DataTypes} = require("sequelize");
+const {Sequelize, DataTypes, Op} = require("sequelize");
 const PaymentDataStore = require("./paymentDataStore");
 const SquelizeOperation = require("./squelizeModels/operation");
 const OperationModel = require("./squelizeModels/operation");
@@ -152,15 +152,22 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     }
 
     /**
-     *
-     * @param {string} date In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
-     * @returns An array of Operation objects that match the date field or Operation.NULL if none found
+     * 
+     * @param {*} fromDate In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
+     * @param {*} toDate In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
+     * @returns  An array of Operation objects that took place between fromDate(inclusive) and toDate(exclusive) 
      */
-    async getOperationsByDate(date) {
+    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now())) {
         try {
+            if (fromDate.getTime()>toDate.getTime())
+            throw Error("Date mismatch: fromDate is later than toDate")
+        
             return await OperationModel.findAll({
                 where: {
-                    date: date
+                    [Op.and]: [
+                        { date: {[Op.gte]: fromDate}},
+                        { date: {[Op.lte]: toDate}},
+                    ],           
                 }
             });
         } catch (error) {

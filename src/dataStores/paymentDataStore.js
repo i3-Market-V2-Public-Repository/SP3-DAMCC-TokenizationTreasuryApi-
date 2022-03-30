@@ -38,7 +38,7 @@ class PaymentDataStore {
         throw "must implement getOperationsByStatus, Returns an operation entity list"
     }
 
-    async getOperationsByDate(date) {
+    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now()))  {
         throw "must implement getOperationsByDate, Returns an operation entity list"
     }
 
