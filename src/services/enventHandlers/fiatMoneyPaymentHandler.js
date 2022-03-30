@@ -19,7 +19,7 @@ class FiatMoneyPaymentHandler extends EventHandler {
 
 
     async _handleSetPaid(event) {
-        const operations = await this.paymentStore.getOperationByTransferId(event.transferId);
+        const operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
 
         if (this._hasAnOpenClearingOperation(operations)) {
             return await this.getClosedClearingOperation(operations[0], event);
@@ -37,14 +37,19 @@ class FiatMoneyPaymentHandler extends EventHandler {
 
         if (event.fromAddress === openOperation.user && openOperation.type === Operation.ClearingSubtypes.CLEARING_IN) {
             closeOperation = new Operation(
-                Operation.ClearingSubtypes.CLEARING_IN, Operation.Status.CLOSED, openOperation.user
+                openOperation.transferId,
+                Operation.ClearingSubtypes.CLEARING_IN,
+                Operation.Status.CLOSED,
+                openOperation.user
             );
         } else {
             closeOperation = new Operation(
-                Operation.ClearingSubtypes.CLEARING_OUT, Operation.Status.CLOSED, openOperation.user
+                openOperation.transferId,
+                Operation.ClearingSubtypes.CLEARING_OUT,
+                Operation.Status.CLOSED,
+                openOperation.user
             );
         }
-        closeOperation.transferId = openOperation.transferId;
         return await this.paymentStore.createOperation(closeOperation);
     }
 

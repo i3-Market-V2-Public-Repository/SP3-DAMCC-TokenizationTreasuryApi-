@@ -1,5 +1,9 @@
 {
   "name": "i3-microservice",
+  "engines": {
+    "npm": ">=8.3.1",
+    "node": ">=16.14.0"
+  },
   "contributors": [
     {
       "name": "Dimitris Kokolakis",
@@ -22,9 +26,12 @@
   "license": "EUPL",
   "dependencies": {
     "axios": "^0.21.1",
+    "debug": "^4.3.4",
     "dotenv": "^10.0.0",
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.3",
+    "pg": "^8.7.3",
+    "sequelize": "^6.17.0",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.2",

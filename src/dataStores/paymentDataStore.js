@@ -8,8 +8,8 @@ class PaymentDataStore {
         throw "must implement getOperationById, Returns an operation entity"
     }
 
-    async getOperationByTransferId(transferId) {
-        throw "must implement getOperationByTransferId, Returns an operation entity list"
+    async getOperationsByTransferId(transferId) {
+        throw "must implement getOperationsByTransferId, Returns an operation entity list"
     }
 
     async getOperationsByType(type) {

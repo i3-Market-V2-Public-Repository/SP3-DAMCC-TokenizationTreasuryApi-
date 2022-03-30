@@ -3,9 +3,9 @@ NULL = {};
 
 class Operation {
 
-    constructor(type, status, user) {
+    constructor(transferId, type, status, user) {
         this.id = "";
-        this.transferId = "";
+        this.transferId = transferId;
         this.type = type;
         this.status = status;
         this.user = user;

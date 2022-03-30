@@ -56,11 +56,11 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         return response
     }
 
-    async getOperationByTransferId(transferId) {
-        console.log("[DictionaryPaymentDataStorage][getOperationByTransferId] transferId: " + transferId)
+    async getOperationsByTransferId(transferId) {
+        console.log("[DictionaryPaymentDataStorage][getOperationsByTransferId] transferId: " + transferId)
         const response = [];
         let operation;
-        console.log("[DictionaryPaymentDataStorage][getOperationByTransferId] operations: " + JSON.stringify(this.operations))
+        console.log("[DictionaryPaymentDataStorage][getOperationsByTransferId] operations: " + JSON.stringify(this.operations))
         Object.keys(this.operations).forEach(
             id => {
                 operation = this.operations[id];
@@ -68,7 +68,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        console.log("[DictionaryPaymentDataStorage][getOperationByTransferId] response: " + JSON.stringify(response))
+        console.log("[DictionaryPaymentDataStorage][getOperationsByTransferId] response: " + JSON.stringify(response))
 
         return response
     }

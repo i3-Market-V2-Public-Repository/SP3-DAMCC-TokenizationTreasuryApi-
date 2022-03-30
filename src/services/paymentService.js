@@ -50,8 +50,8 @@ class PaymentService {
         return await this.store.getOperationById(id);
     }
 
-    async getOperationByTransferId(transferId) {
-        return await this.store.getOperationByTransferId(transferId);
+    async getOperationsByTransferId(transferId) {
+        return await this.store.getOperationsByTransferId(transferId);
     }
 
 
@@ -72,8 +72,7 @@ class PaymentService {
         const response = {}
 
         try {
-            let operation = new Operation("exchange_in", "open", userAddress);
-            operation.setTransferId(nameSpacedUUID());
+            let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
             operation = await this.store.createOperation(operation);
 
             const transactionObject = await this.treasurySmartContract.exchangeIn(
@@ -93,8 +92,7 @@ class PaymentService {
         console.log(`[PaymentService][exchangeOut] Request: \nUserAddress: ${userAddress}`);
 
         try {
-            let operation = new Operation("exchange_out", "open", userAddress);
-            operation.setTransferId(nameSpacedUUID());
+            let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", userAddress);
             operation = await this.store.createOperation(operation);
             const transactionObject = await this.treasurySmartContract.exchangeOut(
                 operation.id, userAddress, process.env.MARKETPLACE_ADDRESS

@@ -20,7 +20,7 @@ const paymentService = require('../services/paymentService').getInstance();
 exports.getOperations = catchAsync(async (req, res, next) => {
 
     if (req.query.transferId)
-        return res.json((await paymentService.getOperationByTransferId(req.query.transferId)));
+        return res.json((await paymentService.getOperationsByTransferId(req.query.transferId)));
 
     if (req.query.type)
         return res.json((await paymentService.getOperationsByType(req.query.type)));

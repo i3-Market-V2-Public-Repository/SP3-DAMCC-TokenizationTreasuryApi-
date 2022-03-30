@@ -1,10 +1,11 @@
-const PaymentService = require('../../services/paymentService');
-const DictionaryPaymentDataStorage = require('../../dataStores/dictionaryPaymentDataStorage');
-const Operation = require('../../entities/operation');
-const TokenTransferredHandler = require("../../services/enventHandlers/tokenTransferredHandler");
 const TreasuryContract = require('./fakeTreasuryContractService');
+const PaymentService = require("../../src/services/paymentService");
 
 const helpers = require("../helpers");
+const SequelizePaymentDataStore = require("../../src/dataStores/sequelizePaymentDataStore");
+const TokenTransferredHandler = require("../../src/services/enventHandlers/tokenTransferredHandler");
+const Operation = require("../../src/entities/operation");
+const OperationModel = require("../../src/dataStores/squelizeModels/operation");
 const assert = require('assert').strict;
 
 
@@ -23,11 +24,24 @@ describe("Payment Service test suit", async () => {
 
     let tokenTransferredHandler;
 
+    const dataStore = new SequelizePaymentDataStore(
+        'test_db',
+        'test_user',
+        'test_pass', {
+            host: 'localhost',
+            dialect: 'postgres',
+            logging: false
+        }
+    );
+
     beforeEach(async () => {
+            dataStore.initModel();
+            await dataStore.sequelize.sync();
+            await OperationModel.truncate();
             treasuryContract.addEventHandler(new TokenTransferredHandler());
-            let dictionaryPaymentDataStorage = new DictionaryPaymentDataStorage();
-            tokenTransferredHandler = new TokenTransferredHandler(dictionaryPaymentDataStorage);
-            paymentService.setDataStore(dictionaryPaymentDataStorage);
+
+            tokenTransferredHandler = new TokenTransferredHandler(dataStore);
+            paymentService.setDataStore(dataStore);
             paymentService.setTreasurySmartContractService(treasuryContract);
         }
     );
@@ -66,6 +80,7 @@ describe("Payment Service test suit", async () => {
         helpers.assertIsOperationInList(openOperation3, operations);
         helpers.assertIsOperationInList(closedOperation, operations);
     });
+
 
     it("Given a transfer id When call getOperationsByTransferId and there is no operation Then return an empty list",
         async () => {

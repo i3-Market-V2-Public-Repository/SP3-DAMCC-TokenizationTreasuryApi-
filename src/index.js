@@ -23,6 +23,7 @@ const PaymentService = require('./services/paymentService');
 const Network = require('../currentNetworkConfig')
 const WebhookHandler = require("./services/enventHandlers/webhookHandler");
 const DictionaryPaymentDataStorage = require("./dataStores/dictionaryPaymentDataStorage");
+const SequelizePaymentDataStore = require("./dataStores/sequelizePaymentDataStore");
 
 process.env.ETH_HOST = process.env.ETH_HOST || Network.NETWORK
 process.env.CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || Network.CONTRACT_ADDRESS
@@ -33,7 +34,18 @@ process.env.CHAIN_ID = process.env.CHAIN_ID || Network.CHAIN_ID
 process.env.PORT = process.env.PORT || 3001
 process.env.WEBHOOK = process.env.WEBHOOK || "http://127.0.0.1:3000/api/webhook"
 
-const paymentStore = new DictionaryPaymentDataStorage();
+function getPaymentStore() {
+    const dataStore = new SequelizePaymentDataStore(
+        'test_db',
+        'test_user',
+        'test_pass', {
+            host: 'localhost',
+            dialect: 'postgres',
+            logging: false
+        }
+    );
+    return new DictionaryPaymentDataStorage();
+}
 
 async function deployTreasureService(paymentStore) {
     const treasuryContract = TreasuryContract.getInstance();
@@ -52,6 +64,7 @@ async function deployPaymentService(paymentStore) {
     paymentService.setTreasurySmartContractService(treasuryContract);
 }
 
+const paymentStore = getPaymentStore();
 
 deployTreasureService(paymentStore).then(() => {
     console.log(`Treasure service deployed`);

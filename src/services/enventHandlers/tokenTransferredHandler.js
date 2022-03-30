@@ -24,11 +24,12 @@ class TokenTransferredHandler extends EventHandler {
     }
 
     async _closeExchangeInOperation(event) {
-        let operations = await this.paymentStore.getOperationByTransferId(event.transferId);
+        let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
         console.log("[PaymentServiceEventHandler][_closeOperation] operations " + JSON.stringify(operations));
         if (operations && operations.length === 1 && operations[0].status === Operation.Status.OPEN) {
-            let operation = new Operation(Operation.Type.EXCHANGE_IN, Operation.Status.CLOSED, operations[0].user);
-            operation.setTransferId(event.transferId);
+            let operation = new Operation(
+                event.transferId, Operation.Type.EXCHANGE_IN, Operation.Status.CLOSED, operations[0].user
+            );
             return await this.paymentStore.createOperation(operation);
         }
 
@@ -36,13 +37,12 @@ class TokenTransferredHandler extends EventHandler {
     }
 
     async _handleExchangeOutOperation(event) {
-        let operations = await this.paymentStore.getOperationByTransferId(event.transferId);
+        let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
         console.log("[PaymentServiceEventHandler][_handleExchangeOutOperation] operations " + JSON.stringify(operations));
         if (operations && operations.length === 1 && operations[0].status === Operation.Status.OPEN) {
             let operation = new Operation(
-                Operation.Type.EXCHANGE_OUT, Operation.Status.IN_PROGRESS, operations[0].user
+                event.transferId, Operation.Type.EXCHANGE_OUT, Operation.Status.IN_PROGRESS, operations[0].user
             );
-            operation.setTransferId(event.transferId);
 
             return await this.paymentStore.createOperation(operation);
         }
@@ -61,12 +61,15 @@ class TokenTransferredHandler extends EventHandler {
 
         if (event.fromAddress === process.env.MARKETPLACE_ADDRESS) {
             console.log(`[PaymentServiceEventHandler][_handleClearingOperation] Clearing in}`)
-            operation = new Operation(Operation.ClearingSubtypes.CLEARING_IN, Operation.Status.OPEN, event.toAddress);
+            operation = new Operation(
+                event.transferId, Operation.ClearingSubtypes.CLEARING_IN, Operation.Status.OPEN, event.toAddress
+            );
         } else if (event.toAddress === process.env.MARKETPLACE_ADDRESS) {
-            operation = new Operation(Operation.ClearingSubtypes.CLEARING_OUT, Operation.Status.OPEN, event.fromAddress);
+            operation = new Operation(
+                event.transferId, Operation.ClearingSubtypes.CLEARING_OUT, Operation.Status.OPEN, event.fromAddress
+            );
         }
 
-        operation.transferId = event.transferId
         return this.paymentStore.createOperation(operation);
     }
 }
