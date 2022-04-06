@@ -1,6 +1,6 @@
 .idea
 .env
 .history
-contracts
 node_modules
 helpers
+proposals.md

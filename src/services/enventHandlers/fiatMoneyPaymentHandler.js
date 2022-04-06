@@ -32,23 +32,50 @@ class FiatMoneyPaymentHandler extends EventHandler {
         console.log("[FiatMoneyPaymentHandler][execute] Event: " + JSON.stringify(event));
 
         // Cant check if I am the sender or receiver to avoid access to the DB
-        return await this._handleSetPaid(event);
+
+        if (event.operation === Operation.Type.CLEARING) {
+            return await this._handleClearing(event);
+        } else if (event.operation === Operation.Type.EXCHANGE_OUT) {
+            return await this._handleExchangeOut(event);
+        } else {
+            console.log("[FiatMoneyPaymentHandler][execute] Event" + event.operation + " NOT FOUND")
+        }
     }
 
 
-    async _handleSetPaid(event) {
+    async _handleExchangeOut(event) {
         const operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
 
-        if (this._hasAnOpenClearingOperation(operations)) {
+        if (!this._isClosedOperation(operations)) {
+            const operation = operations[0];
+            return await this.paymentStore.createOperation(
+                new Operation(
+                    operation.transferId,
+                    Operation.Type.EXCHANGE_OUT,
+                    Operation.Status.CLOSED,
+                    operation.user
+                )
+            );
+        }
+
+        return Operation.NULL;
+    }
+
+
+    _isClosedOperation(operations) {
+        return operations.some(operation => operation.status === Operation.Status.CLOSED);
+    }
+
+    async _handleClearing(event) {
+        const operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
+
+        if (!this._isClosedOperation(operations)) {
             return await this.getClosedClearingOperation(operations[0], event);
         }
 
         return Operation.NULL;
     }
 
-    _hasAnOpenClearingOperation(operations) {
-        return operations.length === 1 && operations[0].status === Operation.Status.OPEN;
-    }
 
     async getClosedClearingOperation(openOperation, event) {
         let closeOperation;

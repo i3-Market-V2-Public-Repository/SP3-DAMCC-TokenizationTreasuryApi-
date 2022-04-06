@@ -23,6 +23,7 @@ const TokenTransferredHandler = require("../../services/enventHandlers/tokenTran
 const TreasuryContract = require('./fakeTreasuryContractService');
 
 const helpers = require("../helpers");
+const FiatMoneyPaymentHandler = require("../../services/enventHandlers/fiatMoneyPaymentHandler");
 const assert = require('assert').strict;
 
 
@@ -40,11 +41,14 @@ describe("Payment Service test suit", async () => {
     await treasuryContract.connect();
 
     let tokenTransferredHandler;
+    let fiatMoneyPaymentHandler;
 
     beforeEach(async () => {
             treasuryContract.addEventHandler(new TokenTransferredHandler());
             let dictionaryPaymentDataStorage = new DictionaryPaymentDataStorage();
             tokenTransferredHandler = new TokenTransferredHandler(dictionaryPaymentDataStorage);
+            fiatMoneyPaymentHandler = new FiatMoneyPaymentHandler(dictionaryPaymentDataStorage);
+
             paymentService.setDataStore(dictionaryPaymentDataStorage);
             paymentService.setTreasurySmartContractService(treasuryContract);
         }
@@ -73,7 +77,7 @@ describe("Payment Service test suit", async () => {
                     fromAddress: MP_ADDRESS,
                     toAddress: USER_ADDRESS
                 }
-            )
+            );
 
             const operations = await paymentService.getOperationsByTransferId(openOperation.transferId);
 
@@ -82,6 +86,41 @@ describe("Payment Service test suit", async () => {
             helpers.assertIsOperationInList(inProgressOperation, operations);
         }
     );
+
+    it("Given a FiatMoneyPayment event " +
+        "When message sender is the MP and the exchange_out operation is in progress " +
+        "Then update the operation status to closed",
+        async () => {
+            const openOperation = (await paymentService.exchangeOut(USER_ADDRESS)).operation;
+            await tokenTransferredHandler.execute(
+                {
+                    transactionHash: 'dummy transaction hash',
+                    blockHash: 'dummy block hash',
+                    type: 'mined',
+                    operation: Operation.Type.EXCHANGE_OUT,
+                    transferId: openOperation.transferId,
+                    fromAddress: MP_ADDRESS,
+                    toAddress: USER_ADDRESS
+                }
+            );
+            await fiatMoneyPaymentHandler.execute(
+                {
+                    transactionHash: 'dummy transaction hash',
+                    blockHash: 'dummy block hash',
+                    type: 'mined',
+                    operation: Operation.Type.EXCHANGE_OUT,
+                    transferId: openOperation.transferId,
+                    fromAddress: MP_ADDRESS
+                }
+            );
+
+            const closedOperation = (await paymentService.getOperationsByStatus(Operation.Status.CLOSED))[0];
+
+            assert.notStrictEqual(closedOperation.transferId, "");
+            assert.strictEqual(closedOperation.type, Operation.Type.EXCHANGE_OUT);
+            assert.strictEqual(closedOperation.status, Operation.Status.CLOSED);
+            assert.strictEqual(closedOperation.user, USER_ADDRESS);
+        });
 
 
 });

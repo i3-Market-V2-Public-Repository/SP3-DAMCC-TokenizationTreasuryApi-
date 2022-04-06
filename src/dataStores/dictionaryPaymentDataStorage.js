@@ -59,10 +59,10 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
     }
 
     async getOperationsByTransferId(transferId) {
-        console.log("[DictionaryPaymentDataStorage][getOperationsByTransferId] transferId: " + transferId)
+        console.log(`[DictionaryPaymentDataStorage][getOperationsByTransferId] request transferId: ${transferId}`)
         const response = [];
         let operation;
-        console.log("[DictionaryPaymentDataStorage][getOperationsByTransferId] operations: " + JSON.stringify(this.operations))
+
         Object.keys(this.operations).forEach(
             id => {
                 operation = this.operations[id];
@@ -70,18 +70,26 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        console.log("[DictionaryPaymentDataStorage][getOperationsByTransferId] response: " + JSON.stringify(response))
+        console.log(`[DictionaryPaymentDataStorage][getOperationsByTransferId] response: ${JSON.stringify(response)}`)
 
         return response
     }
 
 
     async getOperationsByStatus(status) {
+        console.log(`[DictionaryPaymentDataStorage][getOperationsByStatus] request status: ${status}`)
         const response = [];
         let operation;
 
-        Object.keys(this.operations).forEach(id => {
+        console.log(
+            `[DictionaryPaymentDataStorage][getOperationsByStatus] operations: ${JSON.stringify(this.operations)}`
+        )
+        Object.keys(this.operations).forEach(
+            id => {
                 operation = this.operations[id];
+                console.log(
+                    `[DictionaryPaymentDataStorage][getOperationsByStatus] operation: ${JSON.stringify(operation)}`
+                )
                 if (operation.status === status) response.push(Operation._clone(operation));
             }
         );
@@ -95,9 +103,9 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         let operation;
 
         try {
-            if (fromDate.getTime()>toDate.getTime())
-            throw Error("Date mismatch: fromDate is later than toDate")
-        
+            if (fromDate.getTime() > toDate.getTime())
+                throw Error("Date mismatch: fromDate is later than toDate")
+
             Object.keys(this.operations).forEach(
                 id => {
                     operation = this.operations[id];
@@ -105,7 +113,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
                         response.push(Operation._clone(operation));
                 }
             );
-        }catch (error) {
+        } catch (error) {
             console.log(error);
         }
 

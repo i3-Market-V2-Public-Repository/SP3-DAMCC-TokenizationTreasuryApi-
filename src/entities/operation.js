@@ -16,7 +16,7 @@
  *
  */
 
-NULL = {};
+
 
 
 class Operation {
@@ -46,6 +46,8 @@ class Operation {
         return Object.assign({}, origin);
     }
 }
+
+Operation.NULL = {};
 
 Operation.Status = {
     OPEN: "open",
