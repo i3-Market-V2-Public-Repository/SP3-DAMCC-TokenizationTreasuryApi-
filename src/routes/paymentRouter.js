@@ -89,7 +89,20 @@ const paymentController = require('../controllers/paymentController');
  *           date:
  *             type: string
  *             format: date-time
- *
+ *       Pay:
+ *         type: object
+ *         required:
+ *           - transferId
+ *           - transferCode
+ *         properties:
+ *           transferId:
+ *             type: string
+ *             format: uuid
+ *             description: auto-generated id of the transfer.
+ *           transferCode:
+ *             type: string
+ *             example: 'ES2703926222'
+ *             description: bank transfer id
  *       Error:
  *         type: object
  *         required:
@@ -219,7 +232,7 @@ router.post('/exchange-in', paymentController.exchangeIn);
  * /api/v1/payments/clearing:
  *   post:
  *     tags: [Payments]
- *     summary: Start the Marketplace clearing operation.
+ *     summary: Retrieve the transaction object to start the Marketplace clearing operation.
  *     description: >
  *       Send all the tokens that the marketplaces owns from other marketplaces and send them to tre proper owner
  *       creating the proper clearing_in or clearing_out operation.
@@ -245,5 +258,43 @@ router.post('/exchange-in', paymentController.exchangeIn);
  */
 router.post('/clearing', paymentController.clearing);
 
+
+/**
+ * @swagger
+ * /api/v1/payments/payment:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Generate the payment transaction object.
+ *     description: >
+ *       Pay fiat money to data providers or other marketplaces. It is required the transferId and the bank transfer
+ *       code.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           description: transferId and transactionObject needed to put ad operation as paid out.
+ *           schema:
+ *             $ref: '#/components/schemas/Pay'
+ *     responses:
+ *       200:
+ *        description: Returns the setPaid transaction object.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                transferId:
+ *                  type: string
+ *                  format: uuid
+ *                transactionObject:
+ *                  $ref: '#/components/schemas/TransactionObject'
+ *       400:
+ *        content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ */
+router.post('/payment', paymentController.setPaid);
 
 module.exports = router;
