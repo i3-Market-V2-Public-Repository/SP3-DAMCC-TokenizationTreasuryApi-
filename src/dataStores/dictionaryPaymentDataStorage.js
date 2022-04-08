@@ -33,8 +33,9 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         Object.keys(this.operations).forEach(id => {
             response.push(this.operations[id]);
         });
-
-        return response;
+        
+        const count = response.length;
+        return {response, count};
     }
 
 
@@ -55,7 +56,8 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        return response
+        const count = response.length;
+        return {response, count};
     }
 
     async getOperationsByTransferId(transferId) {
@@ -72,7 +74,8 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
 
         console.log(`[DictionaryPaymentDataStorage][getOperationsByTransferId] response: ${JSON.stringify(response)}`)
 
-        return response
+        const count = response.length;
+        return {response, count};
     }
 
 
@@ -95,7 +98,9 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         );
 
         console.log("[DictionaryPaymentDataStorage][getOperationsByStatus] response: " + JSON.stringify(response))
-        return response
+        
+        count = response.length;
+        return {response, count};
     }
 
     async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now())) {
@@ -118,7 +123,8 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         }
 
         console.log("[DictionaryPaymentDataStorage][getOperationsByDate] response: " + JSON.stringify(response))
-        return response
+        const count = response.length;
+        return {response, count};
     }
 
     async getOperationsByUser(user) {
@@ -132,7 +138,8 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        return response
+        const count = response.length;
+        return {response, count};
     }
 
     async createOperation(operation) {

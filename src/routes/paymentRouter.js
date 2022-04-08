@@ -184,6 +184,32 @@ const paymentController = require('../controllers/paymentController');
  *           Filter by operation user address in hexadecimal format i.e. 0xb794f5ea0ba39494ce839613fffba74279579268
  *         schema:
  *           type: string
+ *       - name: fromdate
+ *         in: query
+ *         required: false
+ *         description: >
+ *           Filter only the operations that took place after and incuding the date specified in UTC format i.e. 2021-03-30T15:22:50.145Z
+ *         schema:
+ *           type: date
+ *       - name: todate
+ *         in: query
+ *         required: false
+ *         description: >
+ *           Filter only the operations that took place before the date specified in UTC format i.e. 2021-03-30T15:22:50.145Z
+ *         schema:
+ *           type: date
+ *       - name: page
+ *         in: query
+ *         required: false
+ *         description: return only the nth page of paginated results. Used always with page_size param.
+ *         schema:
+ *           type: number
+ *       - name: page_size
+ *         in: query
+ *         required: false
+ *         description: the number of records each result page contains. Used always with page param.
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *        description: The paginated list of the operations.
