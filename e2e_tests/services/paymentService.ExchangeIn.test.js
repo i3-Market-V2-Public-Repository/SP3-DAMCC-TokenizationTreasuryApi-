@@ -41,17 +41,16 @@ describe("Payment Service test suit", async () => {
     let tokenTransferredHandler;
 
     const dataStore = new SequelizePaymentDataStore(
-        'test_db',
-        'test_user',
-        'test_pass', {
-            host: 'localhost',
+        process.env.POSTGRES_DB,
+        process.env.POSTGRES_USER,
+        process.env.POSTGRES_PASSWORD, {
+            host: process.env.POSTGRES_HOST || 'localhost',
             dialect: 'postgres',
             logging: false
         }
     );
 
     beforeEach(async () => {
-            dataStore.initModel();
             await dataStore.sequelize.sync();
             await OperationModel.truncate();
 

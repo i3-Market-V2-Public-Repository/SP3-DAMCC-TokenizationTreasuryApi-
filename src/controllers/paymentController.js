@@ -20,68 +20,63 @@ const catchAsync = require('../utils/catchAsync');
 const paymentService = require('../services/paymentService').getInstance();
 
 exports.getOperations = catchAsync(async (req, res, next) => {
-    const page_size = new Number (req.query.page_size);
-    const limit =  (req.query.page_size && !Number.isNaN(page_size)) ? page_size : Number.MAX_SAFE_INTEGER;
+    const page_size = req.query.page_size;
+    const limit =  (page_size && !Number.isNaN(page_size)) ? page_size : null;
 
-    const page = new Number(req.query.page) || 1;
-    const offset = (req.query.page && Number.isNaN(page)) ? page * page_size : 0;
+    const page = req.query.page || 1;
+    const offset = (page && !Number.isNaN(page) && page_size && !Number.isNaN(page_size)) ? (page-1) * page_size : null;
 
     if (req.query.transferId){
-        const {operations, count} = await paymentService.getOperationsByTransferId(req.query.transferId, limit, offset);
+        const operations = await paymentService.getOperationsByTransferId(req.query.transferId, offset, limit);
         return res.json({
-            count: count,
-            page: page,
+            page:  Number(page),
             page_size: operations.length,
-            total_pages: Math.ceil(Number.isNaN(page_size) ? 1: count / page_size),
             operations: operations
         });
     }
        
     if (req.query.type){
-        const {operations, count} = await paymentService.getOperationsByType(req.query.type, limit, offset);
+        const operations = await paymentService.getOperationsByType(req.query.type, offset, limit);
         return res.json({
-            count: count,
-            page: page,
+            page: Number(page),
             page_size: operations.length,
-            total_pages: Math.ceil(Number.isNaN(page_size) ? 1: count / page_size),
             operations: operations
         });
     }
 
     if (req.query.status){
-        const {operations, count} = await paymentService.getOperationsByStatus(req.query.status, limit, offset);
+        const  operations = await paymentService.getOperationsByStatus(req.query.status, offset, limit);
         return res.json({
-            count: count,
-            page: page,
+            page: Number(page),
             page_size: operations.length,
-            total_pages: Math.ceil(Number.isNaN(page_size) ? 1: count / page_size),
             operations: operations
         });
     }
 
     if (req.query.user){
-        const {operations, count} = await paymentService.getOperationsByUser(req.query.user, limit, offset);
+        const operations  = await paymentService.getOperationsByUser(req.query.user, offset, limit);
         return res.json({
-            count: count,
-            page: page,
+            page:  Number(page),
             page_size:operations.length,
-            total_pages: Math.ceil(Number.isNaN(page_size) ? 1: count / page_size),
             operations: operations
         });
     }
 
     if (req.query.fromdate || req.query.todate){
-        const {operations, count} = await paymentService.getOperationsByDate(req.query.fromdate, req.query.todate, limit, offset);
+        const operations = await paymentService.getOperationsByDate(req.query.fromdate, req.query.todate, offset, limit);
         return res.json({
-            count: count,
-            page: page,
+            page:  Number(page),
             page_size: operations.length,
-            total_pages: Math.ceil(Number.isNaN(page_size) ? 1: count / page_size),
             operations: operations
         });
     }
 
-    return res.json((await paymentService.getOperations(limit, offset)))
+    const operations = await paymentService.getOperations(offset, limit);
+    return res.json({
+        page: Number(page),
+        page_size: operations.length,
+        operations: operations
+    });
 });
 
 exports.exchangeIn = catchAsync(async (req, res, next) => {

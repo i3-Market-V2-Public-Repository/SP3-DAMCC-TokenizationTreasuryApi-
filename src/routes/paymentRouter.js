@@ -26,15 +26,9 @@ const paymentController = require('../controllers/paymentController');
  *     schemas:
  *       GenericList:
  *         required:
- *          - count
  *          - page
  *          - page_size
- *          - total_pages
- *         properties:
- *          count:
- *            type: Number
- *            description: The total number of results matching the user's query.
- *            example: 50
+ *         properties:S
  *          page:
  *            type: Number
  *            description: The number of the current page of paginated results.
@@ -43,10 +37,6 @@ const paymentController = require('../controllers/paymentController');
  *            type: Number
  *            description: The number of results contained in each page.
  *            example: 10
- *          total_pages:
- *            type: Number
- *            description: The total number of pages.
- *            example: 5
  *       TransactionObject:
  *         type: object
  *         required:

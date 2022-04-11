@@ -29,9 +29,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     constructor(db, user, password, config) {
         super();
         this.sequelize = new Sequelize(db, user, password, config);
-    }
 
-    initModel() {
         OperationModel.init(
             {
                 id: {
@@ -67,7 +65,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
             }
         )
         OperationModel.associate = (models) => {
-
+    
         };
     }
 
@@ -79,7 +77,8 @@ class SequelizePaymentDataStore extends PaymentDataStore {
      */
      async getOperations(offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
-            return await OperationModel.findAndCountAll({
+            console.log(`offest:${offset}, limit:${limit}`)
+            return await OperationModel.findAll({
                 offset: offset,
                 limit: limit
             });
@@ -114,7 +113,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
      */
     async getOperationsByTransferId(transferId, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
-            return await OperationModel.findAndCountAll({
+            return await OperationModel.findAll({
                 where: {
                     transferId: transferId
                 },
@@ -135,7 +134,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
      */
     async getOperationsByType(type, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
-            return await OperationModel.findAndCountAll({
+            return await OperationModel.findAll({
                 where: {
                     type: type
                 },
@@ -156,7 +155,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
      */
     async getOperationsByStatus(status, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
-            return await OperationModel.findAndCountAll({
+            return await OperationModel.findAll({
                 where: {
                     status: status
                 },
@@ -181,7 +180,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
             if (fromDate.getTime()>toDate.getTime())
             throw Error("Date mismatch: fromDate is later than toDate")
         
-            return await OperationModel.findAndCountAll({
+            return await OperationModel.findAll({
                 where: {
                     [Op.and]: [
                         { date: {[Op.gte]: fromDate}},
@@ -205,7 +204,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
      */
      async getOperationsByUser(user, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
-            return await OperationModel.findAndCountAll({
+            return await OperationModel.findAll({
                 where: {
                     user: user
                 },

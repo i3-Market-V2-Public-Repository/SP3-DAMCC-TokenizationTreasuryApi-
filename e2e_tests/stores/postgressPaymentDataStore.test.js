@@ -41,10 +41,10 @@ describe("Operation DataStore test suit", () => {
 
 
     const dataStore = new SequelizePaymentDataStore(
-        'test_db',
-        'test_user',
-        'test_pass', {
-            host: 'localhost',
+        process.env.POSTGRES_DB,
+        process.env.POSTGRES_USER,
+        process.env.POSTGRES_PASSWORD, {
+            host: process.env.POSTGRES_HOST || 'localhost',
             dialect: 'postgres',
             logging: false
         }
@@ -54,7 +54,6 @@ describe("Operation DataStore test suit", () => {
      * Reset DB before start testing
      */
     beforeEach(async () => {
-        dataStore.initModel();
         await dataStore.sequelize.sync();
         await OperationModel.truncate();
     })
@@ -120,21 +119,47 @@ describe("Operation DataStore test suit", () => {
     );
 
     it("Given an Operation frromDate and toDate When there are multiple operations Should return the operations",
-    async () => {
-        await dataStore.createOperation(OPERATION_ENTITY);
-        await dataStore.createOperation(OPERATION_ENTITY2);
+        async () => {
+            await dataStore.createOperation(OPERATION_ENTITY);
+            await dataStore.createOperation(OPERATION_ENTITY2);
 
-        const operations = await dataStore.getOperationsByDate("2020-02-01 00:00:01.200+ZZ", "2030-02-01 00:00:01.200+ZZ");
+            const operations = await dataStore.getOperationsByDate("2020-02-01 00:00:01.200+ZZ", "2030-02-01 00:00:01.200+ZZ");
 
-        const operation = operations[0];
-        assert.equal(operations.length, 2);
-        assert.strictEqual(operation.user, OPERATION_ENTITY.user);
-        assert.strictEqual(operation.transferId, OPERATION_ENTITY.transferId);
-        assert.strictEqual(operation.status, OPERATION_ENTITY.status);
-        assert.strictEqual(operation.type, OPERATION_ENTITY.type);
-    }
-);
+            const operation = operations[0];
+            assert.equal(operations.length, 2);
+            assert.strictEqual(operation.user, OPERATION_ENTITY.user);
+            assert.strictEqual(operation.transferId, OPERATION_ENTITY.transferId);
+            assert.strictEqual(operation.status, OPERATION_ENTITY.status);
+            assert.strictEqual(operation.type, OPERATION_ENTITY.type);
+        }
+    );
 
+    it("Given pagination params should return a subset of the results",
+        async () => {
+            await dataStore.createOperation(OPERATION_ENTITY);
+            await dataStore.createOperation(OPERATION_ENTITY2);
+
+            const operations = await dataStore.getOperations(0,1);  //get 1 result with offset 0
+
+            const operation = operations[0];
+            assert.equal(operations.length, 1);
+
+            assert.strictEqual(operation.user, OPERATION_ENTITY.user);
+            assert.strictEqual(operation.transferId, OPERATION_ENTITY.transferId);
+            assert.strictEqual(operation.status, OPERATION_ENTITY.status);
+            assert.strictEqual(operation.type, OPERATION_ENTITY.type);
+
+            operations = await dataStore.getOperations(1,1); //get 1 result with offset 1
+
+            operation = operations[0];
+            assert.equal(operations.length, 1);
+
+            assert.strictEqual(operation.user, OPERATION_ENTITY2.user);
+            assert.strictEqual(operation.transferId, OPERATION_ENTITY2.transferId);
+            assert.strictEqual(operation.status, OPERATION_ENTITY2.status);
+            assert.strictEqual(operation.type, OPERATION_ENTITY2.type);
+        }
+    );
 
     it("Given an Operation id When call destroy Should be able to delete an existing operation",
         async () => {
