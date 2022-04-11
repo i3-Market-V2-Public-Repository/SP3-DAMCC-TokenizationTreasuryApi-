@@ -29,7 +29,7 @@ const Operation = require("../../entities/operation");
 
 require('dotenv').config();
 
-describe("Payment Service test suit", async () => {
+describe("Payment Service Clearing test suit", async () => {
 
     process.env.MARKETPLACE_ADDRESS = process.env.MARKETPLACE_ADDRESS || Network.MP_ADDRESS
 

@@ -23,12 +23,14 @@ const TokenTransferredHandler = require("../../services/enventHandlers/tokenTran
 const TreasuryContract = require('./fakeTreasuryContractService');
 
 const helpers = require("../helpers");
+const Network = require("../../../test_networks/ganacheNetwork");
 const assert = require('assert').strict;
 
 
 require('dotenv').config();
 
-describe("Payment Service test suit", async () => {
+describe("Payment Service Exchange in test suit", async () => {
+
 
     const USER_ADDRESS = '0x3c23fd1f50cde56530f4edcc173b48d1d65ea05c';
     const MP_ADDRESS = process.env.MARKETPLACE_ADDRESS;
@@ -49,7 +51,8 @@ describe("Payment Service test suit", async () => {
         }
     );
 
-    it("Given a user address and an amount When the MP call exchangeIn Then return the operation",
+    it(
+        "Given a user address and an amount When the MP call exchangeIn Then return the operation",
         async () => {
             const response = await paymentService.exchangeIn(USER_ADDRESS, 30);
 
@@ -60,7 +63,8 @@ describe("Payment Service test suit", async () => {
         }
     );
 
-    it("Given an exchangeIn event When the event is captured Then Return two operations with different status",
+    it(
+        "Given an exchangeIn event When the event is captured Then Return two operations with different status",
         async () => {
             const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 30)).operation;
             const closedOperation = await tokenTransferredHandler.execute(
@@ -83,7 +87,8 @@ describe("Payment Service test suit", async () => {
         }
     );
 
-    it("Given an exchangeIn event with a different MP in the sender When a exchange in event is captured " +
+    it(
+        "Given an exchangeIn event with a different MP in the sender When a exchange in event is captured " +
         "Then Do NOT create the new operation",
         async () => {
             const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 30)).operation;

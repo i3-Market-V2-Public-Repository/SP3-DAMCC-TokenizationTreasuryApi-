@@ -16,7 +16,7 @@
  *
  */
 
-require('dotenv').config()
+require('dotenv').config();
 const app = require('./app');
 const TreasuryContract = require('./services/treasuryContractServiceWithCustomEventHandler');
 const TokenTransferredHandler = require('./services/enventHandlers/tokenTransferredHandler');
@@ -27,14 +27,15 @@ const WebhookHandler = require("./services/enventHandlers/webhookHandler");
 const DictionaryPaymentDataStorage = require("./dataStores/dictionaryPaymentDataStorage");
 const SequelizePaymentDataStore = require("./dataStores/sequelizePaymentDataStore");
 
-process.env.ETH_HOST = process.env.ETH_HOST || Network.NETWORK
-process.env.CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || Network.CONTRACT_ADDRESS
-process.env.MARKETPLACE_ADDRESS = process.env.MARKETPLACE_ADDRESS || Network.MP_ADDRESS
-process.env.GAS_LIMIT = process.env.GAS_LIMIT || Network.GAS_PRICE
-process.env.CHAIN_ID = process.env.CHAIN_ID || Network.CHAIN_ID
+process.env.ETH_HOST = process.env.ETH_HOST || Network.NETWORK;
+process.env.CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || Network.CONTRACT_ADDRESS;
+process.env.MARKETPLACE_ADDRESS = process.env.MARKETPLACE_ADDRESS || Network.MP_ADDRESS;
+process.env.GAS_LIMIT = process.env.GAS_LIMIT || Network.GAS_PRICE;
+process.env.CHAIN_ID = process.env.CHAIN_ID || Network.CHAIN_ID;
+process.env.COMMUNITY_ADDRESS = process.env.COMMUNITY_ADDRESS || Network.COMMUNITY_ADDRESS;
 
-process.env.PORT = process.env.PORT || 3001
-process.env.WEBHOOK = process.env.WEBHOOK || "http://127.0.0.1:3000/api/webhook"
+process.env.PORT = process.env.PORT || 3001;
+process.env.WEBHOOK = process.env.WEBHOOK || "http://127.0.0.1:3000/api/webhook";
 
 function getPaymentStore() {
     const dataStore = new SequelizePaymentDataStore(
@@ -77,5 +78,6 @@ deployPaymentService(paymentStore).then(() => {
 
 const port = process.env.PORT;
 const server = app.listen(port, () => {
-    console.log(`App running on port ${port}...`);
+    console.log(`App running on  http://127.0.0.1:${port}`);
+    console.log(`Swagger on http://127.0.0.1:${port}/api-docs/`);
 });

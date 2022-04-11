@@ -29,7 +29,7 @@ const assert = require('assert').strict;
 
 require('dotenv').config();
 
-describe("Payment Service test suit", async () => {
+describe("Payment Service ExchangeOut test suit", async () => {
 
     const USER_ADDRESS = '0x3c23fd1f50cde56530f4edcc173b48d1d65ea05c';
     const USER2_ADDRESS = '0x7a64510da72f8b1d4b11f8d76841d16b039a8c10';

@@ -70,16 +70,17 @@ class PaymentService {
     }
 
     async exchangeIn(userAddress, tokens) {
-        console.log(`[PaymentService][exchangeIn] Request: \nUserAddress: ${userAddress} \nTokens: ${tokens}`);
+        console.log(`[PaymentService][exchangeIn] Request: 
+        UserAddress: ${userAddress} 
+        Tokens: ${tokens}`);
+
         const response = {}
 
         try {
             let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
             operation = await this.store.createOperation(operation);
 
-            const transactionObject = await this.treasurySmartContract.exchangeIn(
-                operation.id, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
-            )
+            const transactionObject = await this.treasurySmartContract.exchangeIn(operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens)
             response.transferId = operation.transferId;
             response.operation = operation;
             response.transactionObject = transactionObject;
@@ -91,25 +92,20 @@ class PaymentService {
     }
 
     async exchangeOut(userAddress) {
-        console.log(`[PaymentService][exchangeOut] Request: \nUserAddress: ${userAddress}`);
+        console.log(`[PaymentService][exchangeOut] Request: 
+        UserAddress: ${userAddress}`);
 
         try {
             let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", userAddress);
             operation = await this.store.createOperation(operation);
-            const transactionObject = await this.treasurySmartContract.exchangeOut(
-                operation.id, userAddress, process.env.MARKETPLACE_ADDRESS
-            )
-            transactionObject.transferId = operation.id;
+            const transactionObject = await this.treasurySmartContract.exchangeOut(operation.transferId, userAddress, process.env.MARKETPLACE_ADDRESS)
+            transactionObject.transferId = operation.transferId;
             transactionObject.operation = operation;
             console.log(`[PaymentService][exchangeOut] Response: ${JSON.stringify(transactionObject)}`);
             return transactionObject;
         } catch (err) {
             console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
-    }
-
-    async setPaid(transferId, transferCode) {
-        return await this.treasurySmartContract.setPaid(transferId, process.env.MARKETPLACE_ADDRESS, transferCode);
     }
 
     async clearing() {
@@ -144,7 +140,46 @@ class PaymentService {
         return address !== process.env.MARKETPLACE_ADDRESS && balance > 0;
     }
 
+    async setPaid(transferId, transferCode) {
+        return await this.treasurySmartContract.setPaid(transferId, process.env.MARKETPLACE_ADDRESS, transferCode);
+    }
 
+
+    async feePayment(senderAddress, dataProviderMPAddress, feeAmount) {
+        console.log(`[PaymentService][feePayment] Request:  
+        senderAddress: ${senderAddress} 
+        dataProviderMPAddress: ${dataProviderMPAddress} 
+        feeAmount: ${feeAmount}`
+        );
+
+        const response = {}
+        let communityOperation = new Operation(
+            nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, process.env.COMMUNITY_ADDRESS
+        );
+        let MPOperation = new Operation(
+            nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, dataProviderMPAddress
+        );
+        try {
+            communityOperation = await this.store.createOperation(communityOperation);
+            MPOperation = await this.store.createOperation(MPOperation);
+
+            const transactionObject = await this.treasurySmartContract.feePayment(
+                communityOperation.transferId,
+                MPOperation.transferId,
+                dataProviderMPAddress,
+                feeAmount,
+                senderAddress
+            )
+
+            response.transferIds = [communityOperation.transferId, MPOperation.transferId];
+            response.operations = [communityOperation, MPOperation];
+            response.transactionObject = transactionObject;
+            console.log(`[PaymentService][feePayment] Response:  ${JSON.stringify(response)}`);
+            return response;
+        } catch (err) {
+            console.log(`[PaymentService][feePayment] Error → ${err}`);
+        }
+    }
 }
 
 module.exports = PaymentService;

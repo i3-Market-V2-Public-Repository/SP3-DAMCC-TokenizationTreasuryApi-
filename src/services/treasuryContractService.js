@@ -46,12 +46,12 @@ class TreasuryContractService extends TreasuryContract {
     connect() {
         return new Promise((resolve) => {
             try {
-                console.log("connecting to ", process.env.ETH_HOST);
+                console.log(`connecting to blockain network ${process.env.ETH_HOST}`);
                 this.web3 = new Web3(Web3.givenProvider || process.env.ETH_HOST);
                 this.web3.eth.net.isListening().then((status) => {
-                        console.log("Connection status ", status)
+                        console.log(`Blockchain network connection status: ${status}`)
                         this.initSmartContract();
-                        resolve(true);
+                        resolve(status);
                     }
                 ).catch(error => {
                     console.log('Could not connect to the Blockchain host provided')
@@ -106,6 +106,17 @@ class TreasuryContractService extends TreasuryContract {
             transferId,
             providerAddress,
             amount
+        )
+    }
+
+    feePaid(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
+        return this.sendContractMethod(
+            'feePayment',
+            senderAddress,
+            communityTransferId,
+            marketplaceTransferId,
+            dataProviderMPAddress,
+            feeAmount
         )
     }
 

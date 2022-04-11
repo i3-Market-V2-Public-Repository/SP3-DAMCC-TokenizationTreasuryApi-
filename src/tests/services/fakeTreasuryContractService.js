@@ -70,30 +70,25 @@ class FakeTreasuryContractService extends TreasuryContract {
     addMarketPlace(senderAddress, marketplaceAddress) {
         return new Promise(resolve => {
             NONCE += 1;
-            setTimeout(
-                resolve({"transactionObject": new TransactionObject(senderAddress)}),
-                1500
-            )
+            setTimeout(resolve({"transactionObject": new TransactionObject(senderAddress)}), 1500)
         });
     }
 
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         return new Promise(resolve => {
             NONCE += 1;
-            setTimeout(
-                resolve({"transferId": transferId, "transactionObject": new TransactionObject(senderAddress)}),
-                1500
-            )
+            setTimeout(resolve({
+                "transferId": transferId, "transactionObject": new TransactionObject(senderAddress)
+            }), 1500)
         });
     }
 
     async exchangeOut(transferId, senderAddress, marketplaceAddress) {
         return new Promise(resolve => {
             NONCE += 1;
-            setTimeout(
-                resolve({"transferId": transferId, "transactionObject": new TransactionObject(senderAddress)}),
-                1500
-            )
+            setTimeout(resolve({
+                "transferId": transferId, "transactionObject": new TransactionObject(senderAddress)
+            }), 1500)
         });
     }
 
@@ -111,9 +106,27 @@ class FakeTreasuryContractService extends TreasuryContract {
     clearing(tokenTransfers, senderAddress) {
         console.log(`[FakeTreasuryContract][clearing] ${JSON.stringify(tokenTransfers)} ${senderAddress}`)
         this.clearingArgs = {
-            tokenTransfers: tokenTransfers,
-            senderAddress: senderAddress
+            tokenTransfers: tokenTransfers, senderAddress: senderAddress
         }
+    }
+
+    // feePaid(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
+    //     return this.sendContractMethod(
+    //         'feePayment',
+    //         senderAddress,
+    //         communityTransferId,
+    //         marketplaceTransferId,
+    //         dataProviderMPAddress,
+    //         feeAmount
+    //     )
+    // }
+
+    feePayment(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
+        console.log(`[FakeTreasuryContract][feePaid] Request: 
+        communityTransferId: ${communityTransferId}
+        marketplaceTransferId: ${marketplaceTransferId}
+        feeAmount: ${feeAmount}
+        senderAddress: ${senderAddress}`)
     }
 
     //

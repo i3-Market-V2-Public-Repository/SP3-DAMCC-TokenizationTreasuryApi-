@@ -28,44 +28,45 @@ class TokenTransferredHandler extends EventHandler {
     }
 
     async execute(event) {
-        console.log("[PaymentServiceEventHandler][execute] Event: " + JSON.stringify(event));
+        console.log(`[PaymentServiceEventHandler][execute] Event: ${JSON.stringify(event)}`);
 
-        if (event.fromAddress === process.env.MARKETPLACE_ADDRESS && event.operation === Operation.Type.EXCHANGE_IN) {
-            return await this._closeExchangeInOperation(event);
+        if (this.isThisMPExchangeInEvent(event)) {
+            return await this._createOperation(event, Operation.Status.CLOSED);
         } else if (event.operation === Operation.Type.EXCHANGE_OUT) {
-            return await this._handleExchangeOutOperation(event);
-        } else if (event.operation === Operation.Type.CLEARING) {
+            return await this._createOperation(event, Operation.Status.IN_PROGRESS);
+        } else if (this._isThisMPClearingEvent(event)) {
             return await this._handleClearingOperation(event)
+        } else if (event.operation === Operation.Type.FEE_PAYMENT) {
+            return await this._createOperation(event, Operation.Status.CLOSED);
         } else {
-            console.log("[PaymentServiceEventHandler][execute] Event" + event.operation + " NOT FOUND")
+            console.log(`[PaymentServiceEventHandler][execute] Event: ${event.operation} NOT FOUND`)
         }
     }
 
-    async _closeExchangeInOperation(event) {
+    isThisMPExchangeInEvent(event) {
+        return event.fromAddress === process.env.MARKETPLACE_ADDRESS && event.operation === Operation.Type.EXCHANGE_IN;
+    }
+
+    async _createOperation(event, status) {
         let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
-        console.log("[PaymentServiceEventHandler][_closeOperation] operations " + JSON.stringify(operations));
+        console.log("[PaymentServiceEventHandler][_createOperation] operations " + JSON.stringify(operations));
+
         if (operations && operations.length === 1 && operations[0].status === Operation.Status.OPEN) {
-            let operation = new Operation(
-                event.transferId, Operation.Type.EXCHANGE_IN, Operation.Status.CLOSED, operations[0].user
-            );
+            let operation = new Operation(operations[0].transferId, operations[0].type, status, operations[0].user);
             return await this.paymentStore.createOperation(operation);
         }
 
         return Operation.NULL
     }
 
-    async _handleExchangeOutOperation(event) {
-        let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
-        console.log("[PaymentServiceEventHandler][_handleExchangeOutOperation] operations " + JSON.stringify(operations));
-        if (operations && operations.length === 1 && operations[0].status === Operation.Status.OPEN) {
-            let operation = new Operation(
-                event.transferId, Operation.Type.EXCHANGE_OUT, Operation.Status.IN_PROGRESS, operations[0].user
-            );
-
-            return await this.paymentStore.createOperation(operation);
+    _isThisMPClearingEvent(event) {
+        if (event.operation === Operation.Type.CLEARING) {
+            if (event.fromAddress === process.env.MARKETPLACE_ADDRESS ||
+                event.toAddress === process.env.MARKETPLACE_ADDRESS) {
+                return true;
+            }
         }
-
-        return Operation.NULL;
+        return false;
     }
 
     async _handleClearingOperation(event) {
@@ -73,12 +74,10 @@ class TokenTransferredHandler extends EventHandler {
         let operation;
 
         if (event.fromAddress !== process.env.MARKETPLACE_ADDRESS && event.toAddress !== process.env.MARKETPLACE_ADDRESS) {
-            console.log(`[PaymentServiceEventHandler][_handleClearingOperation] No es}`)
             return Operation.NULL;
         }
 
         if (event.fromAddress === process.env.MARKETPLACE_ADDRESS) {
-            console.log(`[PaymentServiceEventHandler][_handleClearingOperation] Clearing in}`)
             operation = new Operation(
                 event.transferId, Operation.ClearingSubtypes.CLEARING_IN, Operation.Status.OPEN, event.toAddress
             );

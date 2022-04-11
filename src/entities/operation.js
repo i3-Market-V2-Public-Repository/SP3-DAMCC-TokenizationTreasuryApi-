@@ -17,8 +17,6 @@
  */
 
 
-
-
 class Operation {
 
     constructor(transferId, type, status, user) {
@@ -58,12 +56,15 @@ Operation.Status = {
 Operation.Type = {
     EXCHANGE_IN: "exchange_in",
     EXCHANGE_OUT: "exchange_out",
-    CLEARING: "clearing"
+    CLEARING: "clearing",
+    FEE_PAYMENT: "fee_payment"
 }
 
 Operation.ClearingSubtypes = {
     CLEARING_IN: "clearing_in",
     CLEARING_OUT: "clearing_out",
 }
+
+Operation.COMMUNITY = 'Community';
 
 module.exports = Operation;
