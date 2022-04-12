@@ -160,6 +160,41 @@ describe("Operation DataStore test suit", () => {
             assert.strictEqual(operation.type, OPERATION_ENTITY2.type);
         }
     );
+    
+    it("Given large page_size should return all of the results",
+    async () => {
+        await dataStore.createOperation(OPERATION_ENTITY);
+        await dataStore.createOperation(OPERATION_ENTITY2);
+
+        const operations = await dataStore.getOperations(0,100);  //get 100 results with offset 0
+
+
+        assert.equal(operations.length, 2);
+        
+        const operation = operations[0];
+        assert.strictEqual(operation.user, OPERATION_ENTITY.user);
+        assert.strictEqual(operation.transferId, OPERATION_ENTITY.transferId);
+        assert.strictEqual(operation.status, OPERATION_ENTITY.status);
+        assert.strictEqual(operation.type, OPERATION_ENTITY.type);
+
+        operation = operations[1];
+        assert.strictEqual(operation.user, OPERATION_ENTITY2.user);
+        assert.strictEqual(operation.transferId, OPERATION_ENTITY2.transferId);
+        assert.strictEqual(operation.status, OPERATION_ENTITY2.status);
+        assert.strictEqual(operation.type, OPERATION_ENTITY2.type);
+    });
+
+    it("Given large pagenumber should return an empty array",
+    async () => {
+        await dataStore.createOperation(OPERATION_ENTITY);
+        await dataStore.createOperation(OPERATION_ENTITY2);
+
+        const operations = await dataStore.getOperations(1000,2);  //get 2 results with offset 100
+
+        assert.equal(operations.length, 0);
+        
+    });
+
 
     it("Given an Operation id When call destroy Should be able to delete an existing operation",
         async () => {
