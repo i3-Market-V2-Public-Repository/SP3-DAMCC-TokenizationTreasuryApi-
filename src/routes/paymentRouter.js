@@ -28,7 +28,7 @@ const paymentController = require('../controllers/paymentController');
  *         required:
  *          - page
  *          - page_size
- *         properties:S
+ *         properties:
  *          page:
  *            type: Number
  *            description: The number of the current page of paginated results.
