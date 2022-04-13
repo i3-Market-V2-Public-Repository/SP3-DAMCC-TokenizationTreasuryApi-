@@ -40,11 +40,11 @@ exports.getOperations = catchAsync(async (req, res, next) => {
 });
 
 exports.exchangeIn = catchAsync(async (req, res, next) => {
-    console.log(`Body: ${JSON.stringify(req.body)}`)
     const {userAddress, tokens} = req.body
 
-    if (!userAddress || !tokens)
+    if (!userAddress || !tokens) {
         return res.status(400).json({message: 'Must provide userAddress and tokens'});
+    }
 
     return res.json((await paymentService.exchangeIn(userAddress, tokens)));
 });
@@ -52,8 +52,9 @@ exports.exchangeIn = catchAsync(async (req, res, next) => {
 exports.exchangeOut = catchAsync(async (req, res, next) => {
     const {senderAddress, marketplaceAddress} = req.body
 
-    if (!marketplaceAddress)
-        return res.status(400).json({message: 'Must provide the marketplaceAddress'});
+    if (!senderAddress || !marketplaceAddress) {
+        return res.status(400).json({message: 'Must provide the senderAddress and marketplaceAddress'});
+    }
 
     return res.json((await paymentService.exchangeOut(senderAddress, marketplaceAddress)));
 });
@@ -66,6 +67,11 @@ exports.clearing = catchAsync(async (req, res, next) => {
 
 exports.setPaid = catchAsync(async (req, res, next) => {
     const {senderAddress, transferId, transferCode} = req.body
+
+    if (!senderAddress || !transferId || !transferCode) {
+        return res.status(400).json({message: 'Must provide senderAddress, transferId and transferCode'});
+    }
+
     return res.json((await paymentService.setPaid(senderAddress, transferId, transferCode)));
 });
 
