@@ -122,7 +122,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         return response.slice(offset, limit);
     }
 
-    async getOperationsByUser(useroffset=0, limit=Number.MAX_SAFE_INTEGER) {
+    async getOperationsByUser(user, userOffset=0, limit=Number.MAX_SAFE_INTEGER) {
         const response = [];
         let operation;
 
@@ -133,7 +133,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        return response.slice(offset, limit);
+        return response.slice(userOffset, limit);
     }
 
     async createOperation(operation) {
