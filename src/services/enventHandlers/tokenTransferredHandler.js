@@ -30,7 +30,7 @@ class TokenTransferredHandler extends EventHandler {
     async execute(event) {
         console.log(`[PaymentServiceEventHandler][execute] Event: ${JSON.stringify(event)}`);
 
-        if (this.isThisMPExchangeInEvent(event)) {
+        if (this._isThisMPExchangeInEvent(event)) {
             return await this._createOperation(event, Operation.Status.CLOSED);
         } else if (event.operation === Operation.Type.EXCHANGE_OUT) {
             return await this._createOperation(event, Operation.Status.IN_PROGRESS);
@@ -43,9 +43,11 @@ class TokenTransferredHandler extends EventHandler {
         }
     }
 
-    isThisMPExchangeInEvent(event) {
+    _isThisMPExchangeInEvent(event) {
         return event.fromAddress === process.env.MARKETPLACE_ADDRESS && event.operation === Operation.Type.EXCHANGE_IN;
     }
+
+
 
     async _createOperation(event, status) {
         let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);

@@ -50,12 +50,12 @@ exports.exchangeIn = catchAsync(async (req, res, next) => {
 });
 
 exports.exchangeOut = catchAsync(async (req, res, next) => {
-    const userAddress = req.body
+    const {senderAddress, marketplaceAddress} = req.body
 
-    if (!userAddress)
-        return res.status(400).json({message: 'Must provide the userAddress'});
+    if (!marketplaceAddress)
+        return res.status(400).json({message: 'Must provide the marketplaceAddress'});
 
-    return res.json((await paymentService.exchangeOut(userAddress)));
+    return res.json((await paymentService.exchangeOut(senderAddress, marketplaceAddress)));
 });
 
 

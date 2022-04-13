@@ -185,7 +185,7 @@ router.get('/operations', paymentController.getOperations);
  * /api/v1/payments/exchange-in:
  *   post:
  *     tags: [Payments]
- *     summary: Retrieve the transaction object to perform a exchangeIn and create the operation.
+ *     summary: Retrieve the transaction object to perform a exchangeIn.
  *     description: >
  *       Retrieve the transaction object to perform a exchangeIn and create the operation.
  *     requestBody:
@@ -225,6 +225,52 @@ router.get('/operations', paymentController.getOperations);
  *
  */
 router.post('/exchange-in', paymentController.exchangeIn);
+
+/**
+ * @swagger
+ * /api/v1/payments/exchange-out:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Retrieve the transaction object to perform a exchangeOut.
+ *     description: >
+ *       Retrieve the transaction object to perform a exchangeOut.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           description: Address of the user that the marketplaces want to perform the exchangeIn.
+ *           schema:
+ *             type: object
+ *             properties:
+ *               senderAddress:
+ *                 type: string
+ *                 example: '0xb5F3c73813B63336D8A3434B46f0164F57662f71'
+ *               marketplaceAddress:
+ *                 type: string
+ *                 example: '0xaab3c73813B63336D8A3434B46f0164F57662e00'
+ *     responses:
+ *       200:
+ *        description: Returns the transaction object and the operation description.
+ *        content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 transferId:
+ *                   type: string
+ *                   format: uuid
+ *                 transactionObject:
+ *                   $ref: '#/components/schemas/TransactionObject'
+ *                 operation:
+ *                   $ref: '#/components/schemas/Operation'
+ *       400:
+ *        content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ */
+router.post('/exchange-out', paymentController.exchangeOut);
 
 
 /**

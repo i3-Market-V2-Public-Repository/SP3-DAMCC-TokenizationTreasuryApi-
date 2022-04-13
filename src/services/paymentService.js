@@ -75,37 +75,50 @@ class PaymentService {
         Tokens: ${tokens}`);
 
         const response = {}
+        let transactionObject;
+        let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
 
         try {
-            let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
             operation = await this.store.createOperation(operation);
-
-            const transactionObject = await this.treasurySmartContract.exchangeIn(operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens)
-            response.transferId = operation.transferId;
-            response.operation = operation;
-            response.transactionObject = transactionObject;
-            console.log(`[PaymentService][exchangeIn] Response:  ${JSON.stringify(response)}`);
-            return response;
+            transactionObject = await this.treasurySmartContract.exchangeIn(
+                operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
+            )
         } catch (err) {
             console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
+
+        response.transferId = operation.transferId;
+        response.operation = operation;
+        response.transactionObject = transactionObject;
+
+        console.log(`[PaymentService][exchangeIn] Response:  ${JSON.stringify(response)}`);
+        return response;
     }
 
-    async exchangeOut(userAddress) {
+    async exchangeOut(senderAddress, marketplaceAddress) {
         console.log(`[PaymentService][exchangeOut] Request: 
-        UserAddress: ${userAddress}`);
+        senderAddress: ${senderAddress}
+        marketplaceAddress: ${marketplaceAddress}`);
+
+        const response = {};
+        let transactionObject;
+        let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", senderAddress);
 
         try {
-            let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", userAddress);
             operation = await this.store.createOperation(operation);
-            const transactionObject = await this.treasurySmartContract.exchangeOut(operation.transferId, userAddress, process.env.MARKETPLACE_ADDRESS)
-            transactionObject.transferId = operation.transferId;
-            transactionObject.operation = operation;
-            console.log(`[PaymentService][exchangeOut] Response: ${JSON.stringify(transactionObject)}`);
-            return transactionObject;
+            transactionObject = await this.treasurySmartContract.exchangeOut(
+                operation.transferId, senderAddress, marketplaceAddress
+            );
         } catch (err) {
             console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
+
+        response.transactionObject = transactionObject;
+        response.transferId = operation.transferId;
+        response.operation = operation;
+
+        console.log(`[PaymentService][exchangeOut] Response: ${JSON.stringify(transactionObject)}`);
+        return response;
     }
 
     async clearing() {

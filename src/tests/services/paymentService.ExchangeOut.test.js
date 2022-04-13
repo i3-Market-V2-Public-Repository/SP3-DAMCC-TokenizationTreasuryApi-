@@ -31,7 +31,7 @@ require('dotenv').config();
 
 describe("Payment Service ExchangeOut test suit", async () => {
 
-    const USER_ADDRESS = '0x3c23fd1f50cde56530f4edcc173b48d1d65ea05c';
+    const SENDER_ADDRESS = '0x3c23fd1f50cde56530f4edcc173b48d1d65ea05c';
     const USER2_ADDRESS = '0x7a64510da72f8b1d4b11f8d76841d16b039a8c10';
     const MP_ADDRESS = process.env.MARKETPLACE_ADDRESS;
 
@@ -56,17 +56,17 @@ describe("Payment Service ExchangeOut test suit", async () => {
 
 
     it("Given a data provider When call ExchangeOut then save then return the operation", async () => {
-        const operation = (await paymentService.exchangeOut(USER_ADDRESS)).operation;
+        const operation = (await paymentService.exchangeOut(SENDER_ADDRESS, MP_ADDRESS)).operation;
 
         assert.notStrictEqual(operation.transferId, "");
         assert.strictEqual(operation.type, Operation.Type.EXCHANGE_OUT);
         assert.strictEqual(operation.status, Operation.Status.OPEN);
-        assert.strictEqual(operation.user, USER_ADDRESS);
+        assert.strictEqual(operation.user, SENDER_ADDRESS);
     });
 
     it("Given an exchangeOut event When the event is captured Then update the operation status to in_progress",
         async () => {
-            const openOperation = (await paymentService.exchangeOut(USER_ADDRESS)).operation;
+            const openOperation = (await paymentService.exchangeOut(SENDER_ADDRESS)).operation;
             const inProgressOperation = await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
@@ -75,7 +75,7 @@ describe("Payment Service ExchangeOut test suit", async () => {
                     operation: Operation.Type.EXCHANGE_OUT,
                     transferId: openOperation.transferId,
                     fromAddress: MP_ADDRESS,
-                    toAddress: USER_ADDRESS
+                    toAddress: SENDER_ADDRESS
                 }
             );
 
@@ -91,7 +91,7 @@ describe("Payment Service ExchangeOut test suit", async () => {
         "When message sender is the MP and the exchange_out operation is in progress " +
         "Then update the operation status to closed",
         async () => {
-            const openOperation = (await paymentService.exchangeOut(USER_ADDRESS)).operation;
+            const openOperation = (await paymentService.exchangeOut(SENDER_ADDRESS)).operation;
             await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
@@ -100,7 +100,7 @@ describe("Payment Service ExchangeOut test suit", async () => {
                     operation: Operation.Type.EXCHANGE_OUT,
                     transferId: openOperation.transferId,
                     fromAddress: MP_ADDRESS,
-                    toAddress: USER_ADDRESS
+                    toAddress: SENDER_ADDRESS
                 }
             );
             await fiatMoneyPaymentHandler.execute(
@@ -119,7 +119,7 @@ describe("Payment Service ExchangeOut test suit", async () => {
             assert.notStrictEqual(closedOperation.transferId, "");
             assert.strictEqual(closedOperation.type, Operation.Type.EXCHANGE_OUT);
             assert.strictEqual(closedOperation.status, Operation.Status.CLOSED);
-            assert.strictEqual(closedOperation.user, USER_ADDRESS);
+            assert.strictEqual(closedOperation.user, SENDER_ADDRESS);
         });
 
 
