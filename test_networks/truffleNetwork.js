@@ -16,13 +16,15 @@
  *
  */
 
-class AppError extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-        this.status = `${statusCode}`.startsWith('4') ? 'rejected' : 'error';
-        Error.captureStackTrace(this, this.constructor);
-    }
+networkInfo = {
+    NETWORK: 'http://127.0.0.1:9545',
+    CHAIN_ID: "1337",
+    GAS_LIMIT: 6721975,
+    GAS_PRICE: 2000000000,
+    CONTRACT_ADDRESS: "0x3fC8DDf8396BB2FDb1dF064e77a9b6B1A50A6fbb",
+    MP_ADDRESS: "0x87d687de6d5e7a93ae96822723ceca74f20ec1df",
+    MP_PK: "49e610f8cff77a0595cb7f32e5f6db63aca0f2b0480948dd9a521978f6198268",
+    COMMUNITY_ADDRESS: ""
 }
 
-module.exports = AppError;
+module.exports = networkInfo

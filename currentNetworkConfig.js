@@ -16,13 +16,6 @@
  *
  */
 
-class AppError extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-        this.status = `${statusCode}`.startsWith('4') ? 'rejected' : 'error';
-        Error.captureStackTrace(this, this.constructor);
-    }
-}
+const networkInfo = require('./test_networks/ganacheNetwork')
 
-module.exports = AppError;
+module.exports = networkInfo

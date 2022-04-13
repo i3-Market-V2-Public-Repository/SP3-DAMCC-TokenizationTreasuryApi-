@@ -16,13 +16,32 @@
  *
  */
 
-class AppError extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-        this.status = `${statusCode}`.startsWith('4') ? 'rejected' : 'error';
-        Error.captureStackTrace(this, this.constructor);
+const {Model} = require("sequelize");
+
+
+class Operation extends Model {
+
+    /**
+     *
+     * Other Methods
+     */
+    static _clone = function (origin) {
+        return Object.assign({}, origin);
     }
 }
 
-module.exports = AppError;
+Operation.Status = {
+    OPEN: "open",
+    CLOSED: "closed",
+    IN_PROGRESS: "in_progress"
+}
+
+Operation.Type = {
+    EXCHANGE_IN: "exchange_in",
+    EXCHANGE_OUT: "exchange_out",
+    CLEARING_IN: "clearing_in",
+    CLEARING_OUT: "clearing_out"
+}
+
+
+module.exports = Operation;

@@ -1,3 +1,6 @@
 .idea
 .env
+.history
 node_modules
+helpers
+proposals.md

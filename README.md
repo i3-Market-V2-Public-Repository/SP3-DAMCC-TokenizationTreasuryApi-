@@ -5,29 +5,29 @@ The tokenization microservice allow the interaction with the I3Market Treasury S
 ![image.png](./image.png)
 
 The flow is divided in four operation:
-#### EXCHANGE IN:
+### EXCHANGE IN:
 The exchange in method must be called by a Data Marketplace, which issues and transfers the right amount of token (of its token type) to the user who pays in fiat money
 ### PAYMENT: 
 The payment method should transfer the right amount of token from the token types available in the Data Consumer balance, to the Data Provider in exchange of some data
 ### EXCHANGE OUT:
 The exchange out method should transfer the right amount of token, from the token available in the Data Provider balance to a data Marketplace in the network in exchange of fiat money
 ### CLEARING:
-A Data Marketplace can clear the tokens distributed by the other Data Marketplace from its balance
+A Data Marketplace can clear the tokens distributed by the other Data Marketplace from its balance.
 
 An I3Market user can interact with these operation calling the tokenizer. However, the tokenizer cannot directly sign the transactions, so it needs the I3Market wallet to let users sign and then send a transactions that change the status of the blockchain.
 
 ![interactionFlow.png](./interactionFlow.png)
 
 Each call to a treasury smart contract method that writes something on the blockchain (POST endpoint) needs two api:
-1. an API to create the raw transaction for the method that the user want to call  (ex. PAyment, Exchange_IN ..)
+1. an API to create the raw transaction for the method that the user want to call  (i.e. Payment, Exchange_in ...)
 2. an API to send the raw transaction, previously signed by the I3Market wallet, to the blockchain. 
 
 
-
-
-
-## Getting stated / Use
-The main purpose of the tokenization service is to allow i3Market actors (i.e Marketplace, Data Provider, Data Consumer) to call the I3Market trasury contract methods and interact with the token flow. In the use case presented below, we impersonate a Marketplace that wants to register on the I3M platform and wants to send some tokens to a data consumer.
+## Getting started / use
+The main purpose of the tokenization service is to allow i3Market actors (i.e. Marketplace, Data Provider, 
+Data Consumer) to call the I3Market treasury contract methods and interact with the token flow. In the use case 
+presented below, we impersonate a Marketplace that wants to register on the I3Market platform and wants to send 
+some tokens to a data consumer.
 1. The first step is to add the new marketplace using the endpoint [/treasury/marketplaces](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_marketplaces). In the "senderAddress" and "marketplaceAddress" provide the same address of the marketplace you want to register. After a successful transaction the payload of the response will be a transaction object like:
 ```
 {
@@ -42,7 +42,9 @@ The main purpose of the tokenization service is to allow i3Market actors (i.e Ma
   }
 }
 ```
-2. The next step is to deploy the obtained transaction. To do that you firstly need to sign the transaction using the i3-market Wallet. Once you get the signed raw transaction you can call the deployment endpoint of the tokenization service [/transactions/deploy-transaction-transaction](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_deploy_signed_transaction). The response of the request should be a long transaction object with information about the transaction. Completed successfully the operation the **new marketplace is added**.
+2. The next step is to deploy the obtained transaction. To do that you firstly need to sign the transaction using the 
+i3-market Wallet. Once you get the signed raw transaction you can call the deployment endpoint of the tokenization 
+service [/transactions/deploy-transaction-transaction](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_deploy_signed_transaction). The response of the request should be a long transaction object with information about the transaction. Completed successfully the operation the **new marketplace is added**.
 3. Now the Marketplace can exchange tokens for fiat money with a Data Consumer. More specifically, it has to call the exchange-in method once it get the fiat money from the user. 
 In the [/transactions/exchange-in](http://localhost:3001/api-docs/#/TokenizerController/post_api_v1_treasury_transactions_exchange_in) API request body you need to specify the ```senderAddress``` which should be the registered markeplace, a ```dataConsumer``` and the ```tokens``` that you want to exchange. The successful response is again a transaction object.
 4. To deploy this transaction to Besu and complete the exchange you must follow again **step 2**.
