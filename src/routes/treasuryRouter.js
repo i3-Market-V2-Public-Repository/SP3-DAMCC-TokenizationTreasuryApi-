@@ -20,11 +20,13 @@ const express = require('express');
 const router = express.Router();
 const treasuryController = require('../controllers/treasuryController');
 
+
+
 /**
  * @swagger
  * /api/v1/treasury/marketplaces:
  *   post:
- *     tags: [Marketplaces]
+ *     tags: [Marketplace management]
  *     summary: Register a marketplace
  *     description: Call add marketplace i3Treasury API to add a marketplace.
  *                  In the body you need to pass a "senderAddress" and a "marketplaceAddress" in a JSON format. The two addresses need to be the same.
@@ -81,7 +83,7 @@ router.post('/marketplaces', treasuryController.addMarketPlace)
  * @swagger
  * /api/v1/treasury/marketplaces/{address}:
  *   get:
- *     tags: [Marketplaces]
+ *     tags: [Marketplace management]
  *     summary: Get the index of a registered marketplace
  *     description: i3Treasury API endpoint to get the marketplace index. Add the address of the marketplace to the address path variable.
  *     parameters:
@@ -161,7 +163,7 @@ router.get('/balances/:address', treasuryController.getAddressBalance)
  * @swagger
  * /api/v1/treasury/token-transfers/{transferId}:
  *   get:
- *    tags: [TokenTransfer]
+ *    tags: [Transfers]
  *    summary: Get the Token Transfer given a TransferId
  *    description: i3Treasury endpoint to get the receipt of a transaction. Add the transaction hash in the path variables to get the receipt.
  *    parameters:
@@ -212,11 +214,11 @@ router.get('/token-transfers/:transferId', treasuryController.getTransactionForT
  * @swagger
  * /api/v1/treasury/transactions/exchange-in:
  *   post:
- *     tags: [Transactions]
+ *     tags: [Treasury (DEPRECATED)]
  *     summary: Exchange fiat money for tokens
- *     description: Call exchange-in endpoint in order to exchange an amount of fiat money into tokens from a Marketplace.
- *                  Pass a "senderAddress", a "userAddress" and a "tokens" which is the amount of tokens to exchange.
-
+ *     description: >
+ *       Call exchange-in endpoint in order to exchange an amount of fiat money into tokens from a Marketplace.
+ *       Pass a "senderAddress", a "userAddress" and a "tokens" which is the amount of tokens to exchange.
  *     requestBody:
  *       required: true
  *       content:
@@ -278,7 +280,7 @@ router.post('/transactions/exchange-in', treasuryController.exchangeIn)
  * @swagger
  * /api/v1/treasury/transactions/payment:
  *   post:
- *     tags: [Transactions]
+ *     tags: [Treasury (DEPRECATED)]
  *     description: Call payment API to transfer the right amount of tokens to a Data Provider. Pass a "senderAddress", a "providerAddress" and an "amount" of tokens to transfer to the Data Provider.
  *     summary: Pay the Data Provider
  *     requestBody:
@@ -342,7 +344,7 @@ router.post('/transactions/payment', treasuryController.payment)
  * @swagger
  * /api/v1/treasury/transactions/exchange-out:
  *   post:
- *     tags: [Transactions]
+ *     tags: [Treasury (DEPRECATED)]
  *     description: Call exchange-out endpoint in order to exchange the right amount of tokens available with money from a Data Marketplace.
  *     summary: Exchange tokens for money
  *     requestBody:
@@ -402,7 +404,7 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
  * @swagger
  * /api/v1/treasury/transactions/clearing:
  *   post:
- *     tags: [Transactions]
+ *     tags: [Treasury (DEPRECATED)]
  *     description: Call clearing endpoint in order to clear the balance of a Data Marketplace.
  *     summary: Crear the balance
  *     requestBody:
@@ -458,7 +460,7 @@ router.post('/transactions/clearing', treasuryController.clearing)
  * @swagger
  * /api/v1/treasury/transactions/set-paid:
  *   post:
- *     tags: [Transactions]
+ *     tags: [Treasury (DEPRECATED)]
  *     description: Call set-paid endpoint in order to mark a token transfer as paid.
  *     summary: Set isPaid as true to a specified Token Transfer
  *     requestBody:

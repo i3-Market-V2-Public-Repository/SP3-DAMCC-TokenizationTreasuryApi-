@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/api/v1/treasury', treasuryRouter);
-app.use('/api/v1/payments', paymentRouter);
+app.use('/api/v1/operations', paymentRouter);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 //Express error handler

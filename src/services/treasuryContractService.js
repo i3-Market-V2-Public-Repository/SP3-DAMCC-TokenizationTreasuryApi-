@@ -46,7 +46,7 @@ class TreasuryContractService extends TreasuryContract {
     connect() {
         return new Promise((resolve) => {
             try {
-                console.log(`connecting to blockain network ${process.env.ETH_HOST}`);
+                console.log(`Connecting to blockchain network ${process.env.ETH_HOST}`);
                 this.web3 = new Web3(Web3.givenProvider || process.env.ETH_HOST);
                 this.web3.eth.net.isListening().then((status) => {
                         console.log(`Blockchain network connection status: ${status}`)
@@ -55,11 +55,11 @@ class TreasuryContractService extends TreasuryContract {
                     }
                 ).catch(error => {
                     console.log('Could not connect to the Blockchain host provided')
-                    process.exit()
+                    process.exit();
                 });
             } catch (e) {
                 console.error("Error while connecting", e);
-                process.exit()
+                process.exit();
             }
         });
     }
@@ -150,7 +150,6 @@ class TreasuryContractService extends TreasuryContract {
         return this.web3.eth.sendSignedTransaction(serializedTx.toString(), (err, ret) => {
             if (err) {
                 console.log("An error occurred", err)
-                return
             }
         })
     }
