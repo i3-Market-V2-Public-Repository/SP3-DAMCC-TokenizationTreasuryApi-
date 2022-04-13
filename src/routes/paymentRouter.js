@@ -92,9 +92,14 @@ const paymentController = require('../controllers/paymentController');
  *       Pay:
  *         type: object
  *         required:
+ *           - sender
  *           - transferId
  *           - transferCode
  *         properties:
+ *           senderAddress:
+ *             type: string
+ *             example: '0xb794f5ea0ba39494ce839613fffba74279579268'
+ *             description: sender address.
  *           transferId:
  *             type: string
  *             format: uuid

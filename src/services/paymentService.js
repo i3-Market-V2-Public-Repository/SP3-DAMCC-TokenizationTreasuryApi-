@@ -139,7 +139,7 @@ class PaymentService {
         for (let i = 0; i < balances.length; i++) {
             balance = balances[i];
             address = await this.treasurySmartContract._getMarketplaceAddressByIndex(i);
-            if (this.isExternalMarketplaceBalance(address, balance)) {
+            if (this._isExternalMarketplaceBalance(address, balance)) {
                 console.log(`[PaymentService][_generateTransferTokens] balance: ${balance}`);
                 result.push(new TokenTransfer(process.env.MARKETPLACE_ADDRESS, address, balance));
             }
@@ -149,12 +149,12 @@ class PaymentService {
         return result;
     }
 
-    isExternalMarketplaceBalance(address, balance) {
+    _isExternalMarketplaceBalance(address, balance) {
         return address !== process.env.MARKETPLACE_ADDRESS && balance > 0;
     }
 
-    async setPaid(transferId, transferCode) {
-        return await this.treasurySmartContract.setPaid(transferId, process.env.MARKETPLACE_ADDRESS, transferCode);
+    async setPaid(sender, transferId, transferCode) {
+        return await this.treasurySmartContract.setPaid(transferId, sender, transferCode);
     }
 
 
@@ -166,6 +166,7 @@ class PaymentService {
         );
 
         const response = {}
+
         let communityOperation = new Operation(
             nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, process.env.COMMUNITY_ADDRESS
         );

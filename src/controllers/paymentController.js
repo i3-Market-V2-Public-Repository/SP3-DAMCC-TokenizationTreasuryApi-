@@ -65,6 +65,6 @@ exports.clearing = catchAsync(async (req, res, next) => {
 
 
 exports.setPaid = catchAsync(async (req, res, next) => {
-    const {transferId, transferCode} = req.body
-    return res.json((await paymentService.setPaid(transferId, transferCode)));
+    const {senderAddress, transferId, transferCode} = req.body
+    return res.json((await paymentService.setPaid(senderAddress, transferId, transferCode)));
 });
