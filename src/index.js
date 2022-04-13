@@ -38,16 +38,16 @@ process.env.PORT = process.env.PORT || 3001;
 process.env.WEBHOOK = process.env.WEBHOOK || "http://127.0.0.1:3000/api/webhook";
 
 function getPaymentStore() {
-    const dataStore = new SequelizePaymentDataStore(
-        'test_db',
-        'test_user',
-        'test_pass', {
-            host: 'localhost',
+    //return new DictionaryPaymentDataStorage();
+    return new SequelizePaymentDataStore(
+        process.env.POSTGRES_DB,
+        process.env.POSTGRES_USER,
+        process.env.POSTGRES_PASSWORD, {
+            host: process.env.POSTGRES_HOST || 'localhost',
             dialect: 'postgres',
             logging: false
         }
     );
-    return new DictionaryPaymentDataStorage();
 }
 
 async function deployTreasureService(paymentStore) {

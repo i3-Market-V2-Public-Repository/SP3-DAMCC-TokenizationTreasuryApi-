@@ -16,7 +16,7 @@
  *
  */
 
-const {Model} = require("sequelize");
+const {Model, DataTypes} = require("sequelize");
 
 
 class Operation extends Model {

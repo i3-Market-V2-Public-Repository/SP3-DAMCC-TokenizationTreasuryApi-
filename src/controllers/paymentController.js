@@ -20,23 +20,63 @@ const catchAsync = require('../utils/catchAsync');
 const paymentService = require('../services/paymentService').getInstance();
 
 exports.getOperations = catchAsync(async (req, res, next) => {
+    const page_size = req.query.page_size;
+    const limit =  (page_size && !Number.isNaN(page_size)) ? page_size : null;
 
-    if (req.query.transferId)
-        return res.json((await paymentService.getOperationsByTransferId(req.query.transferId)));
+    const page = req.query.page || 1;
+    const offset = (page && !Number.isNaN(page) && page_size && !Number.isNaN(page_size)) ? (page-1) * page_size : null;
 
-    if (req.query.type)
-        return res.json((await paymentService.getOperationsByType(req.query.type)));
+    if (req.query.transferId){
+        const operations = await paymentService.getOperationsByTransferId(req.query.transferId, offset, limit);
+        return res.json({
+            page:  Number(page),
+            page_size: operations.length,
+            operations: operations
+        });
+    }
+       
+    if (req.query.type){
+        const operations = await paymentService.getOperationsByType(req.query.type, offset, limit);
+        return res.json({
+            page: Number(page),
+            page_size: operations.length,
+            operations: operations
+        });
+    }
 
-    if (req.query.status)
-        return res.json((await paymentService.getOperationsByStatus(req.query.status)));
+    if (req.query.status){
+        const  operations = await paymentService.getOperationsByStatus(req.query.status, offset, limit);
+        return res.json({
+            page: Number(page),
+            page_size: operations.length,
+            operations: operations
+        });
+    }
 
-    if (req.query.user)
-        return res.json((await paymentService.getOperationsByUser(req.query.user)));
+    if (req.query.user){
+        const operations  = await paymentService.getOperationsByUser(req.query.user, offset, limit);
+        return res.json({
+            page:  Number(page),
+            page_size:operations.length,
+            operations: operations
+        });
+    }
 
-    if (req.query.date)
-        console.log(`Not implemented yet :p`)
+    if (req.query.fromdate || req.query.todate){
+        const operations = await paymentService.getOperationsByDate(req.query.fromdate, req.query.todate, offset, limit);
+        return res.json({
+            page:  Number(page),
+            page_size: operations.length,
+            operations: operations
+        });
+    }
 
-    return res.json((await paymentService.getOperations()))
+    const operations = await paymentService.getOperations(offset, limit);
+    return res.json({
+        page: Number(page),
+        page_size: operations.length,
+        operations: operations
+    });
 });
 
 exports.exchangeIn = catchAsync(async (req, res, next) => {

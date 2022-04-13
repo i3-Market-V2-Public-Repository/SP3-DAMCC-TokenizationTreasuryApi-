@@ -44,29 +44,32 @@ class PaymentService {
         this.treasurySmartContract = treasurySmartContract;
     }
 
-    async getOperations() {
-        return await this.store.getOperations();
+    async getOperations(limit, offset) {
+        return await this.store.getOperations(limit, offset);
     }
 
     async getOperationById(id) {
         return await this.store.getOperationById(id);
     }
 
-    async getOperationsByTransferId(transferId) {
-        return await this.store.getOperationsByTransferId(transferId);
+    async getOperationsByTransferId(transferId, limit, offset) {
+        return await this.store.getOperationsByTransferId(transferId, limit, offset);
     }
 
-
-    async getOperationsByType(type) {
-        return await this.store.getOperationsByType(type);
+    async getOperationsByType(type, limit, offset) {
+        return await this.store.getOperationsByType(type, limit, offset);
     }
 
-    async getOperationsByStatus(status) {
-        return this.store.getOperationsByStatus(status);
+    async getOperationsByStatus(status, limit, offset) {
+        return this.store.getOperationsByStatus(status, limit, offset);
     }
 
-    async getOperationsByUser(user) {
-        return this.store.getOperationsByUser(user);
+    async getOperationsByUser(user, limit, offset) {
+        return this.store.getOperationsByUser(user, limit, offset);
+    }
+
+    async getOperationsByDate(fromDate, toDate, limit, offset){
+        return this.store.getOperationsByDate(fromDate, toDate, limit, offset);
     }
 
     async exchangeIn(userAddress, tokens) {

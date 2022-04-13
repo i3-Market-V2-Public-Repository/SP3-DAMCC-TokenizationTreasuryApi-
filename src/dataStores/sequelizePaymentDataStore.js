@@ -29,9 +29,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     constructor(db, user, password, config) {
         super();
         this.sequelize = new Sequelize(db, user, password, config);
-    }
 
-    initModel() {
         OperationModel.init(
             {
                 id: {
@@ -67,17 +65,23 @@ class SequelizePaymentDataStore extends PaymentDataStore {
             }
         )
         OperationModel.associate = (models) => {
-
+    
         };
     }
 
     /**
-     *
-     * @returns An array containing all the operations in the database, on an Operation.NULL object if empty
+     * 
+     * @param {integer} offset (Optional) Skips offset results from the beginning
+     * @param {integer} limit (Optional) Returns limit number of operations 
+     * @returns An array containing all the operations in the database, on an Operation.
      */
-    async getOperations() {
+     async getOperations(offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
-            return await OperationModel.findAll();
+            console.log(`offest:${offset}, limit:${limit}`)
+            return await OperationModel.findAll({
+                offset: offset,
+                limit: limit
+            });
         } catch (error) {
             console.log(error);
         }
@@ -90,7 +94,7 @@ class SequelizePaymentDataStore extends PaymentDataStore {
      */
     async getOperationById(id) {
         try {
-            return await OperationModel.findAll({
+            return await OperationModel.findOne({
                 where: {
                     id: id
                 }
@@ -103,14 +107,18 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     /**
      *
      * @param {string} transferId
-     * @returns An array of Operation objects that match the transferId field or Operation.NULL if none found
+     * @param {integer} offset (Optional) Skips offset results from the beginning
+     * @param {integer} limit (Optional) Returns limit number of operations 
+     * @returns An array of Operation objects that match the transferId field or Operation.
      */
-    async getOperationsByTransferId(transferId) {
+    async getOperationsByTransferId(transferId, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
             return await OperationModel.findAll({
                 where: {
                     transferId: transferId
-                }
+                },
+                offset: offset,
+                limit: limit
             });
         } catch (error) {
             console.log(error);
@@ -120,14 +128,18 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     /**
      *
      * @param {Operation.Types} type
-     * @returns An array of Operation objects that match the type field or Operation.NULL if none found
+     * @param {integer} offset (Optional) Skips offset results from the beginning
+     * @param {integer} limit (Optional) Returns limit number of operations 
+     * @returns An array of Operation objects that match the type field or Operation.
      */
-    async getOperationsByType(type) {
+    async getOperationsByType(type, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
             return await OperationModel.findAll({
                 where: {
                     type: type
-                }
+                },
+                offset: offset,
+                limit: limit
             });
         } catch (error) {
             console.log(error);
@@ -137,14 +149,18 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     /**
      *
      * @param {Operation.Status} status
+     * @param {integer} offset (Optional) Skips offset results from the beginning
+     * @param {integer} limit (Optional) Returns limit number of operations 
      * @returns An array of Operation objects that match the status field or Operation.NULL if none found
      */
-    async getOperationsByStatus(status) {
+    async getOperationsByStatus(status, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
             return await OperationModel.findAll({
                 where: {
                     status: status
-                }
+                },
+                offset: offset,
+                limit: limit
             });
         } catch (error) {
             console.log(error);
@@ -153,11 +169,13 @@ class SequelizePaymentDataStore extends PaymentDataStore {
 
     /**
      * 
-     * @param {*} fromDate In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
-     * @param {*} toDate In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
+     * @param {Date} fromDate In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
+     * @param {Date} toDate In YYYY-MM-DD HH:MM:SS.ms+ZZ, example: 2022-03-18 10:26:02.809+00
+     * @param {integer} offset (Optional) Skips offset results from the beginning
+     * @param {integer} limit (Optional) Returns limit number of operations 
      * @returns  An array of Operation objects that took place between fromDate(inclusive) and toDate(exclusive) 
      */
-    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now())) {
+    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now()), offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
             if (fromDate.getTime()>toDate.getTime())
             throw Error("Date mismatch: fromDate is later than toDate")
@@ -168,7 +186,9 @@ class SequelizePaymentDataStore extends PaymentDataStore {
                         { date: {[Op.gte]: fromDate}},
                         { date: {[Op.lte]: toDate}},
                     ],           
-                }
+                },
+                offset: offset,
+                limit: limit
             });
         } catch (error) {
             console.log(error);
@@ -178,14 +198,18 @@ class SequelizePaymentDataStore extends PaymentDataStore {
     /**
      *
      * @param {string} user The hexademical value of the user's node address, example: '0x3c23fd1f50cde56530f4edcc173b48d1d65ea05c'
+     * @param {integer} offset (Optional) Skips offset results from the beginning
+     * @param {integer} limit (Optional) Returns limit number of operations 
      * @returns An array of Operation objects that were initiated by this particular user or Operation.NULL if none found
      */
-    async getOperationsByUser(user) {
+     async getOperationsByUser(user, offset = 0, limit = Number.MAX_SAFE_INTEGER) {
         try {
             return await OperationModel.findAll({
                 where: {
                     user: user
-                }
+                },
+                offset: offset,
+                limit: limit
             });
         } catch (error) {
             console.log(error);

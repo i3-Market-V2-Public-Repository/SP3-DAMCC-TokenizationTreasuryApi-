@@ -27,14 +27,14 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         this.operations = {}
     }
 
-    async getOperations() {
+    async getOperations(offset=0, limit=Number.MAX_SAFE_INTEGER) {
         const response = []
 
         Object.keys(this.operations).forEach(id => {
             response.push(this.operations[id]);
         });
-
-        return response;
+        
+        return response.slice(offset, limit);
     }
 
 
@@ -45,7 +45,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         return Operation.NULL
     }
 
-    async getOperationsByType(type) {
+    async getOperationsByType(type, offset=0, limit=Number.MAX_SAFE_INTEGER) {
         const response = [];
         let operation;
 
@@ -55,10 +55,10 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        return response
+        return response.slice(offset, limit);
     }
 
-    async getOperationsByTransferId(transferId) {
+    async getOperationsByTransferId(transferId, offset=0, limit=Number.MAX_SAFE_INTEGER) {
         console.log(`[DictionaryPaymentDataStorage][getOperationsByTransferId] request transferId: ${transferId}`)
         const response = [];
         let operation;
@@ -72,11 +72,11 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
 
         console.log(`[DictionaryPaymentDataStorage][getOperationsByTransferId] response: ${JSON.stringify(response)}`)
 
-        return response
+        return response.slice(offset, limit);
     }
 
 
-    async getOperationsByStatus(status) {
+    async getOperationsByStatus(status, offset=0, limit=Number.MAX_SAFE_INTEGER) {
         console.log(`[DictionaryPaymentDataStorage][getOperationsByStatus] request status: ${status}`)
         const response = [];
         let operation;
@@ -95,10 +95,11 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         );
 
         console.log("[DictionaryPaymentDataStorage][getOperationsByStatus] response: " + JSON.stringify(response))
-        return response
+        
+        return response.slice(offset, limit);
     }
 
-    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now())) {
+    async getOperationsByDate(fromDate = new Date(null), toDate = new Date(Date.now()), offset=0, limit=Number.MAX_SAFE_INTEGER) {
         const response = [];
         let operation;
 
@@ -118,10 +119,10 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
         }
 
         console.log("[DictionaryPaymentDataStorage][getOperationsByDate] response: " + JSON.stringify(response))
-        return response
+        return response.slice(offset, limit);
     }
 
-    async getOperationsByUser(user) {
+    async getOperationsByUser(useroffset=0, limit=Number.MAX_SAFE_INTEGER) {
         const response = [];
         let operation;
 
@@ -132,7 +133,7 @@ class DictionaryPaymentDataStorage extends PaymentDataStore {
             }
         );
 
-        return response
+        return response.slice(offset, limit);
     }
 
     async createOperation(operation) {

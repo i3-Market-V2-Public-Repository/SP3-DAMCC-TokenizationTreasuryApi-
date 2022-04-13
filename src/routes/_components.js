@@ -2,6 +2,19 @@
  * @swagger
  *   components:
  *     schemas:
+ *       GenericList:
+ *         required:
+ *          - page
+ *          - page_size
+ *         properties:
+ *          page:
+ *            type: Number
+ *            description: The number of the current page of paginated results.
+ *            example: 1
+ *          page_size:
+ *            type: Number
+ *            description: The number of results contained in each page.
+ *            example: 10
  *       TransactionObject:
  *         type: object
  *         required:
