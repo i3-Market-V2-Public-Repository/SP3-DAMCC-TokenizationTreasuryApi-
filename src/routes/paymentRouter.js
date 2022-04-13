@@ -92,7 +92,7 @@ const paymentController = require('../controllers/paymentController');
  *       Pay:
  *         type: object
  *         required:
- *           - sender
+ *           - senderAddress
  *           - transferId
  *           - transferCode
  *         properties:
@@ -108,6 +108,25 @@ const paymentController = require('../controllers/paymentController');
  *             type: string
  *             example: 'ES2703926222'
  *             description: bank transfer id
+ *      FeePay:
+ *         type: object
+ *         required:
+ *           - senderAddress
+ *           - MarketplaceAddress
+ *           - feeAmount
+ *         properties:
+ *           senderAddress:
+ *             type: string
+ *             example: '0xb794f5ea0ba39494ce839613fffba74279579268'
+ *             description: sender address.
+ *           MarketplaceAddress:
+ *             type: string
+ *             example: '0x111122220ba39494ce839613fffba74279571234'
+ *             description: Data provider marketplace Address.
+ *           feeAmount:
+ *             type: Number
+ *             example: 42
+ *             description: Amount of fee tokens.
  *       Error:
  *         type: object
  *         required:
@@ -347,5 +366,44 @@ router.post('/clearing', paymentController.clearing);
  *
  */
 router.post('/payment', paymentController.setPaid);
+
+
+/**
+ * @swagger
+ * /api/v1/payments/feePayment:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Generate the fee payment transaction object.
+ *     description: >
+ *       Generates the transaction object needed to pay fee.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/FeePay'
+ *     responses:
+ *       200:
+ *        description: Returns the feePayment transaction object and the operation description.
+ *        content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 transferId:
+ *                   type: string
+ *                   format: uuid
+ *                 transactionObject:
+ *                   $ref: '#/components/schemas/TransactionObject'
+ *                 operation:
+ *                   $ref: '#/components/schemas/Operation'
+ *       400:
+ *        content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ */
+router.post('/feePayment', paymentController.feePayment);
 
 module.exports = router;

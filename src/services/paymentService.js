@@ -166,6 +166,7 @@ class PaymentService {
         );
 
         const response = {}
+        let transactionObject;
 
         let communityOperation = new Operation(
             nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, process.env.COMMUNITY_ADDRESS
@@ -176,23 +177,23 @@ class PaymentService {
         try {
             communityOperation = await this.store.createOperation(communityOperation);
             MPOperation = await this.store.createOperation(MPOperation);
-
-            const transactionObject = await this.treasurySmartContract.feePayment(
+            transactionObject = await this.treasurySmartContract.feePayment(
                 communityOperation.transferId,
                 MPOperation.transferId,
                 dataProviderMPAddress,
                 feeAmount,
                 senderAddress
             )
-
-            response.transferIds = [communityOperation.transferId, MPOperation.transferId];
-            response.operations = [communityOperation, MPOperation];
-            response.transactionObject = transactionObject;
-            console.log(`[PaymentService][feePayment] Response:  ${JSON.stringify(response)}`);
-            return response;
         } catch (err) {
             console.log(`[PaymentService][feePayment] Error → ${err}`);
         }
+
+        response.transferIds = [communityOperation.transferId, MPOperation.transferId];
+        response.operations = [communityOperation, MPOperation];
+        response.transactionObject = transactionObject;
+
+        console.log(`[PaymentService][feePayment] Response:  ${JSON.stringify(response)}`);
+        return response;
     }
 }
 

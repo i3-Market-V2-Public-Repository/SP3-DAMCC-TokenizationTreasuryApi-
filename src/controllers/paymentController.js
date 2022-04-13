@@ -68,3 +68,13 @@ exports.setPaid = catchAsync(async (req, res, next) => {
     const {senderAddress, transferId, transferCode} = req.body
     return res.json((await paymentService.setPaid(senderAddress, transferId, transferCode)));
 });
+
+exports.feePayment = catchAsync(async (req, res, next) => {
+    const {senderAddress, marketplaceAddress, feeAmount} = req.body
+
+    if (!senderAddress || !marketplaceAddress || !feeAmount) {
+        return res.status(400).json({message: 'Must provide senderAddress, marketplaceAddress and feeAmount'});
+    }
+
+    return res.json((await paymentService.feePayment(senderAddress, marketplaceAddress, feeAmount)));
+});
