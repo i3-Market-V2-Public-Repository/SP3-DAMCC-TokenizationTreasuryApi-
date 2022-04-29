@@ -20,6 +20,11 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_DB=$POSTGRES_DB
     restart: always
+  ganachecli:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+    - 8545:8545
+    command: -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat" -i 4448 -h 0.0.0.0
   pg-admin:
     image: adminer
     links: 
