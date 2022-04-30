@@ -21,7 +21,7 @@ const DictionaryPaymentDataStorage = require('../../dataStores/dictionaryPayment
 const TokenTransferredHandler = require("../../services/enventHandlers/tokenTransferredHandler");
 const FiatMoneyPaymentHandler = require("../../services/enventHandlers/fiatMoneyPaymentHandler");
 const TreasuryContract = require('./fakeTreasuryContractService');
-const Network = require("../../../currentNetworkConfig");
+const Network = require("../../currentNetworkConfig");
 
 
 const assert = require('assert').strict;

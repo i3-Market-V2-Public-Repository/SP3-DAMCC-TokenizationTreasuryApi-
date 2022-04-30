@@ -16,6 +16,6 @@
  *
  */
 
-const networkInfo = require('./test_networks/ganacheNetwork')
+const networkInfo = require('../test_networks/ganacheNetwork')
 
 module.exports = networkInfo
