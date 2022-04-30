@@ -4,3 +4,4 @@
 node_modules
 helpers
 proposals.md
+docker-compose-dev.yml

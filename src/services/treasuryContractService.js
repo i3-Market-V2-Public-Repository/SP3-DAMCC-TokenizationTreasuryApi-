@@ -54,7 +54,7 @@ class TreasuryContractService extends TreasuryContract {
                         resolve(status);
                     }
                 ).catch(error => {
-                    console.log('Could not connect to the Blockchain host provided')
+                    console.log(`Could not connect to the Blockchain host provided: ${error}`)
                     process.exit();
                 });
             } catch (e) {
