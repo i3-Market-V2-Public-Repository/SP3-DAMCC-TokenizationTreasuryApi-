@@ -26,79 +26,51 @@ class FiatMoneyPaymentHandler extends EventHandler {
         this.paymentStore = paymentDataStore;
     }
 
-
-    // emit FiatMoneyPayment(transferId, operation, fromAddress); // _transferId, "set_paid", msg.sender
     async execute(event) {
         console.log("[FiatMoneyPaymentHandler][execute] Event: " + JSON.stringify(event));
 
-        // Cant check if I am the sender or receiver to avoid access to the DB
-
-        if (event.operation === Operation.Type.CLEARING) {
-            return await this._handleClearing(event);
-        } else if (event.operation === Operation.Type.EXCHANGE_OUT) {
-            return await this._handleExchangeOut(event);
-        } else {
-            console.log("[FiatMoneyPaymentHandler][execute] Event" + event.operation + " NOT FOUND")
-        }
-    }
-
-
-    async _handleExchangeOut(event) {
         const operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
-
-        if (!this._isClosedOperation(operations)) {
-            const operation = operations[0];
-            return await this.paymentStore.createOperation(
-                new Operation(
-                    operation.transferId,
-                    Operation.Type.EXCHANGE_OUT,
-                    Operation.Status.CLOSED,
-                    operation.user
-                )
-            );
-        }
-
-        return Operation.NULL;
-    }
-
-
-    _isClosedOperation(operations) {
-        return operations.some(operation => operation.status === Operation.Status.CLOSED);
-    }
-
-    async _handleClearing(event) {
-        const operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
-
-        if (!this._isClosedOperation(operations)) {
-            return await this.getClosedClearingOperation(operations[0], event);
-        }
-
-        return Operation.NULL;
-    }
-
-
-    async getClosedClearingOperation(openOperation, event) {
+        const openOperation = operations[0];
         let closeOperation;
 
-        if (event.fromAddress === openOperation.user && openOperation.type === Operation.ClearingSubtypes.CLEARING_IN) {
+        if (this._isInProgress(operations, Operation.ClearingSubtypes.CLEARING_IN)
+            && event.fromAddress === operations[0].user) {
             closeOperation = new Operation(
                 openOperation.transferId,
                 Operation.ClearingSubtypes.CLEARING_IN,
                 Operation.Status.CLOSED,
                 openOperation.user
             );
-        } else {
+        } else if (this._isInProgress(operations, Operation.ClearingSubtypes.CLEARING_OUT)) {
             closeOperation = new Operation(
                 openOperation.transferId,
                 Operation.ClearingSubtypes.CLEARING_OUT,
                 Operation.Status.CLOSED,
                 openOperation.user
             );
+        } else if (this._isInProgress(operations, Operation.Type.EXCHANGE_OUT)) {
+            closeOperation = new Operation(
+                openOperation.transferId,
+                Operation.Type.EXCHANGE_OUT,
+                Operation.Status.CLOSED,
+                openOperation.user
+            )
+        } else {
+            console.log("[FiatMoneyPaymentHandler][execute] Event" + event.operation + " NOT FOUND");
+            return Operation.NULL;
         }
         return await this.paymentStore.createOperation(closeOperation);
     }
 
 
+    _isInProgress(operations, operationType) {
+        return !this._isClosedOperation(operations) && operations[0].type === operationType;
+    }
+
+
+    _isClosedOperation(operations) {
+        return operations.some(operation => operation.status === Operation.Status.CLOSED);
+    }
 }
 
 module.exports = FiatMoneyPaymentHandler;

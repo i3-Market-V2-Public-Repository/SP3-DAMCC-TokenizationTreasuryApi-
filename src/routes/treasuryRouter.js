@@ -40,11 +40,11 @@ const treasuryController = require('../controllers/treasuryController');
  *               senderAddress:
  *                 type: string
  *                 description: The address of the sender.
- *                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
+ *                 example: "0x568EeaB5551a9158d75795fdd27A3154A466E09a"
  *               marketplaceAddress:
  *                 type: string
  *                 description: The address of the marketpace.
- *                 example: "0x79CD92CD7c1e380c1a6Ba5E9EF09D2F7c4820C6d"
+ *                 example: "0x568EeaB5551a9158d75795fdd27A3154A466E09a"
  *     responses:
  *       200:
  *        content:
@@ -91,6 +91,7 @@ router.post('/marketplaces', treasuryController.addMarketPlace)
  *         name: address
  *         required: true
  *         description: Address of the marketplace.
+ *         example: "0x568EeaB5551a9158d75795fdd27A3154A466E09a"
  *         schema:
  *           type: string
  *     responses:
@@ -406,7 +407,7 @@ router.post('/transactions/exchange-out', treasuryController.exchangeOut)
  *   post:
  *     tags: [Treasury (DEPRECATED)]
  *     description: Call clearing endpoint in order to clear the balance of a Data Marketplace.
- *     summary: Crear the balance
+ *     summary: Create the balance (NOT WORKING ANYMORE)
  *     requestBody:
  *       required: true
  *       content:

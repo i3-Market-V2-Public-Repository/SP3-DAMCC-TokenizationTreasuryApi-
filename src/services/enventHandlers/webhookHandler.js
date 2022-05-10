@@ -32,10 +32,10 @@ class WebhookHandler extends EventHandler {
             transactionHash: event.transactionHash,
             blockHash: event.blockHash,
             type: event.type,
-            transferId: event.returnValues.transferId,
-            operation: event.returnValues.operation,
-            fromAddress: event.returnValues.fromAddress,
-            toAddress: event.returnValues.toAddress || ""
+            transferId: event.transferId,
+            operation: event.operation,
+            fromAddress: event.fromAddress,
+            toAddress: event.toAddress || ""
         }).then(response => {
             console.log('sent webhook successfully');
         }).catch(error => {

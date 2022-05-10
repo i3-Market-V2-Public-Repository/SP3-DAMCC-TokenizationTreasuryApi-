@@ -60,7 +60,7 @@ describe("Payment Service Clearing test suit", async () => {
         treasuryContract.setDummyBalances(MP1_ADDRESS, {"balance": ["15", "0", "2"]});
 
         const balances = treasuryContract.getBalanceForAddress(MP1_ADDRESS);
-        const tokenTransfers = await paymentService._generateTransferTokens(balances.balance);
+        const tokenTransfers = await paymentService._generateClearingOperations(balances.balance);
 
         assert.strictEqual(tokenTransfers.length, 1);
         assert.notStrictEqual(tokenTransfers[0].transferId, "");

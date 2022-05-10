@@ -47,7 +47,7 @@ class TreasuryContractService extends TreasuryContract {
         return new Promise((resolve) => {
             try {
                 console.log(`Connecting to blockchain network ${process.env.ETH_HOST}`);
-                this.web3 = new Web3(Web3.givenProvider || process.env.ETH_HOST);
+                this.web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(process.env.ETH_HOST));
                 this.web3.eth.net.isListening().then((status) => {
                         console.log(`Blockchain network connection status: ${status}`)
                         this.initSmartContract();
@@ -108,31 +108,31 @@ class TreasuryContractService extends TreasuryContract {
             amount
         )
     }
-
-    feePaid(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
-        return this.sendContractMethod(
-            'feePayment',
-            senderAddress,
-            communityTransferId,
-            marketplaceTransferId,
-            dataProviderMPAddress,
-            feeAmount
-        )
-    }
+    //
+    // feePaid(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
+    //     return this.sendContractMethod(
+    //         'feePayment',
+    //         senderAddress,
+    //         communityTransferId,
+    //         marketplaceTransferId,
+    //         dataProviderMPAddress,
+    //         feeAmount
+    //     )
+    // }
 
     clearing(tokenTransfers, senderAddress) {
         return this.sendContractMethod(
             'clearing',
             senderAddress,
-            transferId
+            tokenTransfers
         )
     }
 
     async _getMarketplaceAddressByIndex(index) {
         try {
-            return await this.contract.methods.marketplaces(index).call();
+            return this.contract.methods.marketplaces(index).call();
         } catch (e) {
-            console.log("Error: Marketplace does NOT exist or wrong index.");
+            console.log(`Error: Marketplace does NOT exist or wrong index ${e}.`);
             return '0x0'
         }
     }
@@ -143,6 +143,17 @@ class TreasuryContractService extends TreasuryContract {
             senderAddress,
             transferId,
             transferCode
+        )
+    }
+
+    feePayment(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
+        return this.sendContractMethod(
+            'feePayment',
+            senderAddress,
+            communityTransferId,
+            marketplaceTransferId,
+            dataProviderMPAddress,
+            feeAmount
         )
     }
 
@@ -176,7 +187,7 @@ class TreasuryContractService extends TreasuryContract {
     }
 
     getMarketPlaceIndex(address) {
-        return this.contract.methods.getMarketplaceIndex(address).call()
+        return this.contract.methods.mpIndex(address).call()
     }
 
     registerHandlerOnFiatMoneyPayment() {
@@ -216,8 +227,8 @@ class TreasuryContractService extends TreasuryContract {
                     type: event.type,
                     transferId: event.returnValues.transferId,
                     operation: event.returnValues.operation,
-                    fromAddress: event.returnValues.fromAddress,
-                    toAddress: event.returnValues.toAddress
+                    fromAddress: event.returnValues.fromAdd,
+                    toAddress: event.returnValues.toAdd
                 };
 
                 axios.post(process.env.WEBHOOK, {payload}).then(response => {
@@ -259,11 +270,12 @@ class TreasuryContractService extends TreasuryContract {
     }
 
     decodeTransactionError(data) {
+        console.log(`[TreasuryContractService][decodeTransactionError] data: ${JSON.stringify(data)}`)
         try {
             let hex = data.substr(data.length - (data.length - 10) / 3)
             return this.web3.utils.hexToString("0x" + hex);
         } catch (e) {
-            return "There was an error. Transaction reverted"
+            return `There was an error. Transaction reverted ${e}`
         }
     }
 }

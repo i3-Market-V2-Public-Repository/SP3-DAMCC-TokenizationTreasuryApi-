@@ -41,6 +41,11 @@ class TreasuryContractServiceWithCustomEventHandler extends TreasuryContractServ
         this.fiatMoneyPaymentEventHandlers = [];
     }
 
+    initSmartContract() {
+        super.initSmartContract();
+        this.registerHandlerOnFiatMoneyPayment();
+    }
+
     addFiatMoneyPaymentEventHandler(handler) {
         this.fiatMoneyPaymentEventHandlers.push(handler);
     }
@@ -49,43 +54,43 @@ class TreasuryContractServiceWithCustomEventHandler extends TreasuryContractServ
         this.tokenTransferedEventHandlers.push(handler);
     }
 
+
+
     registerHandlerOnFiatMoneyPayment() {
+        console.log(
+            `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnFiatMoneyPayment] Registering FiatMoneyPayment event listener`
+        );
         try {
             this.contract.events.FiatMoneyPayment({}, (error, event) => {
                 if (!event || !event.returnValues) return;
 
-                console.log(
-                    `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Event\n${event}`
-                );
-
-                const payload = {
-                    transactionHash: event.transactionHash,
-                    blockHash: event.blockHash,
-                    type: event.type,
-                    transferId: event.returnValues.transferId,
-                    operation: event.returnValues.operation,
-                    fromAddress: event.returnValues.fromAddress
-                }
-
-                axios.post(process.env.WEBHOOK, {payload}).then(response => {
-                    console.log('sent webhook successfully');
-                }).catch(error => {
-                    console.error("Webhook got an error. ", error);
+                this.fiatMoneyPaymentEventHandlers.forEach(handler => {
+                    handler.execute({
+                        transactionHash: event.transactionHash,
+                        blockHash: event.blockHash,
+                        type: event.type,
+                        transferId: event.returnValues.transferId,
+                        operation: event.returnValues.operation,
+                        fromAddress: event.returnValues.fromAdd
+                    });
                 });
             });
         } catch (e) {
-            console.log('Cannot subscribe to contract TokenTransferred event')
+            console.log('Cannot subscribe to contract FiatMoneyPayment event')
         }
     }
 
     registerHandlerOnTokenTransferred() {
+        console.log(
+            `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Registering TokenTransferred event listener`
+        );
         try {
             this.contract.events.TokenTransferred({}, (error, event) => {
-
                 if (!event || !event.returnValues) return;
 
                 console.log(
-                    `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Event\n${event}`
+                    `[TreasuryContractServiceWithCustomEventHandler][registerHandlerOnTokenTransferred] Event
+                    ${JSON.stringify(event)}`
                 );
 
                 this.tokenTransferedEventHandlers.forEach(handler => {
@@ -95,8 +100,8 @@ class TreasuryContractServiceWithCustomEventHandler extends TreasuryContractServ
                         type: event.type,
                         operation: event.returnValues.operation,
                         transferId: event.returnValues.transferId,
-                        fromAddress: event.returnValues.fromAddress,
-                        toAddress: event.toAddress
+                        fromAddress: event.returnValues.fromAdd,
+                        toAddress: event.returnValues.toAdd
                     });
                 });
             });
@@ -104,7 +109,6 @@ class TreasuryContractServiceWithCustomEventHandler extends TreasuryContractServ
             console.log('Cannot subscribe to contract TokenTransferred event')
         }
     }
-
 }
 
 module.exports = TreasuryContractServiceWithCustomEventHandler;

@@ -23,7 +23,6 @@ const TokenTransferredHandler = require('../../services/enventHandlers/tokenTran
 const DictionaryPaymentDataStorage = require('../../dataStores/dictionaryPaymentDataStorage');
 const {strict: assert} = require('assert');
 const Operation = require('../../entities/operation');
-const {operation} = require("truffle/build/856.bundled");
 const Network = require("../../../test_networks/ganacheNetwork");
 const helpers = require("../helpers");
 require('dotenv').config();

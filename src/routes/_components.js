@@ -89,7 +89,7 @@
  *         properties:
  *           senderAddress:
  *             type: string
- *             example: '0xb794f5ea0ba39494ce839613fffba74279579268'
+ *             example: '0x568EeaB5551a9158d75795fdd27A3154A466E09a'
  *             description: sender address.
  *           transferId:
  *             type: string
@@ -110,7 +110,7 @@
  *             type: string
  *             example: '0xb794f5ea0ba39494ce839613fffba74279579268'
  *             description: sender address.
- *           MarketplaceAddress:
+ *           marketplaceAddress:
  *             type: string
  *             example: '0x111122220ba39494ce839613fffba74279571234'
  *             description: Data provider marketplace Address.

@@ -5,3 +5,5 @@ node_modules
 helpers
 proposals.md
 docker-compose-dev.yml
+docker-compose-ganache-dev.yml
+docker-compose-dev-db.yml

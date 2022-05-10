@@ -21,6 +21,7 @@
 const Operation = require("../entities/operation")
 const {nameSpacedUUID} = require("../utils/uuid_generator");
 const TokenTransfer = require("../entities/tokenTransfer");
+const ClearingOperation = require("../entities/clearingOperation");
 
 let instance = null;
 
@@ -68,7 +69,7 @@ class PaymentService {
         return this.store.getOperationsByUser(user, limit, offset);
     }
 
-    async getOperationsByDate(fromDate, toDate, limit, offset){
+    async getOperationsByDate(fromDate, toDate, limit, offset) {
         return this.store.getOperationsByDate(fromDate, toDate, limit, offset);
     }
 
@@ -87,7 +88,7 @@ class PaymentService {
                 operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
             )
         } catch (err) {
-            console.log(`[PaymentService][exchangeOut] Error → ${err}`);
+            console.log(`[PaymentService][exchangeIn] Error → ${err}`);
         }
 
         response.transferId = operation.transferId;
@@ -127,15 +128,15 @@ class PaymentService {
     async clearing() {
         console.log(`[PaymentService][clearing] Request: ${process.env.MARKETPLACE_ADDRESS}`);
 
-        const balances = this.treasurySmartContract.getBalanceForAddress(process.env.MARKETPLACE_ADDRESS);
-        const transferTokens = await this._generateTransferTokens(balances.balance);
-        console.log(`[PaymentService][clearing] Transfer tokens: ${JSON.stringify(transferTokens)}`)
+        const balances = await this.treasurySmartContract.getBalanceForAddress(process.env.MARKETPLACE_ADDRESS);
+        const clearingOperations = await this._generateClearingOperations(balances);
+        console.log(`[PaymentService][clearing] Transfer tokens: ${JSON.stringify(clearingOperations)}`)
 
-        return await this.treasurySmartContract.clearing(transferTokens, process.env.MARKETPLACE_ADDRESS);
+        return await this.treasurySmartContract.clearing(clearingOperations, process.env.MARKETPLACE_ADDRESS);
     }
 
-    async _generateTransferTokens(balances) {
-        console.log(`[PaymentService][_generateTransferTokens] Balances: ${balances}`);
+    async _generateClearingOperations(balances) {
+        console.log(`[PaymentService][_generateClearingOperations] Balances: ${balances}`);
         const result = []
         let balance, address;
 
@@ -143,12 +144,15 @@ class PaymentService {
             balance = balances[i];
             address = await this.treasurySmartContract._getMarketplaceAddressByIndex(i);
             if (this._isExternalMarketplaceBalance(address, balance)) {
-                console.log(`[PaymentService][_generateTransferTokens] balance: ${balance}`);
-                result.push(new TokenTransfer(process.env.MARKETPLACE_ADDRESS, address, balance));
+                console.log(`[PaymentService][_generateClearingOperations] balance: ${balance}`);
+                result.push(new ClearingOperation(address, balance));
             }
         }
 
-        console.log(`[PaymentService][_generateTransferTokens] result:  ${JSON.stringify(result)}`);
+        console.log(
+            `[PaymentService][_generateClearingOperations] result:  
+        ${JSON.stringify(result, null, 4)}`
+        );
         return result;
     }
 
@@ -178,8 +182,6 @@ class PaymentService {
             nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, dataProviderMPAddress
         );
         try {
-            communityOperation = await this.store.createOperation(communityOperation);
-            MPOperation = await this.store.createOperation(MPOperation);
             transactionObject = await this.treasurySmartContract.feePayment(
                 communityOperation.transferId,
                 MPOperation.transferId,
@@ -187,8 +189,13 @@ class PaymentService {
                 feeAmount,
                 senderAddress
             )
+            communityOperation = await this.store.createOperation(communityOperation);
+            MPOperation = await this.store.createOperation(MPOperation);
         } catch (err) {
             console.log(`[PaymentService][feePayment] Error → ${err}`);
+            response.error = err
+
+            return response
         }
 
         response.transferIds = [communityOperation.transferId, MPOperation.transferId];

@@ -61,7 +61,7 @@ class TreasuryContractService {
     }
 
     feePayment(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
-        throw "TreasuryContractService must implement setPaid for TreasuryContractService types"
+        throw "TreasuryContractService must implement feePayment for TreasuryContractService types"
     }
 
     deploySignedTransaction(serializedTx) {

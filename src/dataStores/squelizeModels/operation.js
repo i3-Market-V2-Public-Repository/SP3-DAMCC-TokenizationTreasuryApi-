@@ -40,7 +40,8 @@ Operation.Type = {
     EXCHANGE_IN: "exchange_in",
     EXCHANGE_OUT: "exchange_out",
     CLEARING_IN: "clearing_in",
-    CLEARING_OUT: "clearing_out"
+    CLEARING_OUT: "clearing_out",
+    FEE_PAYMENT: "fee_payment"
 }
 
 

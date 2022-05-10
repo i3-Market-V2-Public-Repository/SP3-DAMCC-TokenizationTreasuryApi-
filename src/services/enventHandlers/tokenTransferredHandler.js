@@ -28,7 +28,7 @@ class TokenTransferredHandler extends EventHandler {
     }
 
     async execute(event) {
-        console.log(`[PaymentServiceEventHandler][execute] Event: ${JSON.stringify(event)}`);
+        console.log(`[TokenTransferredHandler][execute] Event: ${JSON.stringify(event)}`);
 
         if (this._isThisMPExchangeInEvent(event)) {
             return await this._createOperation(event, Operation.Status.CLOSED);
@@ -39,7 +39,7 @@ class TokenTransferredHandler extends EventHandler {
         } else if (event.operation === Operation.Type.FEE_PAYMENT) {
             return await this._createOperation(event, Operation.Status.CLOSED);
         } else {
-            console.log(`[PaymentServiceEventHandler][execute] Event: ${event.operation} NOT FOUND`)
+            console.log(`[TokenTransferredHandler][execute] Event: ${event.operation} NOT FOUND`)
         }
     }
 
@@ -51,7 +51,7 @@ class TokenTransferredHandler extends EventHandler {
 
     async _createOperation(event, status) {
         let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
-        console.log("[PaymentServiceEventHandler][_createOperation] operations " + JSON.stringify(operations));
+        console.log("[TokenTransferredHandler][_createOperation] operations " + JSON.stringify(operations));
 
         if (operations && operations.length === 1 && operations[0].status === Operation.Status.OPEN) {
             let operation = new Operation(operations[0].transferId, operations[0].type, status, operations[0].user);
@@ -72,7 +72,7 @@ class TokenTransferredHandler extends EventHandler {
     }
 
     async _handleClearingOperation(event) {
-        console.log(`[PaymentServiceEventHandler][_handleClearingOperation] event: ${JSON.stringify(event)}`)
+        console.log(`[TokenTransferredHandler][_handleClearingOperation] event: ${JSON.stringify(event)}`)
         let operation;
 
         if (event.fromAddress !== process.env.MARKETPLACE_ADDRESS && event.toAddress !== process.env.MARKETPLACE_ADDRESS) {

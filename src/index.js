@@ -42,12 +42,13 @@ function getPaymentStore() {
     return new SequelizePaymentDataStore(
         process.env.POSTGRES_DB,
         process.env.POSTGRES_USER,
-        process.env.POSTGRES_PASSWORD, {
+        process.env.POSTGRES_PASSWORD,
+        {
             host: process.env.POSTGRES_HOST || 'localhost',
             dialect: 'postgres',
             logging: false
         }
-    );
+    )
 }
 
 async function deployTreasureService(paymentStore) {
@@ -67,7 +68,9 @@ async function deployPaymentService(paymentStore) {
     paymentService.setTreasurySmartContractService(treasuryContract);
 }
 
+
 const paymentStore = getPaymentStore();
+paymentStore.sequelize.sync();
 
 deployTreasureService(paymentStore).then(() => {
     console.log(`Treasure service deployed`);

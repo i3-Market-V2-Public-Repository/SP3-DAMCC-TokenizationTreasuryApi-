@@ -101,7 +101,13 @@ exports.exchangeOut = catchAsync(async (req, res, next) => {
 
 
 exports.clearing = catchAsync(async (req, res, next) => {
-    return res.json((await paymentService.clearing()));
+
+
+    const resp = (await paymentService.clearing());
+
+    console.log("RESP" + resp);
+
+    return res.json(resp);
 });
 
 

@@ -124,7 +124,7 @@ router.get('', paymentController.getOperations);
  *             properties:
  *               userAddress:
  *                 type: string
- *                 example: '0xb5F3c73813B63336D8A3434B46f0164F57662f71'
+ *                 example: '0xfaBC580e8250Bd31152E730138f0B7B827a2cDe6'
  *               tokens:
  *                 type: Number
  *                 example: 60
@@ -170,10 +170,10 @@ router.post('/exchange-in', paymentController.exchangeIn);
  *             properties:
  *               senderAddress:
  *                 type: string
- *                 example: '0xb5F3c73813B63336D8A3434B46f0164F57662f71'
+ *                 example: '0x3482ED36D95f3215fb0C4e717ea43F31CC6f61a6'
  *               marketplaceAddress:
  *                 type: string
- *                 example: '0xaab3c73813B63336D8A3434B46f0164F57662e00'
+ *                 example: '0x568EeaB5551a9158d75795fdd27A3154A466E09a'
  *     responses:
  *       200:
  *        description: Returns the transaction object and the operation description.
