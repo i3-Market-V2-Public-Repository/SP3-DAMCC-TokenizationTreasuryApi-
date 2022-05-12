@@ -79,6 +79,15 @@ class TreasuryContractService extends TreasuryContract {
             marketplaceAddress
         )
     }
+    
+    setCommunityWalletAndCommunityFee(senderAddress, communityWalletAddress, communityWalletFee){
+        return this.sendContractMethod(
+            'setCommunityWalletAndCommunityFee',
+            senderAddress,
+            communityWalletAddress,
+            communityWalletFee
+        )
+    }
 
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         return this.sendContractMethod(

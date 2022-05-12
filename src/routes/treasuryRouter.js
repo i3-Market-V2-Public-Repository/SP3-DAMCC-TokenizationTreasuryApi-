@@ -122,6 +122,66 @@ router.get('/marketplaces/:address', treasuryController.getMarketPlaceIndex)
 
 /**
  * @swagger
+ * /api/v1/treasury/community-wallet:
+ *   post:
+ *     tags: [Community management]
+ *     summary: Alter the community wallet address and the related community fee
+ *     description: Call the community-wallet api to update the the community wallet address and transaction fee
+ *                  In the body you need to pass a "senderAddress", a "communityWalletAddress" and a "communityWalletFee" in a JSON format.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               senderAddress:
+ *                 type: string
+ *                 description: The address of the sender.
+ *                 example: "0x568EeaB5551a9158d75795fdd27A3154A466E09a"
+ *               communityWalletAddress:
+ *                 type: string
+ *                 description: The address of the community wallet.
+ *                 example: "0x568EeaB5551a9158d75795fdd27A3154A466E09a"
+ *               communityWalletFee:
+ *                 type: string
+ *                 description: The fee rate of the community wallet.
+ *                 example: "5"
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 transactionObject:
+ *                   type: string
+ *                   description: The pending transaction object.
+ *                   example: {
+ *                           "chainId": 1,
+ *                           "nonce": 1,
+ *                           "gasLimit": 6721975,
+ *                           "gasPrice": 201966,
+ *                           "to": "0x5780262041318FD9fc8E345F665bEc7684E15C75",
+ *                           "from": "0xb3a0ED21c54196E4B446D79b7925766aa86BC196",
+ *                           "data": "0x909770870000000000000000000000000000000000000000000000000000000000000060000000000000000000000000f3d15f97bf1b55b486486de2d819649bc92fff6b000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000002438646265373434372d333637362d353262632d623439312d30393638653735626134663400000000000000000000000000000000000000000000000000000000"
+ *                         }
+ *       400:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: Reverted reason
+ */
+router.post('/community-wallet', treasuryController.setCommunityWalletAndCommunityFee)
+/**
+ * @swagger
  * /api/v1/treasury/balances/{address}:
  *   get:
  *     tags: [Balances]

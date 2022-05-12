@@ -36,6 +36,10 @@ class TreasuryContractService {
         throw "TreasuryContractService must implement addMarketPlace for TreasuryContractService types"
     }
 
+    setCommunityWalletAndCommunityFee(senderAddress, communityWalletAddress, communityWalletFee){
+        throw "TreasuryContractService must implement setCommunityWalletAndCommunityFee for TreasuryContractService types"
+    }
+
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         throw "TreasuryContractService must implement exchangeIn for TreasuryContractService types"
     }

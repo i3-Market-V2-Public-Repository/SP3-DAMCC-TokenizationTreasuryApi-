@@ -83,10 +83,10 @@ class PaymentService {
         let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
 
         try {
-            operation = await this.store.createOperation(operation);
             transactionObject = await this.treasurySmartContract.exchangeIn(
                 operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
             )
+            operation = await this.store.createOperation(operation);
         } catch (err) {
             console.log(`[PaymentService][exchangeIn] Error → ${err}`);
         }
@@ -109,10 +109,10 @@ class PaymentService {
         let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", senderAddress);
 
         try {
-            operation = await this.store.createOperation(operation);
             transactionObject = await this.treasurySmartContract.exchangeOut(
                 operation.transferId, senderAddress, marketplaceAddress
             );
+            operation = await this.store.createOperation(operation);
         } catch (err) {
             console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
