@@ -170,7 +170,7 @@ class TreasuryContractService extends TreasuryContract {
     }
 
     getTransactionByTransferId(transferId) {
-        return this.contract.methods.transactions(transferId).call();
+        return this.contract.methods.txs(transferId).call();
     }
 
     async gasLimit() {
