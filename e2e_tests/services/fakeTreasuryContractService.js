@@ -72,6 +72,16 @@ class FakeTreasuryContractService extends TreasuryContract {
         });
     }
 
+    setCommunityWalletAndCommunityFee(senderAddress, communityWalletAddress, communityWalletFee){
+        return new Promise(resolve => {
+            NONCE += 1;
+            setTimeout(
+                resolve({"transactionObject": new TransactionObject(senderAddress)}),
+                1500
+            )
+        });
+    }
+
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         return new Promise(resolve => {
             NONCE += 1;

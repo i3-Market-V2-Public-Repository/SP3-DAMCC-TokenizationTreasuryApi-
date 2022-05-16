@@ -64,6 +64,20 @@ exports.addMarketPlace = catchAsync(async (req, res, next) => {
     return res.json({transactionObject})
 })
 
+exports.setCommunityWalletAndCommunityFee = catchAsync(async (req, res, next) => {
+
+    const {senderAddress, communityWalletAddress, communityWalletFee} = req.body
+
+    if (!senderAddress || !communityWalletAddress || !communityWalletFee) {
+        return res.status(400).json({
+            message: 'You must provide senderAddress, communityWalletAddress and communityWalletFee'
+        })
+    }
+
+    const transactionObject = await treasuryContract.setCommunityWalletAndCommunityFee(senderAddress, communityWalletAddress, communityWalletFee)
+    return res.json({transactionObject})
+})
+
 exports.exchangeIn = catchAsync(async (req, res, next) => {
     const {senderAddress, userAddress, tokens} = req.body
 
