@@ -60,15 +60,12 @@ describe("Payment Service Clearing test suit", async () => {
         treasuryContract.setDummyBalances(MP1_ADDRESS, {"balance": ["15", "0", "2"]});
 
         const balances = treasuryContract.getBalanceForAddress(MP1_ADDRESS);
-        const tokenTransfers = await paymentService._generateClearingOperations(balances.balance);
+        const clearingOperations = await paymentService._generateClearingOperations(balances.balance);
 
-        assert.strictEqual(tokenTransfers.length, 1);
-        assert.notStrictEqual(tokenTransfers[0].transferId, "");
-        assert.strictEqual(tokenTransfers[0].fromAddress, MP1_ADDRESS);
-        assert.strictEqual(tokenTransfers[0].toAddress, MP3_ADDRESS);
-        assert.strictEqual(tokenTransfers[0].tokenAmount, '2');
-        assert.strictEqual(tokenTransfers[0].isPaid, false);
-        assert.strictEqual(tokenTransfers[0].transferCode, "");
+        assert.strictEqual(clearingOperations.length, 1);
+        assert.notStrictEqual(clearingOperations[0].transferId, "");
+        assert.strictEqual(clearingOperations[0].toAdd, MP3_ADDRESS);
+        assert.strictEqual(clearingOperations[0].tokenAmount, '2');
     });
 
     it('Given MP When call clearing Then call clearing in treasuryService with the proper tokenTransfer',
@@ -81,14 +78,11 @@ describe("Payment Service Clearing test suit", async () => {
             await paymentService.clearing();
 
             assert.strictEqual(paymentService.treasurySmartContract.clearingArgs.senderAddress, MP1_ADDRESS);
-            assert.strictEqual(paymentService.treasurySmartContract.clearingArgs.tokenTransfers.length, 1);
+            assert.strictEqual(paymentService.treasurySmartContract.clearingArgs.clearingOperations.length, 1);
 
-            const tokenTransfer = paymentService.treasurySmartContract.clearingArgs.tokenTransfers[0];
-            assert.strictEqual(tokenTransfer.fromAddress, MP1_ADDRESS);
-            assert.strictEqual(tokenTransfer.toAddress, MP3_ADDRESS);
+            const tokenTransfer = paymentService.treasurySmartContract.clearingArgs.clearingOperations[0];
+            assert.strictEqual(tokenTransfer.toAdd, MP3_ADDRESS);
             assert.strictEqual(tokenTransfer.tokenAmount, '2');
-            assert.strictEqual(tokenTransfer.isPaid, false);
-            assert.strictEqual(tokenTransfer.transferCode, "");
         }
     );
 

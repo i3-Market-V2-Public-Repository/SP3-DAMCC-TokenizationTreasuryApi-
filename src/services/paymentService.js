@@ -78,7 +78,7 @@ class PaymentService {
         UserAddress: ${userAddress} 
         Tokens: ${tokens}`);
 
-        const response = {}
+        const response = {};
         let transactionObject;
         let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
 
@@ -86,7 +86,7 @@ class PaymentService {
             operation = await this.store.createOperation(operation);
             transactionObject = await this.treasurySmartContract.exchangeIn(
                 operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
-            )
+            );
         } catch (err) {
             console.log(`[PaymentService][exchangeIn] Error → ${err}`);
         }
@@ -129,15 +129,15 @@ class PaymentService {
         console.log(`[PaymentService][clearing] Request: ${process.env.MARKETPLACE_ADDRESS}`);
 
         const balances = await this.treasurySmartContract.getBalanceForAddress(process.env.MARKETPLACE_ADDRESS);
-        const clearingOperations = await this._generateClearingOperations(balances);
-        console.log(`[PaymentService][clearing] Transfer tokens: ${JSON.stringify(clearingOperations)}`)
+        const clearingOperations = await this._generateClearingOperations(balances.balance);
+        console.log(`[PaymentService][clearing] Clearing Operations: ${JSON.stringify(clearingOperations)}`);
 
         return await this.treasurySmartContract.clearing(clearingOperations, process.env.MARKETPLACE_ADDRESS);
     }
 
     async _generateClearingOperations(balances) {
-        console.log(`[PaymentService][_generateClearingOperations] Balances: ${balances}`);
-        const result = []
+        console.log(`[PaymentService][_generateClearingOperations] Balances: ${JSON.stringify(balances)}`);
+        const result = [];
         let balance, address;
 
         for (let i = 0; i < balances.length; i++) {
@@ -172,7 +172,7 @@ class PaymentService {
         feeAmount: ${feeAmount}`
         );
 
-        const response = {}
+        const response = {};
         let transactionObject;
 
         let communityOperation = new Operation(
@@ -188,14 +188,14 @@ class PaymentService {
                 dataProviderMPAddress,
                 feeAmount,
                 senderAddress
-            )
+            );
             communityOperation = await this.store.createOperation(communityOperation);
             MPOperation = await this.store.createOperation(MPOperation);
         } catch (err) {
             console.log(`[PaymentService][feePayment] Error → ${err}`);
-            response.error = err
+            response.error = err;
 
-            return response
+            return response;
         }
 
         response.transferIds = [communityOperation.transferId, MPOperation.transferId];
