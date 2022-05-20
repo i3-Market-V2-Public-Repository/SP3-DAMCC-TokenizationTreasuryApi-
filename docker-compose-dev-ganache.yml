@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  ganachecli:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - "8545:8545"
+    command: -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat" -i 4448 -h 0.0.0.0
+    networks:
+      - bc-network
+
+networks:
+  bc-network:
+    external: true
+
+

@@ -1,0 +1,55 @@
+version: "3.9"
+services:
+  nodejs-tokenization-treasury-api:
+    image: registry.gitlab.com/i3-market/code/wp3/t3.3/nodejs-tokenization-treasury-api:develop
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - ETH_HOST=ws://192.168.2.74:8545
+      - MARKETPLACE_ADDRESS=0x568EeaB5551a9158d75795fdd27A3154A466E09a
+      - CONTRACT_ADDRESS=0x9C74cC4aE4833ff4cBfbd675b9D4F994F2942348
+      - WEBHOOK=$WEBHOOK
+      - PORT=3001
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=i3-market
+      - POSTGRES_HOST=tokenizer-db
+    networks:
+      - bc-network
+      - db-network
+
+  tokenizer-db:
+    image: postgres:14.2
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=i3-market
+    networks:
+      - db-network
+
+  pg-admin:
+    image: adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - db-network
+      - 
+  ganachecli:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - "8545:8545"
+    command: -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat" -i 4448 -h 0.0.0.0
+    networks:
+      - bc-network
+
+networks:
+  bc-network:
+    external: true
+  db-network:
+    external: true
+
+

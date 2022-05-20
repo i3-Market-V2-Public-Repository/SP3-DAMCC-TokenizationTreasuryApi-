@@ -45,6 +45,7 @@ function getPaymentStore() {
         process.env.POSTGRES_PASSWORD,
         {
             host: process.env.POSTGRES_HOST || 'localhost',
+            port: process.env.POSTGRES_PORT || 5432,
             dialect: 'postgres',
             logging: false
         }
@@ -80,13 +81,13 @@ deployPaymentService(paymentStore).then(() => {
 });
 
 const port = process.env.PORT;
-paymentStore.sequelize.authenticate().then(function(err) {
+paymentStore.sequelize.authenticate().then(function (err) {
     console.log('Connection to the database has been established successfully.');
     const server = app.listen(port, () => {
         console.log(`App running on  http://127.0.0.1:${port}`);
         console.log(`Swagger on http://127.0.0.1:${port}/api-docs/`);
     });
-  }).catch(function (err) {
+}).catch(function (err) {
     console.log('Unable to connect to the database:', err);
     process.exit(1)
-  });
+});
