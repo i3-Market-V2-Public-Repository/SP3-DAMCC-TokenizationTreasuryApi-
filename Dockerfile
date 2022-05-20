@@ -12,6 +12,7 @@ RUN npm ci --only=production
 COPY src ./src/
 # Copy other useful files
 COPY contracts ./contracts/
+COPY test_networks ./test_networks/
 
 EXPOSE 3001
 CMD [ "npm", "start" ]
