@@ -79,8 +79,8 @@ class TreasuryContractService extends TreasuryContract {
             marketplaceAddress
         )
     }
-    
-    setCommunityWalletAndCommunityFee(senderAddress, communityWalletAddress, communityWalletFee){
+
+    setCommunityWalletAndCommunityFee(senderAddress, communityWalletAddress, communityWalletFee) {
         return this.sendContractMethod(
             'setCommunityWalletAndCommunityFee',
             senderAddress,
@@ -117,6 +117,7 @@ class TreasuryContractService extends TreasuryContract {
             amount
         )
     }
+
     //
     // feePaid(communityTransferId, marketplaceTransferId, dataProviderMPAddress, feeAmount, senderAddress) {
     //     return this.sendContractMethod(
@@ -191,8 +192,19 @@ class TreasuryContractService extends TreasuryContract {
         return this.web3.eth.getBlock("latest");
     }
 
-    getBalanceForAddress(address) {
-        return this.contract.methods.balanceOfAddress(address).call()
+    async getBalanceForAddress(address) {
+        console.log(`[TreasuryContractService][getBalanceForAddress] address: ${address}`)
+        const balances = [];
+        const numberOfMarketplaces = await (this.contract.methods.index().call());
+
+        for (let i = 0; i < numberOfMarketplaces; i++) {
+            balances[i] = await this.contract.methods.balanceOf(address, i + 1).call();
+        }
+        console.log(
+            `[TreasuryContractService][getBalanceForAddress] balances of ${address}: ${JSON.stringify(balances)}`
+        )
+
+        return balances;
     }
 
     getMarketPlaceIndex(address) {
