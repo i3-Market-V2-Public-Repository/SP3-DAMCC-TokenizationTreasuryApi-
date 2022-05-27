@@ -68,12 +68,13 @@ describe("Payment Service Clearing test suit", async () => {
         assert.strictEqual(clearingOperations[0].tokenAmount, '2');
     });
 
-    it('Given MP When call clearing Then call clearing in treasuryService with the proper tokenTransfer',
+    it(
+        'Given MP When call clearing Then call clearing in treasuryService with the proper tokenTransfer',
         async () => {
             treasuryContract.setDummyMPIndex(MP1_ADDRESS, 0);
             treasuryContract.setDummyMPIndex(MP2_ADDRESS, 1);
             treasuryContract.setDummyMPIndex(MP3_ADDRESS, 2);
-            treasuryContract.setDummyBalances(MP1_ADDRESS, {"balance": ["15", "0", "2"]});
+            treasuryContract.setDummyBalances(MP1_ADDRESS, ["15", "0", "2"]);
 
             await paymentService.clearing();
 
@@ -86,7 +87,8 @@ describe("Payment Service Clearing test suit", async () => {
         }
     );
 
-    it('Given a clearing event When the MP is the clearing executor add the clearing_in operation open to the database',
+    it(
+        'Given a clearing event When the MP is the clearing executor add the clearing_in operation open to the database',
         async () => {
             await tokenTransferredEventHandler.execute(
                 {
@@ -112,7 +114,8 @@ describe("Payment Service Clearing test suit", async () => {
         }
     );
 
-    it('Given a clearing event When the MP is the clearing executor add the clearing_out operation open to the database',
+    it(
+        'Given a clearing event When the MP is the clearing executor add the clearing_out operation open to the database',
         async () => {
             await tokenTransferredEventHandler.execute(
                 {
@@ -138,7 +141,8 @@ describe("Payment Service Clearing test suit", async () => {
     );
 
 
-    it('Given a FiatMoneyPayment event When the MP is the clearing_in executor add the clearing_in closed operation to the database',
+    it(
+        'Given a FiatMoneyPayment event When the MP is the clearing_in executor add the clearing_in closed operation to the database',
         async () => {
             await tokenTransferredEventHandler.execute(
                 {
@@ -173,7 +177,8 @@ describe("Payment Service Clearing test suit", async () => {
         }
     );
 
-    it('Given a FiatMoneyPayment event When the MP is the clearing_out executor add the clearing_out closed operation to the database',
+    it(
+        'Given a FiatMoneyPayment event When the MP is the clearing_out executor add the clearing_out closed operation to the database',
         async () => {
             await tokenTransferredEventHandler.execute(
                 {

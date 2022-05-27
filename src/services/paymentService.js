@@ -129,7 +129,7 @@ class PaymentService {
         console.log(`[PaymentService][clearing] Request: ${process.env.MARKETPLACE_ADDRESS}`);
 
         const balances = await this.treasurySmartContract.getBalanceForAddress(process.env.MARKETPLACE_ADDRESS);
-        const clearingOperations = await this._generateClearingOperations(balances.balance);
+        const clearingOperations = await this._generateClearingOperations(balances);
         console.log(`[PaymentService][clearing] Clearing Operations: ${JSON.stringify(clearingOperations)}`);
 
         return await this.treasurySmartContract.clearing(clearingOperations, process.env.MARKETPLACE_ADDRESS);
