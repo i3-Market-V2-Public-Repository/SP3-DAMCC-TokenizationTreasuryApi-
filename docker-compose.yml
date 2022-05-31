@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   nodejs-tokenization-treasury-api:
-    image: registry.gitlab.com/i3-market/code/wp3/t3.3/nodejs-tokenization-treasury-api:dev-fixes
+    image: registry.gitlab.com/i3-market/code/wp3/t3.3/nodejs-tokenization-treasury-api:develop
     ports:
       - "3001:3001"
     environment:
