@@ -274,7 +274,7 @@ class TreasuryContractService extends TreasuryContract {
 
                         var data = contractTransaction.encodeABI();
                         const tsObject = {
-                            chainId: process.env.CHAIN_ID,
+                            //chainId: process.env.CHAIN_ID,
                             nonce: transactionNonce,
                             gasLimit: gasLimit,
                             gasPrice,

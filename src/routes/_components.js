@@ -18,7 +18,6 @@
  *       TransactionObject:
  *         type: object
  *         required:
- *           - chainId
  *           - nonce
  *           - gasLimit
  *           - gasPrice
@@ -26,10 +25,6 @@
  *           - from
  *           - data
  *         properties:
- *           chainId:
- *             type: Number
- *             description: id of the chain where the transaction will be send.
- *             example: 1
  *           nonce:
  *             type: Number
  *             description: nonce of the transaction

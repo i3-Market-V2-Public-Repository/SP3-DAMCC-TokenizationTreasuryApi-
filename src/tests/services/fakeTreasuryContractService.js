@@ -27,7 +27,7 @@ const CHAIN_ID = "42";
 
 class TransactionObject {
     constructor(senderAddress) {
-        this.chainId = CHAIN_ID;
+        //this.chainId = CHAIN_ID;
         this.nonce = NONCE;
         this.gasLimit = 2;
         this.gasPrice = 1;
