@@ -37,6 +37,9 @@ process.env.COMMUNITY_ADDRESS = process.env.COMMUNITY_ADDRESS || Network.COMMUNI
 process.env.PORT = process.env.PORT || 3001;
 process.env.WEBHOOK = process.env.WEBHOOK || "http://127.0.0.1:3000/api/webhook";
 
+console.log(`Marketplace address: ${process.env.MARKETPLACE_ADDRESS}`);
+console.log(`Contract address: ${process.env.CONTRACT_ADDRESS}`);
+
 function getPaymentStore() {
     //return new DictionaryPaymentDataStorage();
     return new SequelizePaymentDataStore(
