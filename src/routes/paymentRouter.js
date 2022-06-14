@@ -233,7 +233,7 @@ router.post('/clearing', paymentController.clearing);
 
 /**
  * @swagger
- * /api/v1/operations/payment:
+ * /api/v1/operations/set-paid:
  *   post:
  *     tags: [Operations]
  *     summary: Generate the payment transaction object.
@@ -272,7 +272,7 @@ router.post('/set-paid ', paymentController.setPaid);
 
 /**
  * @swagger
- * /api/v1/operations/feePayment:
+ * /api/v1/operations/fee-payment:
  *   post:
  *     tags: [Operations]
  *     summary: Generate the fee payment transaction object.
@@ -306,6 +306,6 @@ router.post('/set-paid ', paymentController.setPaid);
  *               $ref: '#/components/schemas/Error'
  *
  */
-router.post('/feePayment', paymentController.feePayment);
+router.post('/fee-payment', paymentController.feePayment);
 
 module.exports = router;
