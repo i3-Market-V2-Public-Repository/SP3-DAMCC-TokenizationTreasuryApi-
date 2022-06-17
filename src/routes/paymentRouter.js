@@ -267,7 +267,7 @@ router.post('/clearing', paymentController.clearing);
  *               $ref: '#/components/schemas/Error'
  *
  */
-router.post('/set-paid ', paymentController.setPaid);
+router.post('/set-paid', paymentController.setPaid);
 
 
 /**
