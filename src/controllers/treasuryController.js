@@ -145,7 +145,6 @@ exports.setPaid = catchAsync(async (req, res, next) => {
         })
     }
 
-    console.log("Hola: " +  senderAddress + " " + transferId + " " + transferCode);
     const transactionObject = await treasuryContract.setPaid(transferId, senderAddress, transferCode)
     return res.json({transactionObject})
 })
