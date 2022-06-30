@@ -87,6 +87,10 @@ const port = process.env.PORT;
 paymentStore.sequelize.authenticate().then(function (err) {
     console.log('Connection to the database has been established successfully.');
     const server = app.listen(port, () => {
+        console.log(`CONTRACT ADDRESS: ${process.env.CONTRACT_ADDRESS}`);
+        console.log(`MARKETPLACE ADDRESS: ${process.env.MARKETPLACE_ADDRESS}`);
+        console.log(`COMMUNITY ADDRESS: ${process.env.COMMUNITY_ADDRESS}`);
+
         console.log(`App running on  http://127.0.0.1:${port}`);
         console.log(`Swagger on http://127.0.0.1:${port}/api-docs/`);
     });
