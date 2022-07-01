@@ -174,9 +174,11 @@ class PaymentService {
 
         const response = {};
         let transactionObject;
+        let communityWallet = await this.treasurySmartContract.getCommunityWallet()
+        console.log('[CommunityWallet]'+communityWallet)
 
         let communityOperation = new Operation(
-            nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, process.env.COMMUNITY_ADDRESS
+            nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, communityWallet ||process.env.COMMUNITY_ADDRESS
         );
         let MPOperation = new Operation(
             nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, dataProviderMPAddress

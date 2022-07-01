@@ -89,6 +89,10 @@ class TreasuryContractService extends TreasuryContract {
         )
     }
 
+    getCommunityWallet(){
+        return this.contract.methods.communityWallet().call()
+    }
+
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         return this.sendContractMethod(
             'exchangeIn',
