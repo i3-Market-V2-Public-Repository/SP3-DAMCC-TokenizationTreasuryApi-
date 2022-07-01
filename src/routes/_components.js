@@ -1,6 +1,9 @@
 /**
  * @swagger
  *   components:
+ *     responses:
+ *       UnauthorizedError:
+ *         description: Access token is missing or invalid
  *     schemas:
  *       GenericList:
  *         required:

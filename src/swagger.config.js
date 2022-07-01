@@ -30,6 +30,18 @@ const swaggerOptions = {
                 url: 'https://spdx.org/licenses/MIT.html',
             },
         },
+        components:{
+            securitySchemes:{
+                jwt:{
+                    type: "apiKey",
+                    in: "header",
+                    name: "id_token"
+                }
+            }
+        },
+        security:[{
+            "jwt": []
+        }]
     },
     apis:[path.join(__dirname,'./routes/**.js')],
 }
