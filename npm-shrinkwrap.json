@@ -4885,7 +4885,7 @@
     "got": {
       "version": "11.8.5",
       "resolved": "https://registry.npmjs.org/got/-/got-11.8.5.tgz",
-      "integrity": "sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==",
+      "integrity": "sha512-R7eWptXuGYxwijs0eV+v3o6+XH1IqVK8dJOEecQfTmkncw9AV4dcw/Dhxi8MdlqPthxxpZyizMzyg8RTmEsG+Q==",
       "requires": {
         "@sindresorhus/is": "^0.14.0",
         "@szmarczak/http-timer": "^1.1.2",
@@ -8357,7 +8357,7 @@
         "got": {
           "version": "11.8.5",
           "resolved": "https://registry.npmjs.org/got/-/got-11.8.5.tgz",
-          "integrity": "sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==",
+          "integrity": "sha512-Y5WMo7xKKq1muPsxD+KmrR8DH5auG7fBdDVueZwETwV6VytKyU9OX/ddpq2/1hp1vIPvVb4T81dKQz3BivkNLw==",
           "requires": {
             "decompress-response": "^3.2.0",
             "duplexer3": "^0.1.4",
