@@ -43,6 +43,9 @@
     "nodemon": "^2.0.15",
     "request": "^2.88.2",
     "sinon": "^13.0.1",
-    "truffle": "^5.5.19"
+    "truffle": "^5.5.9"
+  },
+  "override": {
+    "minimist": "^1.2.6"
   }
 }
