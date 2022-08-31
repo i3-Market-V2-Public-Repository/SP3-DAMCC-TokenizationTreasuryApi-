@@ -80,19 +80,18 @@ class PaymentService {
 
         const response = {};
         let transactionObject;
-        let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
+        //let operation = new Operation(nameSpacedUUID(), "exchange_in", "open", userAddress);
 
         try {
             transactionObject = await this.treasurySmartContract.exchangeIn(
-                operation.transferId, process.env.MARKETPLACE_ADDRESS, userAddress, tokens
+                nameSpacedUUID(), process.env.MARKETPLACE_ADDRESS, userAddress, tokens
             );
-            operation = await this.store.createOperation(operation);
         } catch (err) {
             console.log(`[PaymentService][exchangeIn] Error → ${err}`);
         }
 
-        response.transferId = operation.transferId;
-        response.operation = operation;
+        response.transferId = nameSpacedUUID()
+        //response.operation = operation;
         response.transactionObject = transactionObject;
 
         console.log(`[PaymentService][exchangeIn] Response:  ${JSON.stringify(response)}`);
@@ -106,20 +105,19 @@ class PaymentService {
 
         const response = {};
         let transactionObject;
-        let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", senderAddress);
+        //let operation = new Operation(nameSpacedUUID(), "exchange_out", "open", senderAddress);
 
         try {
             transactionObject = await this.treasurySmartContract.exchangeOut(
-                operation.transferId, senderAddress, marketplaceAddress
+                nameSpacedUUID(), senderAddress, marketplaceAddress
             );
-            operation = await this.store.createOperation(operation);
         } catch (err) {
             console.log(`[PaymentService][exchangeOut] Error → ${err}`);
         }
 
         response.transactionObject = transactionObject;
-        response.transferId = operation.transferId;
-        response.operation = operation;
+        response.transferId = nameSpacedUUID();
+        //response.operation = operation;
 
         console.log(`[PaymentService][exchangeOut] Response: ${JSON.stringify(transactionObject)}`);
         return response;
@@ -177,22 +175,20 @@ class PaymentService {
         let communityWallet = await this.treasurySmartContract.getCommunityWallet()
         console.log('[CommunityWallet]'+communityWallet)
 
-        let communityOperation = new Operation(
-            nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, communityWallet ||process.env.COMMUNITY_ADDRESS
-        );
-        let MPOperation = new Operation(
-            nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, dataProviderMPAddress
-        );
+        // let communityOperation = new Operation(
+        //     nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, communityWallet ||process.env.COMMUNITY_ADDRESS
+        // );
+        // let MPOperation = new Operation(
+        //     nameSpacedUUID(), Operation.Type.FEE_PAYMENT, Operation.Status.OPEN, dataProviderMPAddress
+        // );
         try {
             transactionObject = await this.treasurySmartContract.feePayment(
-                communityOperation.transferId,
-                MPOperation.transferId,
+                nameSpacedUUID(),
+                nameSpacedUUID(),
                 dataProviderMPAddress,
                 feeAmount,
                 senderAddress
             );
-            communityOperation = await this.store.createOperation(communityOperation);
-            MPOperation = await this.store.createOperation(MPOperation);
         } catch (err) {
             console.log(`[PaymentService][feePayment] Error → ${err}`);
             response.error = err;
@@ -200,8 +196,8 @@ class PaymentService {
             return response;
         }
 
-        response.transferIds = [communityOperation.transferId, MPOperation.transferId];
-        response.operations = [communityOperation, MPOperation];
+        response.transferIds = [nameSpacedUUID(), nameSpacedUUID()];
+        //response.operations = [communityOperation, MPOperation];
         response.transactionObject = transactionObject;
 
         console.log(`[PaymentService][feePayment] Response:  ${JSON.stringify(response)}`);

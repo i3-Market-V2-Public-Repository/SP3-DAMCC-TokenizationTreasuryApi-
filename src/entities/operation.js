@@ -50,7 +50,6 @@ Operation.NULL = {};
 Operation.Status = {
     OPEN: "open",
     CLOSED: "closed",
-    IN_PROGRESS: "in_progress"
 }
 
 Operation.Type = {
