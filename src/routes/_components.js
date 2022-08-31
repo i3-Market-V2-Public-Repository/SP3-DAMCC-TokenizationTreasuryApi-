@@ -70,7 +70,7 @@
  *             enum: [exchange_in, exchange_out, clearing]
  *           status:
  *             type: string
- *             enum: [open, closed, in_progress]
+ *             enum: [open, closed]
  *           user:
  *             type: string
  *             example: '0xb794f5ea0ba39494ce839613fffba74279579268'

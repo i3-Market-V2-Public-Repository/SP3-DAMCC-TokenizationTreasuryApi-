@@ -74,7 +74,7 @@ describe("Payment Service test suit", async () => {
         assert.strictEqual(operation.user, USER_ADDRESS);
     });
 
-    it("Given an exchangeOut event When the event is captured Then update the operation status to in_progress",
+    it("Given an exchangeOut event When the event is captured Then update the operation status to open",
         async () => {
             const openOperation = (await paymentService.exchangeOut(USER_ADDRESS)).operation;
             const inProgressOperation = await tokenTransferredHandler.execute(
@@ -92,7 +92,7 @@ describe("Payment Service test suit", async () => {
             const operations = await paymentService.getOperationsByTransferId(openOperation.transferId);
 
             assert.strictEqual(operations.length, 2);
-            assert.strictEqual(inProgressOperation.status, Operation.Status.IN_PROGRESS);
+            assert.strictEqual(inProgressOperation.status, Operation.Status.OPEN);
             helpers.assertIsOperationInList(inProgressOperation, operations);
         }
     );

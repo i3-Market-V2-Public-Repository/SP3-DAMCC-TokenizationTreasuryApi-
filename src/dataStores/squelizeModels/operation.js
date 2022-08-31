@@ -32,8 +32,7 @@ class Operation extends Model {
 
 Operation.Status = {
     OPEN: "open",
-    CLOSED: "closed",
-    IN_PROGRESS: "in_progress"
+    CLOSED: "closed"
 }
 
 Operation.Type = {
