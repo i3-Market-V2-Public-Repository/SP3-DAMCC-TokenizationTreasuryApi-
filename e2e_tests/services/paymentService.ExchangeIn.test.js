@@ -62,16 +62,16 @@ describe("Payment Service test suit", async () => {
         }
     );
 
-    // it("Given a user address and an amount When the MP call exchangeIn Then return the operation",
-    //     async () => {
-    //         const response = await paymentService.exchangeIn(USER_ADDRESS, 30);
+    it("Given a user address and an amount When the MP call exchangeIn Then return the operation",
+        async () => {
+            const response = await paymentService.exchangeIn(USER_ADDRESS, 30);
 
-    //         assert.strictEqual(response.operation.type, Operation.Type.EXCHANGE_IN);
-    //         assert.strictEqual(response.operation.status, Operation.Status.OPEN);
-    //         assert.strictEqual(response.operation.user, USER_ADDRESS);
-    //         assert.strictEqual(response.operation.transferId, response.transferId);
-    //     }
-    // );
+            assert.strictEqual(response.operation.type, Operation.Type.EXCHANGE_IN);
+            assert.strictEqual(response.operation.status, Operation.Status.UNSIGNED);
+            assert.strictEqual(response.operation.user, USER_ADDRESS);
+            assert.strictEqual(response.operation.transferId, response.transferId);
+        }
+    );
 
     it("Given an exchangeIn event When the event is captured Then Return two operations with different status",
         async () => {
@@ -90,8 +90,8 @@ describe("Payment Service test suit", async () => {
 
             const operations = await paymentService.getOperationsByTransferId(openOperation.transferId);
 
-            assert.strictEqual(operations.length, 1);
-            //helpers.assertIsOperationInList(openOperation, operations);
+            assert.strictEqual(operations.length, 2);
+            helpers.assertIsOperationInList(openOperation, operations);
             helpers.assertIsOperationInList(closedOperation, operations);
         }
     );

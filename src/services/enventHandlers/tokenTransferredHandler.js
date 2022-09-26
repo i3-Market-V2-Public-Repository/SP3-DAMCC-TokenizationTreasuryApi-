@@ -31,13 +31,13 @@ class TokenTransferredHandler extends EventHandler {
         console.log(`[TokenTransferredHandler][execute] Event: ${JSON.stringify(event)}`);
 
         if (this._isThisMPExchangeInEvent(event)) {
-            return await this._createOperation(event, Operation.Status.CLOSED, event.toAddress);
+            return await this._createOperation(event, Operation.Status.CLOSED);
         } else if (event.operation === Operation.Type.EXCHANGE_OUT) {
-            return await this._createOperation(event, Operation.Status.OPEN, event.fromAddress);
+            return await this._createOperation(event, Operation.Status.OPEN);
         } else if (this._isThisMPClearingEvent(event)) {
             return await this._handleClearingOperation(event)
         } else if (event.operation === Operation.Type.FEE_PAYMENT) {
-            return await this._createOperation(event, Operation.Status.CLOSED, event.toAddress);
+            return await this._createOperation(event, Operation.Status.CLOSED);
         } else {
             console.log(`[TokenTransferredHandler][execute] Event: ${event.operation} NOT FOUND`)
         }
@@ -49,14 +49,15 @@ class TokenTransferredHandler extends EventHandler {
 
 
 
-    async _createOperation(event, status, user) {
-        //let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
-        console.log("[TokenTransferredHandler][_createOperation] event " + JSON.stringify(event));
+    async _createOperation(event, status) {
+        let operations = await this.paymentStore.getOperationsByTransferId(event.transferId);
+        console.log("[TokenTransferredHandler][_createOperation] operations " + JSON.stringify(operations));
 
-        //if (operations && operations.length === 1 && operations[0].status === Operation.Status.OPEN) {
-            let operation = new Operation(event.transferId, event.operation, status, user);
+        if (operations && operations.length === 1 && operations[0].status === Operation.Status.UNSIGNED) {
+            let operation = new Operation(operations[0].transferId, operations[0].type, status, operations[0].user);
             return await this.paymentStore.createOperation(operation);
-        //}
+        }
+        return Operation.NULL
     }
 
     _isThisMPClearingEvent(event) {

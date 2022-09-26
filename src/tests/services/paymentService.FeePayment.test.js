@@ -25,8 +25,6 @@ const {strict: assert} = require('assert');
 const Operation = require('../../entities/operation');
 const Network = require("../../../test_networks/ganacheNetwork");
 const helpers = require("../helpers");
-const { nameSpacedUUID } = require('../../utils/uuid_generator');
-require('dotenv').config();
 
 require('dotenv').config();
 
@@ -54,26 +52,25 @@ describe(`Payment Service FeePayment test suit`, async () => {
         }
     );
 
-    // it(`Given a MP When call feePayment then returns the stored operations`, async () => {
-    //     const operations = (
-    //         await paymentService.feePayment(USER_ADDRESS, DATA_PROVIDER_MP_ADDRESS, 20)
-    //     ).operations;
+    it(`Given a MP When call feePayment then returns the stored operations`, async () => {
+        const operations = (
+            await paymentService.feePayment(USER_ADDRESS, DATA_PROVIDER_MP_ADDRESS, 20)
+        ).operations;
 
-    //     assert.strictEqual(operations.length, 2);
-    //     assert.strictEqual(operations.every(o => o.transferId !== ''), true);
-    //     assert.strictEqual(operations.every(o => o.type === Operation.Type.FEE_PAYMENT), true);
-    //     assert.strictEqual(operations.every(o => o.status === Operation.Status.OPEN), true);
-    //     assert.strictEqual(operations.some(o => o.user === process.env.COMMUNITY_ADDRESS), true);
-    //     assert.strictEqual(operations.some(o => o.user === DATA_PROVIDER_MP_ADDRESS), true);
-    // });
+        const communityWallet = await treasuryContract.getCommunityWallet();
+        assert.strictEqual(operations.length, 2);
+        assert.strictEqual(operations.every(o => o.transferId !== ''), true);
+        assert.strictEqual(operations.every(o => o.type === Operation.Type.FEE_PAYMENT), true);
+        assert.strictEqual(operations.every(o => o.status === Operation.Status.UNSIGNED), true);
+        assert.strictEqual(operations.some(o => o.user === communityWallet), true);
+        assert.strictEqual(operations.some(o => o.user === DATA_PROVIDER_MP_ADDRESS), true);
+    });
 
     it(`Given the Token transferred event When the tokens transferred handler capture the event Then add the 
     operations to the database`, async () => {
-        // const operations = (
-        //     await paymentService.feePayment(USER_ADDRESS, DATA_PROVIDER_MP_ADDRESS, 20)
-        // ).operations;
-        const transferId1 = nameSpacedUUID();
-        const transferId2 = nameSpacedUUID()
+        const operations = (
+            await paymentService.feePayment(USER_ADDRESS, DATA_PROVIDER_MP_ADDRESS, 20)
+        ).operations;
 
         await tokenTransferredHandler.execute(
             {
@@ -81,7 +78,7 @@ describe(`Payment Service FeePayment test suit`, async () => {
                 blockHash: 'dummy block hash',
                 type: 'mined',
                 operation: Operation.Type.FEE_PAYMENT,
-                transferId: transferId1,
+                transferId: operations[0].transferId,
                 fromAddress: USER_ADDRESS,
                 toAddress: DATA_PROVIDER_MP_ADDRESS
             }
@@ -92,13 +89,13 @@ describe(`Payment Service FeePayment test suit`, async () => {
                 blockHash: 'dummy block hash 2',
                 type: 'mined',
                 operation: Operation.Type.FEE_PAYMENT,
-                transferId: transferId2,
+                transferId: operations[1].transferId,
                 fromAddress: USER_ADDRESS,
                 toAddress: process.env.COMMUNITY_ADDRESS
             }
         )
-        helpers.assertIsClosed(await paymentService.getOperationsByTransferId(transferId1));
-        helpers.assertIsClosed(await paymentService.getOperationsByTransferId(transferId2));
+        helpers.assertIsClosed(await paymentService.getOperationsByTransferId(operations[0].transferId));
+        helpers.assertIsClosed(await paymentService.getOperationsByTransferId(operations[1].transferId));
     });
 
 });

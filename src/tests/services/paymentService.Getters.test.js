@@ -23,7 +23,6 @@ const TokenTransferredHandler = require("../../services/enventHandlers/tokenTran
 const TreasuryContract = require('./fakeTreasuryContractService');
 
 const helpers = require("../helpers");
-const { nameSpacedUUID } = require('../../utils/uuid_generator');
 const assert = require('assert').strict;
 
 
@@ -62,17 +61,16 @@ describe("Payment Service operation Getters test suit", async () => {
 
 
     it('Given an operation call When there is some operation return the full list', async () => {
-        //const openOperation1 = (await paymentService.exchangeIn(USER_ADDRESS, 1)).operation;
-        //const openOperation2 = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
-        //const openOperation3 = (await paymentService.exchangeIn(USER_ADDRESS, 3)).operation;
-        const transferId2 = nameSpacedUUID();
+        const unsignedOperation1 = (await paymentService.exchangeIn(USER_ADDRESS, 1)).operation;
+        const unsignedOperation2 = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
+        const unsignedOperation3 = (await paymentService.exchangeIn(USER_ADDRESS, 3)).operation;
         const closedOperation = await tokenTransferredHandler.execute(
             {
                 transactionHash: 'dummy transaction hash',
                 blockHash: 'dummy block hash',
                 type: 'mined',
                 operation: Operation.Type.EXCHANGE_IN,
-                transferId: transferId2,
+                transferId: unsignedOperation2.transferId,
                 fromAddress: MP_ADDRESS,
                 toAddress: USER_ADDRESS
             }
@@ -80,10 +78,10 @@ describe("Payment Service operation Getters test suit", async () => {
 
         const operations = await paymentService.getOperations();
 
-        assert.strictEqual(operations.length, 1);
-        // helpers.assertIsOperationInList(openOperation1, operations);
-        // helpers.assertIsOperationInList(openOperation2, operations);
-        // helpers.assertIsOperationInList(openOperation3, operations);
+        assert.strictEqual(operations.length, 4);
+        helpers.assertIsOperationInList(unsignedOperation1, operations);
+        helpers.assertIsOperationInList(unsignedOperation2, operations);
+        helpers.assertIsOperationInList(unsignedOperation3, operations);
         helpers.assertIsOperationInList(closedOperation, operations);
     });
 
@@ -97,44 +95,31 @@ describe("Payment Service operation Getters test suit", async () => {
         }
     );
 
-
     it("Given a transactionId When call getOperationTransferId Then return the operation list",
         async () => {
-            const transferId = nameSpacedUUID();
-            const response = await tokenTransferredHandler.execute(
-                {
-                    transactionHash: 'dummy transaction hash',
-                    blockHash: 'dummy block hash',
-                    type: 'mined',
-                    operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId,
-                    fromAddress: MP_ADDRESS,
-                    toAddress: USER_ADDRESS
-                }
-            );
-            const operations = await paymentService.getOperationsByTransferId(transferId);
+            const response = await paymentService.exchangeIn(USER_ADDRESS, 30);
+            const operations = await paymentService.getOperationsByTransferId(response.operation.transferId);
 
             assert.strictEqual(operations.length, 1);
-            assert.strictEqual(operations[0].transferId, transferId);
+            assert.strictEqual(operations[0].transferId, response.operation.transferId);
             assert.strictEqual(operations[0].type, Operation.Type.EXCHANGE_IN);
-            assert.strictEqual(operations[0].status, Operation.Status.CLOSED);
+            assert.strictEqual(operations[0].status, Operation.Status.UNSIGNED);
             assert.strictEqual(operations[0].user, USER_ADDRESS);
         });
 
 
     it("Given a operation type When call getOperationByType Then return the list of operations",
         async () => {
-            // const openOperation1 = (await paymentService.exchangeIn(USER_ADDRESS, 1)).operation;
-            // const openOperation2 = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
-            // const openOperation3 = (await paymentService.exchangeIn(USER_ADDRESS, 3)).operation;
-            const transferId = nameSpacedUUID();
+            const unsignedOperation1 = (await paymentService.exchangeIn(USER_ADDRESS, 1)).operation;
+            const unsignedOperation2 = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
+            const unsignedOperation3 = (await paymentService.exchangeIn(USER_ADDRESS, 3)).operation;
             const closedOperation = await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId,
+                    transferId: unsignedOperation2.transferId,
                     fromAddress: MP_ADDRESS,
                     toAddress: USER_ADDRESS
                 }
@@ -142,39 +127,39 @@ describe("Payment Service operation Getters test suit", async () => {
 
             const operations = await paymentService.getOperationsByType(Operation.Type.EXCHANGE_IN);
 
-            assert.strictEqual(operations.length, 1);
-            // helpers.assertIsOperationInList(openOperation1, operations);
-            // helpers.assertIsOperationInList(openOperation2, operations);
-            // helpers.assertIsOperationInList(openOperation3, operations);
+            assert.strictEqual(operations.length, 4);
+            helpers.assertIsOperationInList(unsignedOperation1, operations);
+            helpers.assertIsOperationInList(unsignedOperation2, operations);
+            helpers.assertIsOperationInList(unsignedOperation3, operations);
             helpers.assertIsOperationInList(closedOperation, operations);
         }
     );
 
-    it("Given 3 open operation and 1 closed When call getOperationByStatus with open filter " +
+    it("Given 3 unsigned operations and 1 closed When call getOperationByStatus with open filter " +
         "Then return the correct list of operations",
         async () => {
-            // const openOperation1 = (await paymentService.exchangeIn(USER_ADDRESS, 1)).operation;
-            // const openOperation2 = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
-            // const openOperation3 = (await paymentService.exchangeIn(USER_ADDRESS, 3)).operation;
-            const transferId = nameSpacedUUID();
+            const unsignedOperation1 = (await paymentService.exchangeIn(USER_ADDRESS, 1)).operation;
+            const unsignedOperation2 = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
+            const unsignedOperation3 = (await paymentService.exchangeIn(USER_ADDRESS, 3)).operation;
+        
             await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId,
+                    transferId: unsignedOperation2.transferId,
                     fromAddress: MP_ADDRESS,
                     toAddress: USER_ADDRESS
                 }
             );
 
-            const operations = await paymentService.getOperationsByStatus(Operation.Status.OPEN);
+            const operations = await paymentService.getOperationsByStatus(Operation.Status.UNSIGNED);
 
-            assert.strictEqual(operations.length, 0);
-            // helpers.assertIsOperationInList(openOperation1, operations);
-            // helpers.assertIsOperationInList(openOperation2, operations);
-            // helpers.assertIsOperationInList(openOperation3, operations);
+            assert.strictEqual(operations.length, 3);
+            helpers.assertIsOperationInList(unsignedOperation1, operations);
+            helpers.assertIsOperationInList(unsignedOperation2, operations);
+            helpers.assertIsOperationInList(unsignedOperation3, operations);
         }
     );
 
@@ -182,7 +167,7 @@ describe("Payment Service operation Getters test suit", async () => {
         "Then return the correct list of operations",
         async () => {
             await paymentService.exchangeIn(USER_ADDRESS, 1);
-            //const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
+            const unsignedOperation = (await paymentService.exchangeIn(USER_ADDRESS, 2)).operation;
             await paymentService.exchangeIn(USER_ADDRESS, 3);
             const closedOperation = await tokenTransferredHandler.execute(
                 {
@@ -190,7 +175,7 @@ describe("Payment Service operation Getters test suit", async () => {
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_IN,
-                    transferId: nameSpacedUUID(),
+                    transferId: unsignedOperation.transferId,
                     fromAddress: MP_ADDRESS,
                     toAddress: USER_ADDRESS
                 }
@@ -206,48 +191,15 @@ describe("Payment Service operation Getters test suit", async () => {
     it("Given 2 operation to the same user and 1 to other one When call getOperationByUser with first user " +
         "Then return the correct list of operations",
         async () => {
-            const transferId1 = nameSpacedUUID();
-            const transferId2 = nameSpacedUUID();
-            const transferId3 = nameSpacedUUID();
-            const response1 = await tokenTransferredHandler.execute(
-                {
-                    transactionHash: 'dummy transaction hash',
-                    blockHash: 'dummy block hash',
-                    type: 'mined',
-                    operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId1,
-                    fromAddress: MP_ADDRESS,
-                    toAddress: USER_ADDRESS
-                }
-            );
-            const response2 = await tokenTransferredHandler.execute(
-                {
-                    transactionHash: 'dummy transaction hash',
-                    blockHash: 'dummy block hash',
-                    type: 'mined',
-                    operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId2,
-                    fromAddress: MP_ADDRESS,
-                    toAddress: USER2_ADDRESS
-                }
-            );
-            const response3 = await tokenTransferredHandler.execute(
-                {
-                    transactionHash: 'dummy transaction hash',
-                    blockHash: 'dummy block hash',
-                    type: 'mined',
-                    operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId3,
-                    fromAddress: MP_ADDRESS,
-                    toAddress: USER_ADDRESS
-                }
-            );
+            const response1 = await paymentService.exchangeIn(USER_ADDRESS, 1);
+            const response2 = await paymentService.exchangeIn(USER2_ADDRESS, 2);
+            const response3 = await paymentService.exchangeIn(USER_ADDRESS, 3);
 
             const operations = await paymentService.getOperationsByUser(USER_ADDRESS);
 
             assert.strictEqual(operations.length, 2);
-            assert.strictEqual(transferId1, operations[0].transferId);
-            assert.strictEqual(transferId3, operations[1].transferId);
+            helpers.assertIsOperationInList(response1.operation, operations);
+            helpers.assertIsOperationInList(response3.operation, operations);
         }
     );
 });

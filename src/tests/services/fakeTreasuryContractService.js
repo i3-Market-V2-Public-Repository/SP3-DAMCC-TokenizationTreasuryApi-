@@ -80,6 +80,16 @@ class FakeTreasuryContractService extends TreasuryContract {
         });
     }
 
+    getCommunityWallet(){
+        return new Promise(resolve => {
+            NONCE += 1;
+            setTimeout(
+                resolve("community_wallet_addr"),
+                1500
+            )
+        });
+    }
+
     exchangeIn(transferId, senderAddress, userAddress, tokens) {
         return new Promise(resolve => {
             NONCE += 1;

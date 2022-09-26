@@ -52,7 +52,7 @@ helpers.assertIsOperationInList = (operation, operationList) => {
 
 helpers.assertIsClosed = (operations) => {
     console.log(`[HELPER][assertIsClosed]: ${JSON.stringify(operations)}`);
-    //assert.strictEqual(operations.length > 1, true);
+    assert.strictEqual(operations.length > 1, true);
     assert.strictEqual(operations.some(o => o.status === Operation.Status.CLOSED), true);
     assert.strictEqual(operations.every(o => o.transferId === operations[0].transferId), true);
     assert.strictEqual(operations.every(o => o.userId === operations[0].userId), true);

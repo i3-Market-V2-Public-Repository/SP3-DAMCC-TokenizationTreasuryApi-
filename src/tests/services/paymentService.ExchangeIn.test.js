@@ -52,27 +52,27 @@ describe("Payment Service Exchange in test suit", async () => {
         }
     );
 
-    // it("Given a user address and an amount When the MP call exchangeIn Then return the operation",
-    //     async () => {
-    //         const response = await paymentService.exchangeIn(USER_ADDRESS, 30);
+    it("Given a user address and an amount When the MP call exchangeIn Then return the operation",
+        async () => {
+            const response = await paymentService.exchangeIn(USER_ADDRESS, 30);
 
-    //         assert.strictEqual(response.operation.type, Operation.Type.EXCHANGE_IN);
-    //         assert.strictEqual(response.operation.status, Operation.Status.OPEN);
-    //         assert.strictEqual(response.operation.user, USER_ADDRESS);
-    //         assert.strictEqual(response.operation.transferId, response.transferId);
-    //     }
-    // );
+            assert.strictEqual(response.operation.type, Operation.Type.EXCHANGE_IN);
+            assert.strictEqual(response.operation.status, Operation.Status.UNSIGNED);
+            assert.strictEqual(response.operation.user, USER_ADDRESS);
+            assert.strictEqual(response.operation.transferId, response.transferId);
+        }
+    );
 
     it("Given an exchangeIn event When the event is captured Then Return one operation with closed status",
         async () => {
-            //const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 30)).operation;
+            const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 30)).operation;
             const closedOperation = await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_IN,
-                    transferId: nameSpacedUUID(),
+                    transferId: openOperation.transferId,
                     fromAddress: MP_ADDRESS,
                     toAddress: USER_ADDRESS
                 }
@@ -80,8 +80,8 @@ describe("Payment Service Exchange in test suit", async () => {
 
             const operations = await paymentService.getOperationsByTransferId(closedOperation.transferId);
 
-            assert.strictEqual(operations.length, 1);
-            assert.strictEqual(closedOperation.status, Operation.Status.CLOSED);
+            assert.strictEqual(operations.length, 2);
+            helpers.assertIsOperationInList(openOperation, operations);
             helpers.assertIsOperationInList(closedOperation, operations);
         }
     );
@@ -90,24 +90,22 @@ describe("Payment Service Exchange in test suit", async () => {
         "Given an exchangeIn event with a different MP in the sender When a exchange in event is captured " +
         "Then Do NOT create the new operation",
         async () => {
-            //const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 30)).operation;
-            const transferId = nameSpacedUUID();
+            const openOperation = (await paymentService.exchangeIn(USER_ADDRESS, 30)).operation;
             const closedOperation = await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_IN,
-                    transferId: transferId,
+                    transferId: openOperation.transferId,
                     fromAddress: MP2_ADDRESS,
                     toAddress: USER_ADDRESS
                 }
             )
+            const operations = await paymentService.getOperationsByTransferId(openOperation.transferId);
 
-            const operations = await paymentService.getOperationsByTransferId(transferId);
-
-            assert.strictEqual(operations.length, 0);
-            //helpers.assertIsOperationInList(openOperation, operations);
+            assert.strictEqual(operations.length, 1);
+            helpers.assertIsOperationInList(openOperation, operations);
         }
     );
 

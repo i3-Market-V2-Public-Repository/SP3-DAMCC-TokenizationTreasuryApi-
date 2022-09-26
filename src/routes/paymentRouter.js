@@ -47,7 +47,7 @@ const paymentController = require('../controllers/paymentController');
  *       - name: status
  *         in: query
  *         required: false
- *         description: Filter by operation status. Allowed values "open" and "closed".
+ *         description: Filter by operation status. Allowed values "unsgned", "open" and "closed".
  *         schema:
  *           type: string
  *       - name: user

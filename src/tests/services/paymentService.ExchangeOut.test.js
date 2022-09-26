@@ -24,7 +24,6 @@ const TreasuryContract = require('./fakeTreasuryContractService');
 
 const helpers = require("../helpers");
 const FiatMoneyPaymentHandler = require("../../services/enventHandlers/fiatMoneyPaymentHandler");
-const { nameSpacedUUID } = require('../../utils/uuid_generator');
 const assert = require('assert').strict;
 
 
@@ -55,35 +54,34 @@ describe("Payment Service ExchangeOut test suit", async () => {
         }
     );
 
+    it("Given a data provider When call ExchangeOut then save then return the operation", async () => {
+        const operation = (await paymentService.exchangeOut(SENDER_ADDRESS, MP_ADDRESS)).operation;
 
-    // it("Given a data provider When call ExchangeOut then save then return the operation", async () => {
-    //     const operation = (await paymentService.exchangeOut(SENDER_ADDRESS, MP_ADDRESS)).operation;
-
-    //     assert.notStrictEqual(operation.transferId, "");
-    //     assert.strictEqual(operation.type, Operation.Type.EXCHANGE_OUT);
-    //     assert.strictEqual(operation.status, Operation.Status.OPEN);
-    //     assert.strictEqual(operation.user, SENDER_ADDRESS);
-    // });
+        assert.notStrictEqual(operation.transferId, "");
+        assert.strictEqual(operation.type, Operation.Type.EXCHANGE_OUT);
+        assert.strictEqual(operation.status, Operation.Status.UNSIGNED);
+        assert.strictEqual(operation.user, SENDER_ADDRESS);
+    });
 
     it("Given an exchangeOut event When the event is captured Then update the operation status to open",
         async () => {
-            //const openOperation = (await paymentService.exchangeOut(SENDER_ADDRESS)).operation;
-            const transferId = nameSpacedUUID();
+            const unsignedOperation = (await paymentService.exchangeOut(SENDER_ADDRESS)).operation;
             const inProgressOperation = await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_OUT,
-                    transferId: transferId,
+                    transferId: unsignedOperation.transferId,
                     fromAddress: MP_ADDRESS,
                     toAddress: SENDER_ADDRESS
                 }
             );
 
-            const operations = await paymentService.getOperationsByTransferId(transferId);
+            const operations = await paymentService.getOperationsByTransferId(unsignedOperation.transferId);
 
-            assert.strictEqual(operations.length, 1);
+            assert.strictEqual(operations.length, 2);
+            assert.strictEqual(unsignedOperation.status, Operation.Status.UNSIGNED);
             assert.strictEqual(inProgressOperation.status, Operation.Status.OPEN);
             helpers.assertIsOperationInList(inProgressOperation, operations);
         }
@@ -93,15 +91,14 @@ describe("Payment Service ExchangeOut test suit", async () => {
         "When message sender is the MP and the exchange_out operation is in progress " +
         "Then update the operation status to closed",
         async () => {
-            //const openOperation = (await paymentService.exchangeOut(SENDER_ADDRESS)).operation;
-            const transferId = nameSpacedUUID();
+            const openOperation = (await paymentService.exchangeOut(SENDER_ADDRESS)).operation;
             await tokenTransferredHandler.execute(
                 {
                     transactionHash: 'dummy transaction hash',
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_OUT,
-                    transferId: transferId,
+                    transferId: openOperation.transferId,
                     fromAddress: SENDER_ADDRESS,
                     toAddress: MP_ADDRESS
                 }
@@ -112,7 +109,7 @@ describe("Payment Service ExchangeOut test suit", async () => {
                     blockHash: 'dummy block hash',
                     type: 'mined',
                     operation: Operation.Type.EXCHANGE_OUT,
-                    transferId: transferId,
+                    transferId: openOperation.transferId,
                     fromAddress: SENDER_ADDRESS
                 }
             );

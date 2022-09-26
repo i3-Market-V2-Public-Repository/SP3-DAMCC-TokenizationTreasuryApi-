@@ -48,6 +48,7 @@ class Operation {
 Operation.NULL = {};
 
 Operation.Status = {
+    UNSIGNED: "unsigned",
     OPEN: "open",
     CLOSED: "closed",
 }

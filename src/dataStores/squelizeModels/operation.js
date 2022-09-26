@@ -31,6 +31,7 @@ class Operation extends Model {
 }
 
 Operation.Status = {
+    UNSIGNED: "unsigned",
     OPEN: "open",
     CLOSED: "closed"
 }
