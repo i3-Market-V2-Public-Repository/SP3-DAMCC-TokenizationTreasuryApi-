@@ -80,7 +80,7 @@ class PaymentService {
 
         const response = {};
         let transactionObject;
-        let operation = new Operation(nameSpacedUUID(), "exchange_in", "unsigned", userAddress);
+        let operation = new Operation(nameSpacedUUID(), Operation.Type.EXCHANGE_IN, Operation.Status.UNSIGNED, userAddress);
 
         try {
             transactionObject = await this.treasurySmartContract.exchangeIn(
@@ -106,7 +106,7 @@ class PaymentService {
 
         const response = {};
         let transactionObject;
-        let operation = new Operation(nameSpacedUUID(), "exchange_out", "unsigned", senderAddress);
+        let operation = new Operation(nameSpacedUUID(), Operation.Type.EXCHANGE_OUT, Operation.Status.UNSIGNED, senderAddress);
 
         try {
             transactionObject = await this.treasurySmartContract.exchangeOut(
