@@ -6,6 +6,7 @@ services:
       - "3001:3001"
     environment:
       - ETH_HOST=$ETH_HOST
+      - MARKETPLACE_ADDRESS=$MARKETPLACE_ADDRESS
       - CONTRACT_ADDRESS=$CONTRACT_ADDRESS
       - WEBHOOK=$WEBHOOK
       - PORT=3001

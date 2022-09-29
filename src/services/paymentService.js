@@ -145,7 +145,9 @@ class PaymentService {
             address = await this.treasurySmartContract._getMarketplaceAddressByIndex(i);
             if (this._isExternalMarketplaceBalance(address, balance)) {
                 console.log(`[PaymentService][_generateClearingOperations] balance: ${balance}`);
-                result.push(new ClearingOperation(address, balance));
+                let operation = new ClearingOperation(address, balance)
+                await this.store.createOperation(operation)
+                result.push(operation);
             }
         }
 

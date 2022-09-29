@@ -85,8 +85,9 @@ exports.exchangeIn = catchAsync(async (req, res, next) => {
     if (!userAddress || !tokens) {
         return res.status(400).json({message: 'Must provide userAddress and tokens'});
     }
-
-    return res.json((await paymentService.exchangeIn(userAddress, tokens)));
+    const op = await paymentService.exchangeIn(userAddress, tokens)
+    op.operation = undefined; 
+    return res.json(op);
 });
 
 exports.exchangeOut = catchAsync(async (req, res, next) => {
@@ -96,7 +97,9 @@ exports.exchangeOut = catchAsync(async (req, res, next) => {
         return res.status(400).json({message: 'Must provide the senderAddress and marketplaceAddress'});
     }
 
-    return res.json((await paymentService.exchangeOut(senderAddress, marketplaceAddress)));
+    const op = await paymentService.exchangeOut(senderAddress, marketplaceAddress)
+    op.operation = undefined; 
+    return res.json(op);
 });
 
 
@@ -128,5 +131,7 @@ exports.feePayment = catchAsync(async (req, res, next) => {
         return res.status(400).json({message: 'Must provide senderAddress, marketplaceAddress and feeAmount'});
     }
 
-    return res.json((await paymentService.feePayment(senderAddress, marketplaceAddress, feeAmount)));
+    const op = await paymentService.feePayment(senderAddress, marketplaceAddress, feeAmount);
+    op.operations = undefined; 
+    return res.json(op);
 });
