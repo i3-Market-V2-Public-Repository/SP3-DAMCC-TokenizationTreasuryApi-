@@ -24,6 +24,7 @@ const fs = require('fs');
 const path = require('path');
 const AppError = require('../utils/AppError');
 const TreasuryContract = require('./treasuryContract')
+const TokenParser = require("../utils/tokenParser");
 
 let instance = null;
 
@@ -99,7 +100,7 @@ class TreasuryContractService extends TreasuryContract {
             senderAddress,
             transferId,
             userAddress,
-            tokens
+            TokenParser.encode(tokens)
         )
     }
 
@@ -118,7 +119,7 @@ class TreasuryContractService extends TreasuryContract {
             senderAddress,
             transferId,
             providerAddress,
-            amount
+            TokenParser.encode(amount)
         )
     }
 
@@ -167,7 +168,7 @@ class TreasuryContractService extends TreasuryContract {
             communityTransferId,
             marketplaceTransferId,
             dataProviderMPAddress,
-            feeAmount
+            TokenParser.encode(feeAmount)
         )
     }
 
@@ -202,7 +203,7 @@ class TreasuryContractService extends TreasuryContract {
         const numberOfMarketplaces = await (this.contract.methods.index().call());
 
         for (let i = 0; i < numberOfMarketplaces; i++) {
-            balances[i] = await this.contract.methods.balanceOf(address, i + 1).call();
+            balances[i] = TokenParser.decode(await this.contract.methods.balanceOf(address, i + 1).call());
         }
         console.log(
             `[TreasuryContractService][getBalanceForAddress] balances of ${address}: ${JSON.stringify(balances)}`
